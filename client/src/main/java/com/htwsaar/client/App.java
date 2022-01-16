@@ -1,13 +1,15 @@
 package com.htwsaar.client;
 
+import com.htwsaar.client.UserInterface.Menu.Menu;
+
 /**
- * Hello world!
+ * Client programm
  *
  */
 public class App 
 {
     public static void main( String[] args )
     {
-        System.out.println( "Hello from client!" );
+        Menu.startMenu();
     }
 }
