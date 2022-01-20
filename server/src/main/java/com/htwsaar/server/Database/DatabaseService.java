@@ -29,7 +29,7 @@ public class DatabaseService {
     }
 
     private void createTable() throws SQLException {
-        String sql = "CREATE TABLE user(UserID int primary key auto_increment, Username varchar(255) UNIQUE ,Password varchar(255) NOT NULL, Wins int, Loses int)";
+        String sql = "CREATE TABLE user(UserID int primary key auto_increment, Username varchar(255) UNIQUE ,Password varchar(255) NOT NULL, Wins int, Loses int, Games int)";
         stmt.executeUpdate(sql);
     }
 
@@ -37,29 +37,44 @@ public class DatabaseService {
         if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
             throw new IllegalArgumentException();
         }
-        String sql = "INSERT INTO user(Username, Password, Wins, Loses) VALUES ('" + username + "', '" + password + "', 0, 0)";
+        String sql = "INSERT INTO user(Username, Password, Wins, Loses, Games) VALUES ('" + username + "', '" + password + "', 0, 0, 0)";
         stmt.executeUpdate(sql);
     }
 
     public void addWins(int UserID) throws SQLException {
-        ResultSet rs = stmt.executeQuery("SELECT Wins FROM user WHERE UserID = " + UserID);
+        ResultSet rs = stmt.executeQuery("SELECT Wins, Games FROM user WHERE UserID = " + UserID);
         if (rs.next()) {
             int wins = rs.getInt("Wins") + 1;
+            int games = rs.getInt("Games") + 1;
 
-            String sql = "UPDATE user SET Wins = " + wins + " WHERE UserID = " + UserID;
+            String sql = "UPDATE user SET Wins = " + wins + ", Games = " + games + " WHERE UserID = " + UserID;
             stmt.executeUpdate(sql);
         }
     }
 
-    public void addLoses(int UserID) {
+    public void addLoses(int UserID) throws SQLException {
+        ResultSet rs = stmt.executeQuery("SELECT Loses, Games FROM user WHERE UserID = " + UserID);
+        if (rs.next()) {
+            int loses = rs.getInt("Loses") + 1;
+            int games = rs.getInt("Games") + 1;
 
+            String sql = "UPDATE user SET Loses = " + loses + ", Games = " + games + " WHERE UserID = " + UserID;
+            stmt.executeUpdate(sql);
+        }
     }
 
     public void changePassword(int UserID, String oldPassword, String NewPassword) {
 
     }
 
-    public void getScoreboard(int UserID) {
+    public void getScoreboard() throws SQLException {
+        ResultSet rs = stmt.executeQuery("SELECT Username, Wins, Loses FROM user ORDER BY Wins DESC");
+        while (rs.next()) {
+            String username = rs.getString("Username");
+            int wins = rs.getInt("Wins");
+            int loses = rs.getInt("Loses");
 
+            System.out.println(username + ": " + wins + " - " + loses);
+        }
     }
 }
