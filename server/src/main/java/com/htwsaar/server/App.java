@@ -13,6 +13,8 @@ public class App {
         try {
             DatabaseService databaseService = new DatabaseService();
             databaseService.run();
+//            databaseService.addLoses(1);
+            databaseService.changePassword(1,"s","test");
         } catch (SQLException ex) {
             System.out.println("FEHLER (SQLException): " + ex.getMessage());
         } catch (IllegalArgumentException ex) {
