@@ -41,15 +41,21 @@ public class DatabaseService {
         stmt.executeUpdate(sql);
     }
 
-    public void addWins(int UserID) {
+    public void addWins(int UserID) throws SQLException {
+        ResultSet rs = stmt.executeQuery("SELECT Wins FROM user WHERE UserID = " + UserID);
+        if (rs.next()) {
+            int wins = rs.getInt("Wins") + 1;
 
+            String sql = "UPDATE user SET Wins = " + wins + " WHERE UserID = " + UserID;
+            stmt.executeUpdate(sql);
+        }
     }
 
     public void addLoses(int UserID) {
 
     }
 
-    public void changePassword(int UserID, String password) {
+    public void changePassword(int UserID, String oldPassword, String NewPassword) {
 
     }
 
