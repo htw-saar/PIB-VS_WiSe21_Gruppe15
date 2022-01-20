@@ -4,9 +4,6 @@ import com.htwsaar.server.Database.DatabaseService;
 
 import java.sql.SQLException;
 
-/**
- * Hello world!
- */
 public class App {
     public static void main(String[] args) {
         start();
@@ -16,9 +13,13 @@ public class App {
         try {
             DatabaseService databaseService = new DatabaseService();
             databaseService.run();
-        } catch (
-                SQLException ex) {
+            databaseService.addUser("Simon", "test");
+        } catch (SQLException ex) {
             System.out.println("FEHLER (SQLException): " + ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            System.out.println("FEHLER (IllegalArgumentException): " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("FEHLER: " + ex.getMessage());
         }
     }
 }

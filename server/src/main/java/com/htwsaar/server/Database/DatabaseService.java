@@ -3,6 +3,7 @@ package com.htwsaar.server.Database;
 import java.sql.*;
 
 public class DatabaseService {
+    // local MySqlDatenbank erstellen mit dem Namen gameServer
     private final String DB_URL = "jdbc:mysql://localhost/gameServer";
     private final String USER = "root";
     private final String PASS = "test";
@@ -12,8 +13,6 @@ public class DatabaseService {
     public DatabaseService() throws SQLException {
         con = DriverManager.getConnection(DB_URL, USER, PASS);
         stmt = con.createStatement();
-
-
     }
 
     public void run() throws SQLException {
@@ -30,11 +29,16 @@ public class DatabaseService {
     }
 
     private void createTable() throws SQLException {
-        stmt.executeUpdate("CREATE TABLE user(UserID int primary key auto_increment, Username varchar(255) NOT NULL ,Password varchar(255) NOT NULL, Wins int, Loses int)");
+        String sql = "CREATE TABLE user(UserID int primary key auto_increment, Username varchar(255) UNIQUE ,Password varchar(255) NOT NULL, Wins int, Loses int)";
+        stmt.executeUpdate(sql);
     }
 
-    public void addUser(String username, String password) {
-
+    public void addUser(String username, String password) throws SQLException {
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+        String sql = "INSERT INTO user(Username, Password, Wins, Loses) VALUES ('" + username + "', '" + password + "', 0, 0)";
+        stmt.executeUpdate(sql);
     }
 
     public void addWins(int UserID) {
