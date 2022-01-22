@@ -14,7 +14,8 @@ public class DatabaseService {
     private Statement stmt;
 
     public DatabaseService() {
-        try {System.out.println("Hallo");
+        try {
+            logger.info("Starting initialization of the database");
             initDatabase();
         } catch (SQLException e) {
             handleError(e);
@@ -61,10 +62,12 @@ public class DatabaseService {
     public void addUser(String username, String password) {
         try {
             if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+                logger.error("Username or password can't be null or empty!")
                 throw new IllegalArgumentException();
             }
             String sql = "INSERT INTO user(Username, Password, Wins, Loses, Games) VALUES ('" + username + "', '"
                     + password + "', 0, 0, 0)";
+            logger.info("Insert a new user in the database");
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             handleError(e);
@@ -80,6 +83,7 @@ public class DatabaseService {
                 int games = rs.getInt("Games") + 1;
 
                 String sql = "UPDATE user SET Wins = " + wins + ", Games = " + games + " WHERE UserID = " + userID;
+                logger.info("Update wins counter from a user");
                 stmt.executeUpdate(sql);
             }
         } catch (SQLException e) {
@@ -95,6 +99,7 @@ public class DatabaseService {
                 int games = rs.getInt("Games") + 1;
 
                 String sql = "UPDATE user SET Loses = " + loses + ", Games = " + games + " WHERE UserID = " + userID;
+                logger.info("Update loses counter from a user");
                 stmt.executeUpdate(sql);
             }
         } catch (SQLException e) {
@@ -110,6 +115,7 @@ public class DatabaseService {
 
                 if (oldPassword.equals(pw)) {
                     String sql = "UPDATE user SET Password = '" + newPassword + "' WHERE UserID = " + userID;
+                    logger.info("Change password from a user");
                     stmt.executeUpdate(sql);
                 }
             }
@@ -120,12 +126,12 @@ public class DatabaseService {
 
     public void getScoreboard() {
         try {
+            logger.info("Get the scoreboard");
             ResultSet rs = stmt.executeQuery("SELECT Username, Wins, Loses FROM user ORDER BY Games, Wins DESC");
             while (rs.next()) {
                 String username = rs.getString("Username");
                 int wins = rs.getInt("Wins");
                 int loses = rs.getInt("Loses");
-
                 System.out.println(username + ": " + wins + " - " + loses);
             }
             // TODO return users as array of users
