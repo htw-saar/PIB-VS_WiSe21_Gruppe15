@@ -62,7 +62,7 @@ public class DatabaseService {
     public void addUser(String username, String password) {
         try {
             if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
-                logger.error("Username or password can't be null or empty!")
+                logger.error("Username or password can't be null or empty!");
                 throw new IllegalArgumentException();
             }
             String sql = "INSERT INTO user(Username, Password, Wins, Loses, Games) VALUES ('" + username + "', '"
