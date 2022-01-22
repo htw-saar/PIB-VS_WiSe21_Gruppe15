@@ -1,8 +1,11 @@
 package com.htwsaar.server.Database;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.sql.*;
 
 public class DatabaseService {
+    private static final Logger logger = LogManager.getLogger(DatabaseService.class);
+
     // local MySqlDatenbank erstellen mit dem Namen gameServer
     private final String DB_URL = "jdbc:mysql://localhost/gameServer";
     private final String USER = "root";
@@ -11,7 +14,7 @@ public class DatabaseService {
     private Statement stmt;
 
     public DatabaseService() {
-        try {
+        try {System.out.println("Hallo");
             initDatabase();
         } catch (SQLException e) {
             handleError(e);
@@ -39,12 +42,10 @@ public class DatabaseService {
         } catch (SQLException e) {
             handleError(e);
         }
-
     }
 
     private void handleError(Exception error) {
-        // TODO: handle exception
-        System.out.println(error);
+        logger.error(error.getMessage());
     }
 
     /*

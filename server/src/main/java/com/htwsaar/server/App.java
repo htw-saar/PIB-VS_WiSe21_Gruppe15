@@ -10,6 +10,6 @@ public class App {
     private static void start() {
         DatabaseService databaseService = new DatabaseService();
         // databaseService.addLoses(1);
-        databaseService.changePassword(1, "s", "test");
+        //databaseService.changePassword(1, "s", "test");
     }
 }
