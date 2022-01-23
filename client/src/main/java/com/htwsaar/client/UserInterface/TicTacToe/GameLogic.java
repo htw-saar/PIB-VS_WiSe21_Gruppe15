@@ -1,5 +1,10 @@
 package com.htwsaar.client.UserInterface.TicTacToe;
 
 public class GameLogic {
-    int i = 1 ; // Test
+    char[][] gameBoard = {{' ', '|', ' ', '|', ' '},            //Gameboard Array 3 Reihen 3 Spalten, 3x3 Matrix
+            {'-', '+', '-', '+', '-'},
+            {' ', '|', ' ', '|', ' '},
+            {'-', '+', '-', '+', '-'},
+            {' ', '|', ' ', '|', ' '}
+    };
 }
