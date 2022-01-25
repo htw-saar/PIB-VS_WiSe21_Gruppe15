@@ -25,7 +25,7 @@ public class DatabaseTest
     @Test
     public void DatabaseAddUser()
     {
-        // initDatabase();
+        initDatabase();
         clearDatabase();
         databaseService.addUser("Simon", "Test");
         // databaseService.deleteUser("Simon", "Test");
