@@ -1,7 +1,9 @@
 package com.htwsaar.server.Database;
+import com.htwsaar.server.Shared.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DatabaseService {
     private static final Logger logger = LogManager.getLogger(DatabaseService.class);
@@ -137,20 +139,26 @@ public class DatabaseService {
         }
     }
 
-    public void getScoreboard() {
+    public User[] getScoreboard() {
+        ArrayList<User> users = new ArrayList<User>();
+        int counter = 0;
         try {
             logger.info("Get the scoreboard");
             ResultSet rs = executeQuery("SELECT Username, Wins, Loses, Score FROM user ORDER BY Score DESC, Wins DESC");
             while (rs.next()) {
+
                 String username = rs.getString("Username");
                 int wins = rs.getInt("Wins");
                 int loses = rs.getInt("Loses");
                 int score = rs.getInt("Score");
-                System.out.println(username + ": " + score + " -> " + wins + " - " + loses);
+                User user = new User(username, wins, loses, score);
+                users.add(user);
+                counter++;
+//                System.out.println(username + ": " + score + " -> " + wins + " - " + loses);
             }
-            // TODO return users as array of users
         } catch (SQLException e) {
             handleError(e);
         }
+        return users.toArray(new User[counter]);
     }
 }
