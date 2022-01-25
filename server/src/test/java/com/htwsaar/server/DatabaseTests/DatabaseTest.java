@@ -6,12 +6,13 @@ import com.htwsaar.server.Database.DatabaseService;
 
 import org.junit.Test;
 
+
 /**
  * Unit test for simple App.
  */
 public class DatabaseTest 
 {
-    // private DatabaseService databaseService;
+    private DatabaseService databaseService;
 
     @Test
     public void CreateDatabase(){
@@ -24,7 +25,7 @@ public class DatabaseTest
     @Test
     public void DatabaseAddUser()
     {
-        DatabaseService databaseService = new DatabaseService();
+        initDatabase();
         clearDatabase();
         databaseService.addUser("Simon", "Test");
         // databaseService.deleteUser("Simon", "Test");
@@ -32,7 +33,7 @@ public class DatabaseTest
 
 
     private void initDatabase(){
-        DatabaseService databaseService = new DatabaseService();
+        databaseService = new DatabaseService();
     }
 
     private void clearDatabase(){
