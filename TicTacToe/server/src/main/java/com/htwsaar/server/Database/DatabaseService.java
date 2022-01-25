@@ -7,8 +7,8 @@ public class DatabaseService {
     private static final Logger logger = LogManager.getLogger(DatabaseService.class);
 
     // local MySqlDatenbank erstellen mit dem Namen gameServer
-    private final String DB_URL = "jdbc:mysql://localhost/gameServer";
-    private final String USER = "root";
+    private final String DB_URL = "jdbc:mysql://localhost/gameserver";
+    private final String USER = "testuser";
     private final String PASS = "test";
     private Connection con;
     private Statement stmt;
@@ -45,6 +45,15 @@ public class DatabaseService {
         }
     }
 
+    private ResultSet executeQuery(String command) {
+        try {
+            return stmt.executeQuery(command);
+        } catch (SQLException e) {
+            handleError(e);
+        }
+        return null;
+    }
+
     private void handleError(Exception error) {
         logger.error(error.getMessage());
     }
@@ -55,7 +64,7 @@ public class DatabaseService {
      */
 
     private void createTable() {
-        String command = "CREATE TABLE user(UserID int primary key auto_increment, Username varchar(255) UNIQUE ,Password varchar(255) NOT NULL, Wins int, Loses int, Games int)";
+        String command = "CREATE TABLE user(UserID int primary key auto_increment, Username varchar(255) UNIQUE ,Password varchar(255) NOT NULL, Wins int, Loses int, Score int)";
         executeUpdate(command);
     }
 
@@ -65,7 +74,7 @@ public class DatabaseService {
                 logger.error("Username or password can't be null or empty!");
                 throw new IllegalArgumentException();
             }
-            String sql = "INSERT INTO user(Username, Password, Wins, Loses, Games) VALUES ('" + username + "', '"
+            String sql = "INSERT INTO user(Username, Password, Wins, Loses, Score) VALUES ('" + username + "', '"
                     + password + "', 0, 0, 0)";
             logger.info("Insert a new user in the database");
             stmt.executeUpdate(sql);
@@ -77,12 +86,12 @@ public class DatabaseService {
 
     public void addWins(int userID) {
         try {
-            ResultSet rs = stmt.executeQuery("SELECT Wins, Games FROM user WHERE UserID = " + userID);
+            ResultSet rs = executeQuery("SELECT Wins, Score FROM user WHERE UserID = " + userID);
             if (rs.next()) {
                 int wins = rs.getInt("Wins") + 1;
-                int games = rs.getInt("Games") + 1;
+                int score = rs.getInt("Score") + 10;
 
-                String sql = "UPDATE user SET Wins = " + wins + ", Games = " + games + " WHERE UserID = " + userID;
+                String sql = "UPDATE user SET Wins = " + wins + ", Score = " + score + " WHERE UserID = " + userID;
                 logger.info("Update wins counter from a user");
                 stmt.executeUpdate(sql);
             }
@@ -93,12 +102,16 @@ public class DatabaseService {
 
     public void addLoses(int userID) {
         try {
-            ResultSet rs = stmt.executeQuery("SELECT Loses, Games FROM user WHERE UserID = " + userID);
+            ResultSet rs = executeQuery("SELECT Loses, Score FROM user WHERE UserID = " + userID);
             if (rs.next()) {
                 int loses = rs.getInt("Loses") + 1;
-                int games = rs.getInt("Games") + 1;
 
-                String sql = "UPDATE user SET Loses = " + loses + ", Games = " + games + " WHERE UserID = " + userID;
+                int score = rs.getInt("Score");
+                if (score != 0){
+                    score -= 10;
+                }
+
+                String sql = "UPDATE user SET Loses = " + loses + ", Score = " + score + " WHERE UserID = " + userID;
                 logger.info("Update loses counter from a user");
                 stmt.executeUpdate(sql);
             }
@@ -109,7 +122,7 @@ public class DatabaseService {
 
     public void changePassword(int userID, String oldPassword, String newPassword) {
         try {
-            ResultSet rs = stmt.executeQuery("SELECT Password FROM user WHERE UserID = " + userID);
+            ResultSet rs = executeQuery("SELECT Password FROM user WHERE UserID = " + userID);
             if (rs.next()) {
                 String pw = rs.getString("Password");
 
@@ -127,12 +140,13 @@ public class DatabaseService {
     public void getScoreboard() {
         try {
             logger.info("Get the scoreboard");
-            ResultSet rs = stmt.executeQuery("SELECT Username, Wins, Loses FROM user ORDER BY Games, Wins DESC");
+            ResultSet rs = executeQuery("SELECT Username, Wins, Loses, Score FROM user ORDER BY Score DESC, Wins DESC");
             while (rs.next()) {
                 String username = rs.getString("Username");
                 int wins = rs.getInt("Wins");
                 int loses = rs.getInt("Loses");
-                System.out.println(username + ": " + wins + " - " + loses);
+                int score = rs.getInt("Score");
+                System.out.println(username + ": " + score + " -> " + wins + " - " + loses);
             }
             // TODO return users as array of users
         } catch (SQLException e) {
