@@ -1,6 +1,6 @@
-package com.htwsaar.server.Database.utils;
+package com.htwsaar.server.hibernate.utils;
 
-import com.htwsaar.server.Database.entity.User;
+import com.htwsaar.server.hibernate.entity.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
@@ -17,7 +17,6 @@ public class HibernateUtils {
             try {
                 Configuration configuration = new Configuration();
 
-                // Hibernate settings equivalent to hibernate.cfg.xml's properties
                 Properties settings = new Properties();
                 settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
                 settings.put(Environment.URL, "jdbc:mysql://localhost/gameserver?useSSL=false");
@@ -26,7 +25,7 @@ public class HibernateUtils {
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
                 settings.put(Environment.SHOW_SQL, "true");
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
-                settings.put(Environment.HBM2DDL_AUTO, "create-drop");
+                settings.put(Environment.HBM2DDL_AUTO, "create");
 
                 configuration.setProperties(settings);
                 configuration.addAnnotatedClass(User.class);

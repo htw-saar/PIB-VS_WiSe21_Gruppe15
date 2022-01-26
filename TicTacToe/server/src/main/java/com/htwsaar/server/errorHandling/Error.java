@@ -1,4 +1,4 @@
-package com.htwsaar.server.ErrorHandling;
+package com.htwsaar.server.errorHandling;
 
 public enum Error {
     OK,

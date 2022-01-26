@@ -1,6 +1,6 @@
-package com.htwsaar.server.Database;
+package com.htwsaar.server.hibernate;
 
-import com.htwsaar.server.Database.entity.User;
+import com.htwsaar.server.hibernate.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
