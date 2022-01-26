@@ -12,6 +12,8 @@ public class DatabaseService {
     private final String DB_URL = "jdbc:mysql://localhost/gameserver";
     private final String USER = "testuser";
     private final String PASS = "test";
+
+    private final String SQL_GET_USERDATA = "SELECT Username, Wins, Loses, Score FROM user";
     private Connection con;
     private Statement stmt;
 
@@ -41,7 +43,11 @@ public class DatabaseService {
 
     private void executeUpdate(String command) {
         try {
-            stmt.executeUpdate(command);
+            if (stmt != null){
+                stmt.executeUpdate(command);
+            } else {
+                throw new SQLException();
+            }
         } catch (SQLException e) {
             handleError(e);
         }
@@ -49,7 +55,11 @@ public class DatabaseService {
 
     private ResultSet executeQuery(String command) {
         try {
-            return stmt.executeQuery(command);
+            if (stmt != null){
+                return stmt.executeQuery(command);
+            } else {
+                throw new SQLException("statement is null");
+            }
         } catch (SQLException e) {
             handleError(e);
         }
@@ -62,7 +72,6 @@ public class DatabaseService {
 
     /*
      * -----------------------------------------------------------------------------
-     * -------------
      */
 
     private void createTable() {
@@ -70,68 +79,69 @@ public class DatabaseService {
         executeUpdate(command);
     }
 
-    public void addUser(String username, String password) {
+    private User getUserData(String username){
+        User user = new User();
         try {
+            ResultSet rs = executeQuery(SQL_GET_USERDATA + " WHERE Username = " + username);
+            if (rs != null &&  rs.next()) {
+                user.setUsername(username);
+                user.setWins(rs.getInt("Wins"));
+                user.setLoses(rs.getInt("Loses"));
+                user.setScore(rs.getInt("Score"));
+            }
+        } catch (SQLException e) {
+            handleError(e);
+        }
+        return user;
+    }
+
+    private void updateLosesAndWins(User user, int additionalWins, int additionalLoses){
+        int score = user.getScore();
+        int wins = user.getWins() + additionalWins;
+        int loses = user.getLoses() + additionalLoses;
+        if (additionalWins < additionalLoses) {
+            score += 10;
+        } else {
+            if (score != 0){
+                score -= 10;
+            }
+        }
+        String command = "UPDATE user SET Wins = " + wins  + ", Loses = "+ loses +", Score = " + score + " WHERE Username = " + user.getUsername();
+        executeUpdate(command);
+        logger.info("Update wins or loses counter from user " + user.getUsername());
+    }
+
+    public void addUser(String username, String password) {
             if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
                 logger.error("Username or password can't be null or empty!");
                 throw new IllegalArgumentException();
             }
             String sql = "INSERT INTO user(Username, Password, Wins, Loses, Score) VALUES ('" + username + "', '"
                     + password + "', 0, 0, 0)";
+            executeUpdate(sql);
             logger.info("Insert a new user in the database");
-            stmt.executeUpdate(sql);
-        } catch (SQLException e) {
-            handleError(e);
-        }
-
     }
 
-    public void addWins(int userID) {
-        try {
-            ResultSet rs = executeQuery("SELECT Wins, Score FROM user WHERE UserID = " + userID);
-            if (rs.next()) {
-                int wins = rs.getInt("Wins") + 1;
-                int score = rs.getInt("Score") + 10;
-
-                String sql = "UPDATE user SET Wins = " + wins + ", Score = " + score + " WHERE UserID = " + userID;
-                logger.info("Update wins counter from a user");
-                stmt.executeUpdate(sql);
-            }
-        } catch (SQLException e) {
-            handleError(e);
-        }
+    public void addWins(String username) {
+        User user = getUserData(username);
+        updateLosesAndWins(user, 1, 0);
     }
 
-    public void addLoses(int userID) {
-        try {
-            ResultSet rs = executeQuery("SELECT Loses, Score FROM user WHERE UserID = " + userID);
-            if (rs.next()) {
-                int loses = rs.getInt("Loses") + 1;
-
-                int score = rs.getInt("Score");
-                if (score != 0){
-                    score -= 10;
-                }
-
-                String sql = "UPDATE user SET Loses = " + loses + ", Score = " + score + " WHERE UserID = " + userID;
-                logger.info("Update loses counter from a user");
-                stmt.executeUpdate(sql);
-            }
-        } catch (SQLException e) {
-            handleError(e);
-        }
+    public void addLoses(String username) {
+        User user = getUserData(username);
+        updateLosesAndWins(user, 0, 1);
     }
 
-    public void changePassword(int userID, String oldPassword, String newPassword) {
+    public void changePassword(String username, String oldPassword, String newPassword) {
         try {
-            ResultSet rs = executeQuery("SELECT Password FROM user WHERE UserID = " + userID);
-            if (rs.next()) {
+            ResultSet rs = executeQuery(SQL_GET_USERDATA + " WHERE Username = " + username);
+            if (rs != null && rs.next()) {
                 String pw = rs.getString("Password");
 
                 if (oldPassword.equals(pw)) {
-                    String sql = "UPDATE user SET Password = '" + newPassword + "' WHERE UserID = " + userID;
+                    String sql = "UPDATE user SET Password = '" + newPassword + "' WHERE Username = " + username;
                     logger.info("Change password from a user");
-                    stmt.executeUpdate(sql);
+                    executeUpdate(sql);
                 }
             }
         } catch (SQLException e) {
@@ -144,9 +154,8 @@ public class DatabaseService {
         int counter = 0;
         try {
             logger.info("Get the scoreboard");
-            ResultSet rs = executeQuery("SELECT Username, Wins, Loses, Score FROM user ORDER BY Score DESC, Wins DESC");
-            while (rs.next()) {
-
+            ResultSet rs = executeQuery( SQL_GET_USERDATA + " ORDER BY Score DESC, Wins DESC");
+            while (rs != null && rs.next()) {
                 String username = rs.getString("Username");
                 int wins = rs.getInt("Wins");
                 int loses = rs.getInt("Loses");
