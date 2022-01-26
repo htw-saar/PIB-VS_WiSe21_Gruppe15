@@ -3,4 +3,4 @@
 ## Gruppen:
 - Simon / Alexander
 - Max / Mario
-- Oliver / Hamudi
+- Oliver / Ahmad
