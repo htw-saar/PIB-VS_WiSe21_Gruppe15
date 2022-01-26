@@ -1,7 +1,9 @@
 package com.htwsaar.server.Database;
+
 import com.htwsaar.server.Shared.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -36,14 +38,13 @@ public class DatabaseService {
 
     private boolean tableExists(String tableName) throws SQLException {
         DatabaseMetaData meta = con.getMetaData();
-        ResultSet resultSet = meta.getTables(null, null, tableName, new String[] { "TABLE" });
-
+        ResultSet resultSet = meta.getTables(null, null, tableName, new String[]{"TABLE"});
         return resultSet.next();
     }
 
     private void executeUpdate(String command) {
         try {
-            if (stmt != null){
+            if (stmt != null) {
                 stmt.executeUpdate(command);
             } else {
                 throw new SQLException();
@@ -55,7 +56,7 @@ public class DatabaseService {
 
     private ResultSet executeQuery(String command) {
         try {
-            if (stmt != null){
+            if (stmt != null) {
                 return stmt.executeQuery(command);
             } else {
                 throw new SQLException("statement is null");
@@ -64,6 +65,23 @@ public class DatabaseService {
             handleError(e);
         }
         return null;
+    }
+
+    private User getUserFromResultSet(ResultSet rs) {
+        User user = new User();
+        try {
+            if (rs != null){
+                user.setUsername(rs.getString("Username"));
+                user.setWins(rs.getInt("Wins"));
+                user.setLoses(rs.getInt("Loses"));
+                user.setScore(rs.getInt("Score"));
+            } else {
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 
     private void handleError(Exception error) {
@@ -79,15 +97,12 @@ public class DatabaseService {
         executeUpdate(command);
     }
 
-    private User getUserData(String username){
+    private User getUserData(String username) {
         User user = new User();
         try {
             ResultSet rs = executeQuery(SQL_GET_USERDATA + " WHERE Username = " + username);
-            if (rs != null &&  rs.next()) {
-                user.setUsername(username);
-                user.setWins(rs.getInt("Wins"));
-                user.setLoses(rs.getInt("Loses"));
-                user.setScore(rs.getInt("Score"));
+            if (rs != null && rs.next()) {
+                user = getUserFromResultSet(rs);
             }
         } catch (SQLException e) {
             handleError(e);
@@ -95,31 +110,31 @@ public class DatabaseService {
         return user;
     }
 
-    private void updateLosesAndWins(User user, int additionalWins, int additionalLoses){
+    private void updateLosesAndWins(User user, int additionalWins, int additionalLoses) {
         int score = user.getScore();
         int wins = user.getWins() + additionalWins;
         int loses = user.getLoses() + additionalLoses;
         if (additionalWins < additionalLoses) {
             score += 10;
         } else {
-            if (score != 0){
+            if (score != 0) {
                 score -= 10;
             }
         }
-        String command = "UPDATE user SET Wins = " + wins  + ", Loses = "+ loses +", Score = " + score + " WHERE Username = " + user.getUsername();
+        String command = "UPDATE user SET Wins = " + wins + ", Loses = " + loses + ", Score = " + score + " WHERE Username = " + user.getUsername();
         executeUpdate(command);
         logger.info("Update wins or loses counter from user " + user.getUsername());
     }
 
     public void addUser(String username, String password) {
-            if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
-                logger.error("Username or password can't be null or empty!");
-                throw new IllegalArgumentException();
-            }
-            String sql = "INSERT INTO user(Username, Password, Wins, Loses, Score) VALUES ('" + username + "', '"
-                    + password + "', 0, 0, 0)";
-            executeUpdate(sql);
-            logger.info("Insert a new user in the database");
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            logger.error("Username or password can't be null or empty!");
+            throw new IllegalArgumentException();
+        }
+        String sql = "INSERT INTO user(Username, Password, Wins, Loses, Score) VALUES ('" + username + "', '"
+                + password + "', 0, 0, 0)";
+        executeUpdate(sql);
+        logger.info("Insert a new user in the database");
     }
 
     public void addWins(String username) {
@@ -133,19 +148,12 @@ public class DatabaseService {
     }
 
     public void changePassword(String username, String oldPassword, String newPassword) {
-        try {
-            ResultSet rs = executeQuery(SQL_GET_USERDATA + " WHERE Username = " + username);
-            if (rs != null && rs.next()) {
-                String pw = rs.getString("Password");
-
-                if (oldPassword.equals(pw)) {
-                    String sql = "UPDATE user SET Password = '" + newPassword + "' WHERE Username = " + username;
-                    logger.info("Change password from a user");
-                    executeUpdate(sql);
-                }
-            }
-        } catch (SQLException e) {
-            handleError(e);
+        ResultSet rs = executeQuery(SQL_GET_USERDATA + " WHERE Username = " + username);
+        User user = getUserFromResultSet(rs);
+        if (oldPassword.equals(user.getPassword())) {
+            String sql = "UPDATE user SET Password = '" + newPassword + "' WHERE Username = " + username;
+            logger.info("Change password from a user");
+            executeUpdate(sql);
         }
     }
 
@@ -153,17 +161,12 @@ public class DatabaseService {
         ArrayList<User> users = new ArrayList<User>();
         int counter = 0;
         try {
+            ResultSet rs = executeQuery(SQL_GET_USERDATA + " ORDER BY Score DESC, Wins DESC");
             logger.info("Get the scoreboard");
-            ResultSet rs = executeQuery( SQL_GET_USERDATA + " ORDER BY Score DESC, Wins DESC");
             while (rs != null && rs.next()) {
-                String username = rs.getString("Username");
-                int wins = rs.getInt("Wins");
-                int loses = rs.getInt("Loses");
-                int score = rs.getInt("Score");
-                User user = new User(username, wins, loses, score);
+                User user = (getUserFromResultSet(rs));
                 users.add(user);
                 counter++;
-//                System.out.println(username + ": " + score + " -> " + wins + " - " + loses);
             }
         } catch (SQLException e) {
             handleError(e);
