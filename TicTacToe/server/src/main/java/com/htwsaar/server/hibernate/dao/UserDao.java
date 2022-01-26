@@ -23,6 +23,7 @@ public class UserDao {
         }
     }
 
+    //TODO test this Method
     public User getUser(String username) {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             return session.createQuery("From User Where username=" +username, User.class).list().get(0);

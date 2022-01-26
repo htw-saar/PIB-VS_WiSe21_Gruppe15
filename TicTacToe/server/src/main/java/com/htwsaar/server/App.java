@@ -12,15 +12,16 @@ public class App {
 
     private static void start() {
         UserDao userDao = new UserDao();
-//        User user = new User("Simon", "Mongo");
-//        User user2 = new User("Test", "Mongo", 2,2,4);
-//        userDao.saveUser(user);
-//        userDao.saveUser(user2);
+        User user = new User("Simon", "Mongo");
+        User user2 = new User("Test", "PW", 2,2,4);
+        userDao.saveUser(user);
+        userDao.saveUser(user2);
+
         System.out.println(userDao.getUser("Simon").toString());
+        List<User> scoreboard = userDao.getScoreboard();
+        scoreboard.forEach(users -> System.out.println(users.toString()));
 
-//        List<User> scoreboard = userDao.getScoreboard();
-//        scoreboard.forEach(users -> System.out.println(users.toString()));
-
+//         Legacy Database Stuff
 //        DatabaseService databaseService = new DatabaseService();
 //        databaseService.addUser("Simon", "test");
 //        databaseService.addUser("Alex", "test");
