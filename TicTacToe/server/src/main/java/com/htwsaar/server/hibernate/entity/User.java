@@ -1,12 +1,30 @@
-package com.htwsaar.server.Shared;
+package com.htwsaar.server.hibernate.entity;
 
+import javax.persistence.*;
+
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int userId;
+    @Column(unique = true)
     private String username;
+    @Column(nullable = false)
     private String password;
+    @Column
     private int wins;
+    @Column
     private int loses;
+    @Column
     private int score;
+
+
+    public User(){}
+
+    public User(String username, String password) {
+        setUsername(username);
+        setPassword(password);
+    }
 
     public User(String username, int wins, int loses, int score) {
         setUsername(username);
@@ -14,6 +32,7 @@ public class User {
         setLoses(loses);
         setScore(score);
     }
+
     public User(String username, String password, int wins, int loses, int score) {
         setUsername(username);
         setPassword(password);
@@ -21,13 +40,6 @@ public class User {
         setLoses(loses);
         setScore(score);
     }
-
-    public User(String username, String password) {
-        setUsername(username);
-        setPassword(password);
-    }
-
-    public User(){}
 
     public int getUserId() {
         return userId;
