@@ -17,9 +17,15 @@ public class App {
         userDao.saveUser(user);
         userDao.saveUser(user2);
 
-        System.out.println(userDao.getUser("Simon").toString());
-        List<User> scoreboard = userDao.getScoreboard();
-        scoreboard.forEach(users -> System.out.println(users.toString()));
+        User get = userDao.getUser("Test");
+        if(get == null) {
+            System.out.println("Kein User gefunden");
+        } else {
+            System.out.println(get.toString());
+        }
+
+//        List<User> scoreboard = userDao.getScoreboard();
+//        scoreboard.forEach(users -> System.out.println(users.toString()));
 
 //         Legacy Database Stuff
 //        DatabaseService databaseService = new DatabaseService();

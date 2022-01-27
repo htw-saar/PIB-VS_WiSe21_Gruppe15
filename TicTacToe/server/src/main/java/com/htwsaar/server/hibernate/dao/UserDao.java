@@ -2,6 +2,7 @@ package com.htwsaar.server.hibernate.dao;
 
 import com.htwsaar.server.hibernate.entity.User;
 import com.htwsaar.server.hibernate.utils.HibernateUtils;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -23,10 +24,16 @@ public class UserDao {
         }
     }
 
-    //TODO test this Method
     public User getUser(String username) {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
-            return session.createQuery("From User Where username=" +username, User.class).list().get(0);
+            Query query = session.createQuery("SELECT u FROM User u WHERE u.username=:name");
+            query.setParameter("name", username);
+            List<User> resultList = query.getResultList();
+            return resultList.get(0);
+        } catch (Exception e){
+            //TODO anders bauen
+            e.printStackTrace();
+            return null;
         }
     }
 
