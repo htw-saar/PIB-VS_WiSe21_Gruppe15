@@ -178,7 +178,7 @@ public class GameLogic {
 /*
 - Wenn bei vollem Bord einer durch setzten des letzten Symbols gewinnt, wird trotzdem unentschieden ausgegeben.
 
-
+- Es können zwei Zeichen eingegeben werden. Dass muss verhindert werden.
 
 
 
