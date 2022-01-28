@@ -26,12 +26,12 @@ public class UserDao {
 
     public User getUser(String username) {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
-            Query query = session.createQuery("SELECT u FROM User u WHERE u.username=:name");
-            query.setParameter("name", username);
-            List<User> resultList = query.getResultList();
-            return resultList.get(0);
+//            Query query = session.createQuery("SELECT u FROM User u WHERE u.username=:name");
+//            query.setParameter("name", username);
+//            List<User> resultList = query.getResultList();
+//            return resultList.get(0);
+            return (User) session.createQuery("SELECT u FROM User u WHERE u.username=:name").setParameter("name", username).getResultList().get(0);
         } catch (Exception e){
-            //TODO anders bauen
             e.printStackTrace();
             return null;
         }
