@@ -6,21 +6,16 @@ import java.util.List;
 import java.util.Scanner;
 
 public class GameLogic {
-
+    //Initialisierung (Zurücksetzung) des Spielbretts.
     static ArrayList<Integer> player1Positions = new ArrayList<Integer>();
     static ArrayList<Integer> player2Positions = new ArrayList<Integer>();
+    static final Scanner input = new Scanner(System.in);
 
+    /**
+     * Eine Methode für die locale Ausführung des Spiels WIP/umstellung auf Onlinefunktionalität
+     */
     public static void startGame() {
-        player1Positions = new ArrayList<Integer>();
-        player2Positions = new ArrayList<Integer>();
-
-        //Gameboard Array 3 Reihen 3 Spalten, 3x3 Matrix
-        char[][] gameBoard = {{' ', '|', ' ', '|', ' '},
-                {'-', '+', '-', '+', '-'},
-                {' ', '|', ' ', '|', ' '},
-                {'-', '+', '-', '+', '-'},
-                {' ', '|', ' ', '|', ' '}
-        };
+        char[][] gameBoard = initGameboard();
         // Game Board ins Terminal Printen:
         printGameBoard(gameBoard);
 
@@ -42,34 +37,47 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Eine Methode für die Spieler 2 Logik
+     *
+     * @param gameBoard,    Spielbrett
+     */
+    //Umschreiben der übergabeparameter für Onlinefunktionalität wegen Input
+    // Player1:
     public static void player1Logic(char[][] gameBoard) {
-        Scanner player1Input = new Scanner(System.in);
-        // Player1:
         System.out.println("Player1: Trage eine Ziffer ein zwischen 1 und 9:");
-        int player1Pos = player1Input.nextInt();
+        int player1Pos = intEinlesen();
         while(player1Positions.contains(player1Pos) || player2Positions.contains(player1Pos)) {
             System.out.println("Player1: Position bereits besetzt, wähle eine andere Position:");
-            player1Pos = player1Input.nextInt();
+            player1Pos = intEinlesen();
         }
         System.out.println(player1Pos);
         placeSymb(gameBoard, "player1", player1Pos);
-        printGameBoard(gameBoard);
     }
 
+    /**
+     * Eine Methode für die Spieler 2 Logik
+     *
+     * @param gameBoard,    Spielbrett
+     */
+    //Umschreiben der übergabeparameter für Onlinefunktionalität wegen Input
+    // Player2:
     public static void player2Logic(char[][] gameBoard) {
-        Scanner player2Input = new Scanner(System.in);
-        //Player2:
         System.out.println("Player2: Trage eine Ziffern ein zwischen 1 und 9:");
-        int player2Pos = player2Input.nextInt();
+        int player2Pos = intEinlesen();
         while(player1Positions.contains(player2Pos) || player2Positions.contains(player2Pos)) {
             System.out.println("Player2: Position bereits besetzt, wähle eine andere Position:");
-            player2Pos = player2Input.nextInt();
+            player2Pos = intEinlesen();
         }
         System.out.println(player2Pos);
         placeSymb(gameBoard, "player2", player2Pos);
-        printGameBoard(gameBoard);
     }
 
+    /**
+     * Eine Methode zum ausgeben des Spielbretts
+     *
+     * @param gameBoard,    Spielbrett
+     */
     public static void printGameBoard(char[][] gameBoard) {
         for (char[] row : gameBoard) { // for each Schleife für jeweilige Reihe in GameBoard
             for (char c : row) { // for each Character an der jeweiligen Stelle
@@ -79,8 +87,13 @@ public class GameLogic {
         }
     }
 
-    // Methode zum Zeichen setzen, kriegt
-    // GameBoard User und Position mit
+    /**
+     * Eine Methode zum setzen von Symbolen auf dem Spielbrett
+     *
+     * @param gameBoard,    Spielbrett
+     * @param user,         Spielerbezeichnung (player1 oder player2)
+     * @param pos,          vom Spieler gesetzte Position
+     */
     public static void placeSymb(char[][] gameBoard, String user, int pos) {
         char symbol = 'U';
 
@@ -134,6 +147,11 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Eine Methode welche die Siegeskonditionen überprüft
+     *
+     * @return String-wert(Gibt Ergebnis zurück)
+     */
     public static String winnerChecker() {
         List upperRow = Arrays.asList(1, 2, 3);
         List middleRow = Arrays.asList(4, 5, 6);
@@ -170,6 +188,37 @@ public class GameLogic {
             }
         }
         return "";
+    }
+
+
+    /**
+     * Eine Methode um Int-Werte einzulesen
+     *
+     * @return int-wert(um damit in der Fachklasse zu rechnen)
+     */
+    private static int intEinlesen() {
+        return input.nextInt();
+    }
+
+    /**
+     * Eine Methode um das Spielbrett und gegsetzt Werte für ein neues Spiel
+     *  zu initialisieren
+     *
+     * @return Spielbrett
+     */
+    public static char[][] initGameboard() {
+        player1Positions = new ArrayList<Integer>();
+        player2Positions = new ArrayList<Integer>();
+
+        //Gameboard Array 3 Reihen 3 Spalten, 3x3 Matrix
+        char[][] gameBoard = {
+                {' ', '|', ' ', '|', ' '},
+                {'-', '+', '-', '+', '-'},
+                {' ', '|', ' ', '|', ' '},
+                {'-', '+', '-', '+', '-'},
+                {' ', '|', ' ', '|', ' '}
+        };
+        return gameBoard;
     }
 }
 
