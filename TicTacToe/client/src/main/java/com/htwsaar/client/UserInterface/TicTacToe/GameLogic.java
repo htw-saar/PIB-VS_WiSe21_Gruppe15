@@ -1,9 +1,6 @@
 package com.htwsaar.client.UserInterface.TicTacToe;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class GameLogic {
     //Initialisierung (Zurücksetzung) des Spielbretts.
@@ -19,10 +16,10 @@ public class GameLogic {
         // Game Board ins Terminal Printen:
         printGameBoard(gameBoard);
 
-        while(true) {
+        while (true) {
             player1Logic(gameBoard);
             String winBreak = winnerChecker();
-            if (winBreak != ""){
+            if (winBreak != "") {
                 System.out.println(winnerChecker());
                 break;
             }
@@ -30,7 +27,7 @@ public class GameLogic {
 
             player2Logic(gameBoard);
             String winBreak2 = winnerChecker();
-            if (winBreak2 != ""){
+            if (winBreak2 != "") {
                 System.out.println(winnerChecker());
             }
             printGameBoard(gameBoard);
@@ -40,14 +37,14 @@ public class GameLogic {
     /**
      * Eine Methode für die Spieler 2 Logik
      *
-     * @param gameBoard,    Spielbrett
+     * @param gameBoard, Spielbrett
      */
     //Umschreiben der übergabeparameter für Onlinefunktionalität wegen Input
     // Player1:
     public static void player1Logic(char[][] gameBoard) {
         System.out.println("Player1: Trage eine Ziffer ein zwischen 1 und 9:");
         int player1Pos = intEinlesen();
-        while(player1Positions.contains(player1Pos) || player2Positions.contains(player1Pos)) {
+        while (player1Positions.contains(player1Pos) || player2Positions.contains(player1Pos)) {
             System.out.println("Player1: Position bereits besetzt, wähle eine andere Position:");
             player1Pos = intEinlesen();
         }
@@ -58,14 +55,14 @@ public class GameLogic {
     /**
      * Eine Methode für die Spieler 2 Logik
      *
-     * @param gameBoard,    Spielbrett
+     * @param gameBoard, Spielbrett
      */
     //Umschreiben der übergabeparameter für Onlinefunktionalität wegen Input
     // Player2:
     public static void player2Logic(char[][] gameBoard) {
         System.out.println("Player2: Trage eine Ziffern ein zwischen 1 und 9:");
         int player2Pos = intEinlesen();
-        while(player1Positions.contains(player2Pos) || player2Positions.contains(player2Pos)) {
+        while (player1Positions.contains(player2Pos) || player2Positions.contains(player2Pos)) {
             System.out.println("Player2: Position bereits besetzt, wähle eine andere Position:");
             player2Pos = intEinlesen();
         }
@@ -76,7 +73,7 @@ public class GameLogic {
     /**
      * Eine Methode zum ausgeben des Spielbretts
      *
-     * @param gameBoard,    Spielbrett
+     * @param gameBoard, Spielbrett
      */
     public static void printGameBoard(char[][] gameBoard) {
         for (char[] row : gameBoard) { // for each Schleife für jeweilige Reihe in GameBoard
@@ -90,9 +87,9 @@ public class GameLogic {
     /**
      * Eine Methode zum setzen von Symbolen auf dem Spielbrett
      *
-     * @param gameBoard,    Spielbrett
-     * @param user,         Spielerbezeichnung (player1 oder player2)
-     * @param pos,          vom Spieler gesetzte Position
+     * @param gameBoard, Spielbrett
+     * @param user,      Spielerbezeichnung (player1 oder player2)
+     * @param pos,       vom Spieler gesetzte Position
      */
     public static void placeSymb(char[][] gameBoard, String user, int pos) {
         char symbol = 'U';
@@ -100,13 +97,12 @@ public class GameLogic {
         // Spielerunterscheidung ob ein X oder ein O gesetzt wird
         if (user.equals("player1")) {
             symbol = 'X';
-            if (!(player1Positions.contains(pos)) && !(player2Positions.contains(pos))){
+            if (!(player1Positions.contains(pos)) && !(player2Positions.contains(pos))) {
                 player1Positions.add(pos);
             }
-        }
-        else if (user.equals("player2")) {
+        } else if (user.equals("player2")) {
             symbol = 'O';
-            if (!(player1Positions.contains(pos)) && !(player2Positions.contains(pos))){
+            if (!(player1Positions.contains(pos)) && !(player2Positions.contains(pos))) {
                 player2Positions.add(pos);
             }
         }
@@ -172,20 +168,23 @@ public class GameLogic {
         winningCondition.add(diagonal1);
         winningCondition.add(diagonal2);
 
-        for(List l : winningCondition) {
-            if(player1Positions.containsAll(l)){
+        for (List l : winningCondition) {
+            if (player1Positions.containsAll(l)) {
                 return "Player1 gewinnt!";
-            }
-            else if(player2Positions.containsAll(l)){
+            } else if (player2Positions.containsAll(l)) {
                 return "Player2 gewinnt!";
             }
-            else if(player1Positions.size() + player2Positions.size() == 9) {
-                if(!(player1Positions.containsAll(l) || !(player2Positions.containsAll(l)))) {
+        }
+        if (player1Positions.size() + player2Positions.size() == 9) {
+            for (List l : winningCondition) {
+
+                if (!(player1Positions.containsAll(l) || !(player2Positions.containsAll(l)))) {
                     return "Player1&2 gewinnt!";
 
                 }
-                return "Bord ist voll, keiner gewinnt!";
+
             }
+            return "Bord ist voll, keiner gewinnt!";
         }
         return "";
     }
@@ -197,12 +196,30 @@ public class GameLogic {
      * @return int-wert(um damit in der Fachklasse zu rechnen)
      */
     private static int intEinlesen() {
-        return input.nextInt();
+        try {
+            int zahl = input.nextInt();
+
+            while (zahl < 1 || zahl > 9) {
+                System.out.println("bitte neu eingeben!");
+                zahl = input.nextInt();
+
+            }
+
+            return zahl;
+
+        } catch (InputMismatchException e) {
+            input.next();
+            System.out.println("Bitte eine Zahl eingeben!");
+            return intEinlesen();
+
+
+        }
+
     }
 
     /**
      * Eine Methode um das Spielbrett und gegsetzt Werte für ein neues Spiel
-     *  zu initialisieren
+     * zu initialisieren
      *
      * @return Spielbrett
      */
