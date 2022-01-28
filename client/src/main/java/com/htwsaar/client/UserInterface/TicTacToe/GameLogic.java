@@ -10,7 +10,9 @@ public class GameLogic {
     static ArrayList<Integer> player1Positions = new ArrayList<Integer>();
     static ArrayList<Integer> player2Positions = new ArrayList<Integer>();
 
-    public static void main() {
+    public static void startGame() {
+        player1Positions = new ArrayList<Integer>();
+        player2Positions = new ArrayList<Integer>();
 
         //Gameboard Array 3 Reihen 3 Spalten, 3x3 Matrix
         char[][] gameBoard = {{' ', '|', ' ', '|', ' '},
@@ -22,48 +24,51 @@ public class GameLogic {
         // Game Board ins Terminal Printen:
         printGameBoard(gameBoard);
 
-        // Scanner anlegen:
-        Scanner scan = new Scanner(System.in);
-
         while(true) {
-            // Player1:
-            System.out.println("Player1: Trage eine Ziffer ein zwischen 1 und 9:");
-            int player1Pos = scan.nextInt();
-            while(player1Positions.contains(player1Pos) || player2Positions.contains(player1Pos)) {
-                System.out.println("Player1: Position bereits besetzt, wähle eine andere Position:");
-                player1Pos = scan.nextInt();
-            }
-            System.out.println(player1Pos);
-            placeSymb(gameBoard, "player1", player1Pos);
-            printGameBoard(gameBoard);
-
+            player1Logic(gameBoard);
             String winBreak = winnerChecker();
             if (winBreak != ""){
                 System.out.println(winnerChecker());
                 break;
             }
-
-
-            //Player2:
-            System.out.println("Player2: Trage eine Ziffern ein zwischen 1 und 9:");
-            int player2Pos = scan.nextInt();
-            while(player1Positions.contains(player2Pos) || player2Positions.contains(player2Pos)) {
-                System.out.println("Player2: Position bereits besetzt, wähle eine andere Position:");
-                player2Pos = scan.nextInt();
-            }
-            System.out.println(player2Pos);
-            placeSymb(gameBoard, "player2", player2Pos);
             printGameBoard(gameBoard);
 
+            player2Logic(gameBoard);
             String winBreak2 = winnerChecker();
             if (winBreak2 != ""){
                 System.out.println(winnerChecker());
-                break;
             }
+            printGameBoard(gameBoard);
         }
     }
 
+    public static void player1Logic(char[][] gameBoard) {
+        Scanner player1Input = new Scanner(System.in);
+        // Player1:
+        System.out.println("Player1: Trage eine Ziffer ein zwischen 1 und 9:");
+        int player1Pos = player1Input.nextInt();
+        while(player1Positions.contains(player1Pos) || player2Positions.contains(player1Pos)) {
+            System.out.println("Player1: Position bereits besetzt, wähle eine andere Position:");
+            player1Pos = player1Input.nextInt();
+        }
+        System.out.println(player1Pos);
+        placeSymb(gameBoard, "player1", player1Pos);
+        printGameBoard(gameBoard);
+    }
 
+    public static void player2Logic(char[][] gameBoard) {
+        Scanner player2Input = new Scanner(System.in);
+        //Player2:
+        System.out.println("Player2: Trage eine Ziffern ein zwischen 1 und 9:");
+        int player2Pos = player2Input.nextInt();
+        while(player1Positions.contains(player2Pos) || player2Positions.contains(player2Pos)) {
+            System.out.println("Player2: Position bereits besetzt, wähle eine andere Position:");
+            player2Pos = player2Input.nextInt();
+        }
+        System.out.println(player2Pos);
+        placeSymb(gameBoard, "player2", player2Pos);
+        printGameBoard(gameBoard);
+    }
 
     public static void printGameBoard(char[][] gameBoard) {
         for (char[] row : gameBoard) { // for each Schleife für jeweilige Reihe in GameBoard
