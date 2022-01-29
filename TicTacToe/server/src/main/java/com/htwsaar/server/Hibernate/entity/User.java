@@ -1,4 +1,4 @@
-package com.htwsaar.server.hibernate.entity;
+package com.htwsaar.server.Hibernate.entity;
 
 import javax.persistence.*;
 

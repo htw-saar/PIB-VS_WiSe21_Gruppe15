@@ -1,10 +1,14 @@
 package com.htwsaar.server.DatabaseTests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import com.htwsaar.server.Database.DatabaseService;
-
+import com.htwsaar.server.Hibernate.entity.User;
+import com.htwsaar.server.Services.DatabaseService;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -12,31 +16,50 @@ import org.junit.Test;
  */
 public class DatabaseTest 
 {
-    private DatabaseService databaseService;
+    private DatabaseService databaseService = new DatabaseService();;
+    private List<User> testUserList;
+    private String username = "Simon";
+    private String password = "test";
+    private String username2 = "Simon2";
+    private String password2 = "test";
+    private String username3 = "Simon3";
+    private String password3 = "test";
 
-    @Test
-    public void CreateDatabase(){
-        initDatabase();
-        assertTrue( true );
-    }
     /**
      * Rigorous Test :-)
      */
     @Test
-    public void DatabaseAddUser()
+    public void DatabaseAddUsers()
     {
-        initDatabase();
-        clearDatabase();
-        databaseService.addUser("Simon", "Test");
-        // databaseService.deleteUser("Simon", "Test");
+        databaseService.addUser(username, password);
+        databaseService.addUser(username2, password2);
+        databaseService.addUser(username3, password3);
+
+    }
+    
+    @Test
+    public void DatabaseGetScoreboard(){
+        databaseService.addWin(username);
+        databaseService.addWin(username);
+        databaseService.addLose(username);
+
+        databaseService.addWin(username2);
+        databaseService.addLose(username2);
+        databaseService.addLose(username2);
+
+        databaseService.addWin(username3);
+        databaseService.addWin(username3);
+        databaseService.addWin(username3);
+
+        testUserList = new ArrayList<>();
+        testUserList.add(databaseService.getUserData(username3));
+        testUserList.add(databaseService.getUserData(username));
+        testUserList.add(databaseService.getUserData(username2));
+
+        List<User> users = databaseService.getScoreboard();
+        assertEquals(testUserList, users);
     }
 
 
-    private void initDatabase(){
-        databaseService = new DatabaseService();
-    }
-
-    private void clearDatabase(){
-
-    }
+    
 }

@@ -1,8 +1,7 @@
-package com.htwsaar.server.hibernate.dao;
+package com.htwsaar.server.Hibernate.dao;
 
-import com.htwsaar.server.hibernate.entity.User;
-import com.htwsaar.server.hibernate.utils.HibernateUtils;
-import org.hibernate.Query;
+import com.htwsaar.server.Hibernate.entity.User;
+import com.htwsaar.server.Hibernate.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

@@ -1,6 +1,6 @@
-package com.htwsaar.server.hibernate.utils;
+package com.htwsaar.server.Hibernate.utils;
 
-import com.htwsaar.server.hibernate.entity.User;
+import com.htwsaar.server.Hibernate.entity.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
