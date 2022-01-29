@@ -6,9 +6,9 @@ import java.rmi.RemoteException;
 
         int sendLoginData(String name, String password) throws RemoteException;
 
-        int ScoreboardRequest() throws RemoteException;
+        int scoreboardRequest() throws RemoteException;
 
-        int ScoreboardRequestForUser(String name) throws RemoteException;
+        int scoreboardRequestForUser(String name) throws RemoteException;
 
         int createGame() throws  RemoteException;
 
