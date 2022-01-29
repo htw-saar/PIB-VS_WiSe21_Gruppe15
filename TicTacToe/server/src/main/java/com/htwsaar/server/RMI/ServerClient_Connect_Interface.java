@@ -1,4 +1,4 @@
-package com.htwsaar.server;
+package com.htwsaar.server.RMI;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
