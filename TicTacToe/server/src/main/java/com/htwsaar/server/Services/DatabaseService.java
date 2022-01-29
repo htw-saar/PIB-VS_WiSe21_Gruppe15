@@ -40,16 +40,20 @@ public class DatabaseService {
                 user.setScore(score - 10);
             }
         }
-        userDao.saveUser(user);
+        userDao.updateUser(user);
     }
 
     public void addUser(String username, String password) {
         if (username != null && !username.isEmpty()){
-            if (password != null && !password.isEmpty()){
-                User user = new User(username, password);
-                userDao.saveUser(user);
+            if (userDao.getUser(username) == null){
+                if (password != null && !password.isEmpty()){
+                    User user = new User(username, password);
+                    userDao.saveUser(user);
+                } else {
+                    logger.error("Password is empty!");
+                }
             } else {
-                logger.error("Password is empty!");
+                logger.error("Username is already taken!");
             }
         } else {
             logger.error("Username is empty!");
@@ -68,7 +72,16 @@ public class DatabaseService {
     }
 
     public void changePassword(String username, String oldPassword, String newPassword) {
-        User user = getUserData(username);
+        if (newPassword != null && !newPassword.isEmpty()){
+            if (oldPassword != null && !oldPassword.isEmpty()){
+                User user = getUserData(username);
+                if (oldPassword.equals(user.getPassword())){
+                    user.setPassword(newPassword);
+                    userDao.updateUser(user);
+                }
+            }
+        }
+
     }
 
     public List<User> getScoreboard() {

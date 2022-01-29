@@ -23,6 +23,19 @@ public class UserDao {
         }
     }
 
+    public void updateUser(User user) {
+        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.update(user);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+
     public User getUser(String username) {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
 //            Query query = session.createQuery("SELECT u FROM User u WHERE u.username=:name");
@@ -38,7 +51,7 @@ public class UserDao {
 
     public List<User> getScoreboard() {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
-            return session.createQuery("From User", User.class).list();
+            return session.createQuery("From User ORDER BY score DESC, wins DESC", User.class).list();
         }
     }
 }

@@ -57,7 +57,12 @@ public class DatabaseTest
         testUserList.add(databaseService.getUserData(username2));
 
         List<User> users = databaseService.getScoreboard();
-        assertEquals(testUserList, users);
+
+        for (int i = 0; i < testUserList.size(); i++) {
+            assertEquals(testUserList.get(i).getScore(), users.get(i).getScore());
+        }
+
+
     }
 
 
