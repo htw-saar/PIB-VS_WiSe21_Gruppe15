@@ -16,11 +16,19 @@ public class Client_RMI {
         }
     }
 
-    public static void start() {
-        System.out.println("start");
+    public void testLoginData(String userName, String password, ServerClient_Connect_Interface stub){
+        int ergebnis = stub.sendLoginData(userName, password);
+        if(ergebnis == 1){
+            System.out.println("Login erfolgreich!");
+        }
+        else{
+            System.out.println("Login nicht erfolgreich!");
+        }
     }
 
+
+
     public static void main(String[] args) {
-        start();
+        //
     }
 }
