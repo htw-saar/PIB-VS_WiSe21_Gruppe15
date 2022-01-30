@@ -27,15 +27,21 @@ public class Server_RMI implements ServerClient_Connect_Interface{
 
     @Override
     public int sendLoginData(String name, String password) throws RemoteException {
-        UserDao userDao = new UserDao();
-        User user = userDao.getUser(name);
-        if(user != null){
-            if(password == user.getPassword())
-            {
-                return 1;
+        try{
+            UserDao userDao = new UserDao();
+            User user = userDao.getUser(name);
+            if(user != null){
+                if(password.equalsIgnoreCase(user.getPassword()))
+                {
+                    return 1;
+                }
             }
+            return 0;
+        } catch(Exception e){
+            System.err.println("Server exception: " + e.toString());
+            e.printStackTrace();
+            return 0;
         }
-        return 0;
     }
 
     @Override
