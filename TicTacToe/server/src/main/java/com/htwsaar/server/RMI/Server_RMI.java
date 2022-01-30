@@ -6,6 +6,7 @@ import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
 public class Server_RMI implements ServerClient_Connect_Interface{
     public Server_RMI(){
@@ -45,13 +46,20 @@ public class Server_RMI implements ServerClient_Connect_Interface{
     }
 
     @Override
-    public int scoreboardRequest() throws RemoteException{
-        return 0;
+    public List<User> scoreboardRequest() throws RemoteException{
+        try{
+            UserDao userDao = new UserDao();
+            return userDao.getScoreboard();
+        } catch(Exception e){
+            System.err.println("Server exception: " + e.toString());
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override
-    public int scoreboardRequestForUser(String name) throws RemoteException{
-        return 0;
+    public String scoreboardRequestForUser(String name) throws RemoteException{
+        return null;
     }
 
     @Override

@@ -1,14 +1,17 @@
 package com.htwsaar.server.RMI;
+import com.htwsaar.server.hibernate.entity.User;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
-    public interface ServerClient_Connect_Interface extends Remote {
+public interface ServerClient_Connect_Interface extends Remote {
 
         int sendLoginData(String name, String password) throws RemoteException;
 
-        int scoreboardRequest() throws RemoteException;
+        List<User> scoreboardRequest() throws RemoteException;
 
-        int scoreboardRequestForUser(String name) throws RemoteException;
+        String scoreboardRequestForUser(String name) throws RemoteException;
 
         int createGame() throws  RemoteException;
 
