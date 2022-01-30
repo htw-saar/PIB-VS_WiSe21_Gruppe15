@@ -9,7 +9,7 @@ public interface ServerClient_Connect_Interface extends Remote {
 
         int sendLoginData(String name, String password) throws RemoteException;
 
-        List<User> scoreboardRequest() throws RemoteException;
+        List<String> scoreboardRequest() throws RemoteException;
 
         String scoreboardRequestForUser(String name) throws RemoteException;
 

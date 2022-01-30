@@ -8,6 +8,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.ArrayList;
 
 public class Server_RMI implements ServerClient_Connect_Interface{
     public Server_RMI(){
@@ -47,10 +48,17 @@ public class Server_RMI implements ServerClient_Connect_Interface{
     }
 
     @Override
-    public List<User> scoreboardRequest() throws RemoteException{
+    public List<String> scoreboardRequest() throws RemoteException{
         try{
             UserDao userDao = new UserDao();
-            return userDao.getScoreboard();
+            User user;
+            List<String> stringList = new ArrayList<String>();
+            List<User> listUser = userDao.getScoreboard();
+            for (int i = 0; i<listUser.size(); i++) {
+                user = listUser.get(i);
+                stringList.add(user.toString());
+            }
+            return stringList;
         } catch(Exception e){
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
