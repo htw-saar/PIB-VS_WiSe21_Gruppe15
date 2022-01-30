@@ -1,4 +1,4 @@
-package com.htwsaar.client.RMI;
+package main.java.com.htwsaar.client.RMI;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;

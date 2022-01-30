@@ -2,6 +2,7 @@ package com.htwsaar.server.RMI;
 import com.htwsaar.server.hibernate.dao.UserDao;
 import com.htwsaar.server.hibernate.entity.User;
 
+
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.RemoteException;
@@ -50,8 +51,14 @@ public class Server_RMI implements ServerClient_Connect_Interface{
     }
 
     @Override
-    public int scoreboardRequestForUser(String name) throws RemoteException{
-        return 0;
+    public String scoreboardRequestForUser(String name) throws RemoteException{
+        UserDao dao = new UserDao();
+        User user = dao.getUser(name);
+        if(user != null) {
+            return user.toString();
+        } else {
+            return null;
+        }
     }
 
     @Override
