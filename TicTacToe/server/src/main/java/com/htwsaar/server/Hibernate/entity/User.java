@@ -1,4 +1,4 @@
-package com.htwsaar.server.hibernate.entity;
+package com.htwsaar.server.Hibernate.entity;
 
 import javax.persistence.*;
 
@@ -25,21 +25,12 @@ public class User {
         setUsername(username);
         setPassword(password);
     }
-
-    public User(String username, int wins, int loses, int score) {
-        setUsername(username);
-        setWins(wins);
-        setLoses(loses);
-        setScore(score);
-    }
-
-    public User(String username, String password, int wins, int loses, int score) {
+    public User(int userId, String username, String password) {
+        setUserId(userId);
         setUsername(username);
         setPassword(password);
-        setWins(wins);
-        setLoses(loses);
-        setScore(score);
     }
+
 
     public int getUserId() {
         return userId;

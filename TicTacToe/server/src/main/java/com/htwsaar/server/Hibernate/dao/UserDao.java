@@ -1,8 +1,7 @@
-package com.htwsaar.server.hibernate.dao;
+package com.htwsaar.server.Hibernate.dao;
 
-import com.htwsaar.server.hibernate.entity.User;
-import com.htwsaar.server.hibernate.utils.HibernateUtils;
-import org.hibernate.Query;
+import com.htwsaar.server.Hibernate.entity.User;
+import com.htwsaar.server.Hibernate.utils.HibernateUtils;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -15,6 +14,19 @@ public class UserDao {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.save(user);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+
+    public void updateUser(User user) {
+        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.update(user);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -39,7 +51,7 @@ public class UserDao {
 
     public List<User> getScoreboard() {
         try (Session session = HibernateUtils.getSessionFactory().openSession()) {
-            return session.createQuery("From User", User.class).list();
+            return session.createQuery("From User ORDER BY score DESC, wins DESC", User.class).list();
         }
     }
 }
