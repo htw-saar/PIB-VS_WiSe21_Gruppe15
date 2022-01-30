@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 
         int scoreboardRequest() throws RemoteException;
 
-        int scoreboardRequestForUser(String name) throws RemoteException;
+        String scoreboardRequestForUser(String name) throws RemoteException;
 
         int createGame() throws  RemoteException;
 
