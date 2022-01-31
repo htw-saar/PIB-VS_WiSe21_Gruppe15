@@ -4,12 +4,17 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Client_RMI {
 
     private Scanner input = new Scanner(System.in);
+    private ServerClient_Connect_Interface clientStub;
+    private String userName;
+    private String password;
 
     //Konstanten für die einzelnen Funktionen
     private static final int SPIEL_ERSTELLEN = 1;
@@ -18,9 +23,9 @@ public class Client_RMI {
     private static final int SCOREBOARD_SELF = 4;
     private static final int ENDE = 0;
 
-    public int testLoginData(String userName, String password, ServerClient_Connect_Interface stub){
+    private int testLoginData(String userName, String password){
         try {
-            return stub.sendLoginData(userName, password);
+            return clientStub.sendLoginData(userName, password);
         } catch(Exception e){
             System.err.println("Client exception: " + e.toString());
             e.printStackTrace();
@@ -28,8 +33,33 @@ public class Client_RMI {
         }
     }
 
-    private ServerClient_Connect_Interface connectToServer() throws RemoteException
-    {
+    private int ShowScoreBoardAll() throws RemoteException{
+        try {
+            List<String> stringList = new ArrayList<String>();
+            stringList = clientStub.scoreboardRequest();
+            for (int i = 0; i < stringList.size(); i++) {
+                System.out.println(stringList.get(i) + "/n");
+            }
+            return 1;
+        } catch(Exception e){
+            System.err.println("Client exception: " + e.toString());
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    private int ShowOwnStats() throws  RemoteException{
+        try {
+            System.out.println(clientStub.scoreboardRequestForUser(userName));
+            return 1;
+        } catch(Exception e){
+            System.err.println("Client exception: " + e.toString());
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    private ServerClient_Connect_Interface connectToServer() throws RemoteException {
         try
         {
             Registry registry = LocateRegistry.getRegistry("Server", 42424);
@@ -46,13 +76,13 @@ public class Client_RMI {
 
     public void client_menue() throws  RemoteException{
         Client_RMI client = new Client_RMI();
-        ServerClient_Connect_Interface clientStub = connectToServer();
+        clientStub = connectToServer();
         if(clientStub != null){
             System.out.println("Bitte Username eingeben!/n");
-            String userName = input.next();
+            userName = input.next();
             System.out.println("Bitte Passwort eingeben!/n");
-            String password = input.next();
-            int ergebnis = testLoginData(userName, password, clientStub);
+            password = input.next();
+            int ergebnis = testLoginData(userName, password);
             if (ergebnis == 1) {
                 System.out.println("Login erfolgreich!/n");
                 auswahlSchleife();
@@ -96,7 +126,8 @@ public class Client_RMI {
         return funktion;
     }
 
-    private void ausfuehrenFunktion(int funktion) {
+    private void ausfuehrenFunktion(int funktion) throws  RemoteException{
+        int ergebnis;
         switch (funktion){
             case SPIEL_ERSTELLEN:
                 //
@@ -105,10 +136,16 @@ public class Client_RMI {
                 //
                 break;
             case SCOREBOARD_ALL:
-                //
+                ergebnis = ShowScoreBoardAll();
+                if(ergebnis == 0){
+                    System.out.println("Scoreboard konnte nicht ausgegeben werden!");
+                }
                 break;
             case SCOREBOARD_SELF:
-                //
+                ergebnis = ShowOwnStats();
+                if(ergebnis == 0){
+                    System.out.println("Scoreboard konnte nicht ausgegeben werden!");
+                }
                 break;
             case ENDE:
                 System.out.println("Programmende");
