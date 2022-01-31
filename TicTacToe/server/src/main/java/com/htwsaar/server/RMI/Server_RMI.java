@@ -10,26 +10,30 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Server_RMI  extends  UnicastRemoteObject implements ServerClient_Connect_Interface{
+public class Server_RMI implements ServerClient_Connect_Interface{
 
-    protected Server_RMI() throws RemoteException {
-        super();
+    public Server_RMI(){
+
     }
+    
+    public void start_Server_RMI(){
+        try {
+            Server_RMI obj = new Server_RMI();
+            ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(obj, 0);
+            System.out.println(obj.toString());
+            // Bind the remote object's stub in the registry
+            LocateRegistry.createRegistry(42424);
+            Registry registry = LocateRegistry.getRegistry(42424);
+            registry.bind("Hello", stub);
 
-    public void main(String[] args) {
-        try{
-            int registry_Port = 42424; //Zum Testen auf 42424 gesetzt
-            LocateRegistry.createRegistry(registry_Port);
-            Registry registry = LocateRegistry.getRegistry();
-            registry.rebind("Server", new Server_RMI());
-            System.out.println("Server ist bereit!/n");
-        } catch(Exception e){
+            System.err.println("Server ready");
+        } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
         }
     }
-
-    @Override
+  
+    
     public int sendLoginData(String name, String password) throws RemoteException {
         try{
             UserDao userDao = new UserDao();
@@ -48,7 +52,6 @@ public class Server_RMI  extends  UnicastRemoteObject implements ServerClient_Co
         }
     }
 
-    @Override
     public List<String> scoreboardRequest() throws RemoteException{
         try{
             UserDao userDao = new UserDao();
@@ -67,7 +70,7 @@ public class Server_RMI  extends  UnicastRemoteObject implements ServerClient_Co
         }
     }
 
-    @Override
+    
     public String scoreboardRequestForUser(String name) throws RemoteException{
         UserDao dao = new UserDao();
         User user = dao.getUser(name);
@@ -78,22 +81,22 @@ public class Server_RMI  extends  UnicastRemoteObject implements ServerClient_Co
         }
     }
 
-    @Override
+    
     public int createGame() throws  RemoteException{
         return 0;
     }
 
-    @Override
+    
     public int joinGame(int joinCode) throws RemoteException{
         return 0;
     }
 
-    @Override
+    
     public int setX(int x, int y) throws RemoteException{
         return 0;
     }
 
-    @Override
+    
     public int setO(int x, int y) throws RemoteException{
         return 0;
     }

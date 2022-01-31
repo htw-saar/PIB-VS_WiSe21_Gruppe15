@@ -1,27 +1,17 @@
 package com.htwsaar.client.RMI;
 
+import com.htwsaar.server.RMI.ServerClient_Connect_Interface;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
-import java.util.Scanner;
 
 public class Client_RMI {
-
-    private Scanner input = new Scanner(System.in);
     private ServerClient_Connect_Interface clientStub;
-    private String userName;
-    private String password;
 
-    //Konstanten für die einzelnen Funktionen
-    private static final int SPIEL_ERSTELLEN = 1;
-    private static final int SPIEL_BEITRETEN = 2;
-    private static final int SCOREBOARD_ALL = 3;
-    private static final int SCOREBOARD_SELF = 4;
-    private static final int ENDE = 0;
 
     private int testLoginData(String userName, String password){
         try {
@@ -33,12 +23,12 @@ public class Client_RMI {
         }
     }
 
-    private int ShowScoreBoardAll() throws RemoteException{
+    public int ShowScoreBoardAll(){
         try {
             List<String> stringList = new ArrayList<String>();
             stringList = clientStub.scoreboardRequest();
             for (int i = 0; i < stringList.size(); i++) {
-                System.out.println(stringList.get(i) + "/n");
+                System.out.println(stringList.get(i) + "\n");
             }
             return 1;
         } catch(Exception e){
@@ -48,9 +38,9 @@ public class Client_RMI {
         }
     }
 
-    private int ShowOwnStats() throws  RemoteException{
+    public int ShowOwnStats(String username){
         try {
-            System.out.println(clientStub.scoreboardRequestForUser(userName));
+            System.out.println(clientStub.scoreboardRequestForUser(username));
             return 1;
         } catch(Exception e){
             System.err.println("Client exception: " + e.toString());
@@ -59,12 +49,12 @@ public class Client_RMI {
         }
     }
 
-    private ServerClient_Connect_Interface connectToServer() throws RemoteException {
+    private ServerClient_Connect_Interface connectToServer(){
         try
         {
-            Registry registry = LocateRegistry.getRegistry("Server", 42424);
-            ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) registry.lookup("Server");
-            System.out.println("Server Verbindung besteht!/n");
+            Registry registry = LocateRegistry.getRegistry("127.0.0.1", 42424);
+            ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) registry.lookup("Hello");
+            System.out.println("Server Verbindung besteht!\n");
             return stub;
         }
         catch (NotBoundException | RemoteException e){
@@ -74,88 +64,22 @@ public class Client_RMI {
         }
     }
 
-    public void client_menue() throws  RemoteException{
-        Client_RMI client = new Client_RMI();
+    public Boolean login(String username, String password){
         clientStub = connectToServer();
         if(clientStub != null){
-            System.out.println("Bitte Username eingeben!/n");
-            userName = input.next();
-            System.out.println("Bitte Passwort eingeben!/n");
-            password = input.next();
-            int ergebnis = testLoginData(userName, password);
+            int ergebnis = testLoginData(username, password);
             if (ergebnis == 1) {
-                System.out.println("Login erfolgreich!/n");
-                auswahlSchleife();
+                return true;
             } else {
-                System.out.println("Login nicht erfolgreich!/n");
+                return false;
             }
         }
         else{
-            System.err.println("Stub wurde nicht erstellt!/n");
+            System.err.println("Stub wurde nicht erstellt!\n");
         }
+        return false;
     }
 
-    private void auswahlSchleife() {
-        int funktion = -1;
-        while (funktion != ENDE) {
-            try {
-                funktion = einlesenFunktion();
-                ausfuehrenFunktion(funktion);
-            } catch (IllegalArgumentException e) {
-                System.out.println(e);
-            } catch (InputMismatchException e) {
-                System.out.println(e);
-                input.nextLine();
-            } catch (Exception e) {
-                System.out.println("Irgendeine Ausnahme gefangen: " + e);
-                e.printStackTrace(System.out);
-            }
-        }
-    }
 
-    private int einlesenFunktion() {
-        int funktion;
-        System.out.print(   SPIEL_ERSTELLEN     + ": Spiel erstellen /n"    +
-                            SPIEL_BEITRETEN     + ": Spiel beitreten /n"  +
-                            SCOREBOARD_ALL      + ": Scoreboard ansehen /n"    +
-                            SCOREBOARD_SELF     + ": eigene Statistik ansehen /n" +
-                            ENDE                + ": Beenden -> ");
 
-        funktion = input.nextInt();
-        input.nextLine();
-        return funktion;
-    }
-
-    private void ausfuehrenFunktion(int funktion) throws  RemoteException{
-        int ergebnis;
-        switch (funktion){
-            case SPIEL_ERSTELLEN:
-                //
-                break;
-            case SPIEL_BEITRETEN:
-                //
-                break;
-            case SCOREBOARD_ALL:
-                ergebnis = ShowScoreBoardAll();
-                if(ergebnis == 0){
-                    System.out.println("Scoreboard konnte nicht ausgegeben werden!");
-                }
-                break;
-            case SCOREBOARD_SELF:
-                ergebnis = ShowOwnStats();
-                if(ergebnis == 0){
-                    System.out.println("Scoreboard konnte nicht ausgegeben werden!");
-                }
-                break;
-            case ENDE:
-                System.out.println("Programmende");
-                break;
-            default:
-                System.out.println("Falsche Funktion!");
-        }
-    }
-
-    public void main(String[] args) throws RemoteException {
-        client_menue();
-    }
 }
