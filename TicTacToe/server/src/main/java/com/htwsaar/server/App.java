@@ -2,9 +2,9 @@ package com.htwsaar.server;
 
 import com.htwsaar.server.RMI.Server_RMI;
 
-public class Server {
+public class App {
     public static void main(String[] args) {
-        Server server = new Server();
+        App server = new App();
         server.start(args);
     }
 

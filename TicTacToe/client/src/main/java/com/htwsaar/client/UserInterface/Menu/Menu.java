@@ -1,6 +1,5 @@
 package com.htwsaar.client.UserInterface.Menu;
 
-import com.htwsaar.client.Client;
 import com.htwsaar.client.RMI.Client_RMI;
 
 import java.util.InputMismatchException;

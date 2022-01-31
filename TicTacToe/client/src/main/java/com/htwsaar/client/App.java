@@ -7,11 +7,11 @@ import com.htwsaar.client.UserInterface.Menu.Menu;
  * Client programm
  *
  */
-public class Client
+public class App
 {
     public static void main( String[] args )
     {
-        Client client = new Client();
+        App client = new App();
         client.start(args);
     }
 
