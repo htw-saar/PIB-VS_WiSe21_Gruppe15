@@ -1,26 +1,18 @@
 package com.htwsaar.server;
 
-import com.htwsaar.server.hibernate.dao.UserDao;
-import com.htwsaar.server.hibernate.entity.User;
-
+import com.htwsaar.server.RMI.Server_RMI;
+import com.htwsaar.server.Services.DatabaseService;
 
 public class App {
     public static void main(String[] args) {
-        start();
+        App server = new App();
+        server.start(args);
     }
 
-    private static void start() {
-        UserDao userDao = new UserDao();
-        User user = new User("Simon", "Mongo");
-        User user2 = new User("Test", "PW", 2,2,4);
-        userDao.saveUser(user);
-        userDao.saveUser(user2);
-
-        User get = userDao.getUser("Test");
-        if(get == null) {
-            System.out.println("Kein User gefunden");
-        } else {
-            System.out.println(get.toString());
-        }
+  
+    private void start(String[] args) {
+        DatabaseService databaseService = new DatabaseService();
+        Server_RMI server_rmi = new Server_RMI();
+        server_rmi.start_Server_RMI();
     }
 }
