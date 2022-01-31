@@ -21,5 +21,4 @@ public class Client
         Menu menu = new Menu(client_rmi);
         menu.startMenu();
     }
-    //test
 }
