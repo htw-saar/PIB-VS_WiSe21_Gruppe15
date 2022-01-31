@@ -10,18 +10,19 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Server_RMI implements ServerClient_Connect_Interface{
-    public Server_RMI(){
+public class Server_RMI  extends  UnicastRemoteObject implements ServerClient_Connect_Interface{
+
+    protected Server_RMI() throws RemoteException {
+        super();
     }
+
     public void main(String[] args) {
         try{
             int registry_Port = 42424; //Zum Testen auf 42424 gesetzt
-            int stub_Port = 0;         //Zum Testen auf 0 gesetzt
-            Server_RMI server = new Server_RMI();
-            ServerClient_Connect_Interface server_Stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(server, stub_Port);
             LocateRegistry.createRegistry(registry_Port);
-            Registry registry = LocateRegistry.getRegistry(registry_Port);
-            registry.bind("Server", server_Stub);
+            Registry registry = LocateRegistry.getRegistry();
+            registry.rebind("Server", new Server_RMI());
+            System.out.println("Server ist bereit!/n");
         } catch(Exception e){
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
