@@ -26,9 +26,10 @@ public class Client_RMI {
     public void ShowScoreBoardAll(){
         try {
             String format = " %2s %12s %2s %6s %2s %6s %2s %6s %2s";
-            System.out.println("  +---------------+---------+---------+---------+");
+            String spacer = "  +---------------+---------+---------+---------+";
+            System.out.println(spacer);
             System.out.println(String.format(format, "|", "Username", "|", "Wins", "|", "Loses", "|", "Score" , "|"));
-            System.out.println("  +---------------+---------+---------+---------+");
+            System.out.println(spacer);
 //            System.out.println(String.format(format,"-"));
             List<String> stringList;
             stringList = clientStub.scoreboardRequest();
@@ -37,7 +38,7 @@ public class Client_RMI {
                     System.out.println(score);
                 }
             }
-            System.out.println("  +---------------+---------+---------+---------+");
+            System.out.println(spacer);
         } catch(Exception e){
             System.err.println("Client exception: " + e.toString());
             e.printStackTrace();

@@ -24,8 +24,7 @@ public class Server_RMI implements ServerClient_Connect_Interface{
             // Bind the remote object's stub in the registry
             LocateRegistry.createRegistry(42424);
             Registry registry = LocateRegistry.getRegistry(42424);
-            registry.bind("Hello", stub);
-
+            registry.rebind("Hello", stub);
             System.err.println("Server ready");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
@@ -91,12 +90,8 @@ public class Server_RMI implements ServerClient_Connect_Interface{
     }
 
     
-    public int setX(int x, int y) throws RemoteException{
+    public int setField(String username, int pos) throws RemoteException{
         return 0;
     }
 
-    
-    public int setO(int x, int y) throws RemoteException{
-        return 0;
-    }
 }

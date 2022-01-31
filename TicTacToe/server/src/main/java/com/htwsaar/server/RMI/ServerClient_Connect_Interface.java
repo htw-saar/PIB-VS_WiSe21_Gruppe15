@@ -1,5 +1,4 @@
 package com.htwsaar.server.RMI;
-import com.htwsaar.server.Hibernate.entity.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -17,7 +16,6 @@ public interface ServerClient_Connect_Interface extends Remote {
 
         int joinGame(int joinCode) throws RemoteException;
 
-        int setX(int x, int y) throws RemoteException;
+        int setField(String username, int pos) throws RemoteException;
 
-        int setO(int x, int y) throws RemoteException;
     }
