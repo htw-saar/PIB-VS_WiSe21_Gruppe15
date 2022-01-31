@@ -3,9 +3,9 @@ package com.htwsaar.server;
 import com.htwsaar.server.RMI.Server_RMI;
 import com.htwsaar.server.Services.DatabaseService;
 
-public class App {
+public class Server {
     public static void main(String[] args) {
-        App server = new App();
+        Server server = new Server();
         server.start(args);
     }
 
