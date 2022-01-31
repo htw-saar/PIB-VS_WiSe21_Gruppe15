@@ -39,32 +39,35 @@ public class Menu {
     }
 
     private int einlesenFunktion() {
-        System.out.print(
-                SIEL_ERSTELLEN + ": Spiel erstellen\n" +
-                        SPIEL_BEITRETEN + ": Spiel beitreten\n" +
-                        BESTENLISTE + ": Bestenliste anzeigen\n" +
-                        ENDE + ": Beenden\n"
-        );
+        String format = " %2s %6s %2s %22s %2s";
+        String spacer = "  +---------+-------------------------+";
+        System.out.println(spacer);
+        System.out.println(String.format(format, "|", "Nummer", "|", "Funktion", "|"));
+        System.out.println(spacer);
+        System.out.println(String.format(format, "|", SIEL_ERSTELLEN, "|", "Spiel erstellen", "|"));
+        System.out.println(String.format(format, "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|"));
+        System.out.println(String.format(format, "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|"));
+        System.out.println(String.format(format, "|", ENDE, "|", "Beenden", "|"));
+        System.out.println(spacer);
 
         return intEinlesen("\nAuswahl eingeben: ");
     }
 
     private void ausfuehrenFunktion(int funktion) {
         if (funktion == SIEL_ERSTELLEN) {
-            System.out.println("Spiel erstellen");
+            System.out.println("Spiel erstellen:");
             GameLogic.startGame();
         } else if (funktion == SPIEL_BEITRETEN) {
-            System.out.println("Spiel beitreten");
+            System.out.println("Spiel beitreten:");
         } else if (funktion == BESTENLISTE) {
-            System.out.println("Bestenliste");
+            System.out.println("Bestenliste:");
             client_rmi.ShowScoreBoardAll();
         } else if (funktion == ENDE) {
             System.out.println("Das Programm wird beendet.");
         } else {
             System.out.println("Fehlerhafte Auswahl einer Funktion!");
         }
-
-        System.out.println("---------------------------------------");
+        System.out.println("\n\n\n\n");
     }
 
     /**
