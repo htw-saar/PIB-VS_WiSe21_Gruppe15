@@ -23,18 +23,25 @@ public class Client_RMI {
         }
     }
 
-    public int ShowScoreBoardAll(){
+    public void ShowScoreBoardAll(){
         try {
-            List<String> stringList = new ArrayList<String>();
+            String format = " %2s %12s %2s %6s %2s %6s %2s %6s %2s";
+            String spacer = "  +---------------+---------+---------+---------+";
+            System.out.println(spacer);
+            System.out.println(String.format(format, "|", "Username", "|", "Wins", "|", "Loses", "|", "Score" , "|"));
+            System.out.println(spacer);
+//            System.out.println(String.format(format,"-"));
+            List<String> stringList;
             stringList = clientStub.scoreboardRequest();
-            for (int i = 0; i < stringList.size(); i++) {
-                System.out.println(stringList.get(i) + "\n");
+            if (stringList != null){
+                for (String score : stringList) {
+                    System.out.println(score);
+                }
             }
-            return 1;
+            System.out.println(spacer);
         } catch(Exception e){
             System.err.println("Client exception: " + e.toString());
             e.printStackTrace();
-            return 0;
         }
     }
 

@@ -217,8 +217,6 @@ public class GameLogic {
             input.next();
             System.out.println("Bitte eine Zahl eingeben!");
             return intEinlesen();
-
-
         }
 
     }
