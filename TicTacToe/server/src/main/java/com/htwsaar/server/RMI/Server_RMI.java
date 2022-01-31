@@ -1,6 +1,6 @@
 package com.htwsaar.server.RMI;
-import com.htwsaar.server.hibernate.dao.UserDao;
-import com.htwsaar.server.hibernate.entity.User;
+import com.htwsaar.server.Hibernate.dao.UserDao;
+import com.htwsaar.server.Hibernate.entity.User;
 
 
 import java.rmi.registry.Registry;

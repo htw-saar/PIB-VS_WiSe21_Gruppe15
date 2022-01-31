@@ -1,5 +1,5 @@
 package com.htwsaar.server.RMI;
-import com.htwsaar.server.hibernate.entity.User;
+import com.htwsaar.server.Hibernate.entity.User;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
