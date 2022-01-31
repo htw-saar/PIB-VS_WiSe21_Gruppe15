@@ -1,17 +1,24 @@
 package com.htwsaar.client.UserInterface.Menu;
 
+import com.htwsaar.client.RMI.Client_RMI;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
-    private static final int SIEL_ERSTELLEN = 1;
-    private static final int SPIEL_BEITRETEN = 2;
-    private static final int BESTENLISTE = 3;
-    private static final int ENDE = 0;
-    private static int funktion = -1;
-    private static final Scanner input = new Scanner(System.in);
+    private final int SIEL_ERSTELLEN = 1;
+    private final int SPIEL_BEITRETEN = 2;
+    private final int BESTENLISTE = 3;
+    private final int ENDE = 0;
+    private int funktion = -1;
+    private final Client_RMI client_rmi;
+    private final Scanner input = new Scanner(System.in);
 
-    public static void startMenu() {
+    public Menu(Client_RMI client_rmi) {
+        this.client_rmi = client_rmi;
+    }
+
+    public void startMenu() {
         while (funktion != ENDE) {
             try {
                 funktion = einlesenFunktion();
@@ -30,24 +37,25 @@ public class Menu {
         }
     }
 
-    private static int einlesenFunktion() {
+    private int einlesenFunktion() {
         System.out.print(
-                SIEL_ERSTELLEN      + ": Spiel erstellen\n" +
-                SPIEL_BEITRETEN     + ": Spiel beitreten\n" +
-                BESTENLISTE         + ": Bestenliste anzeigen\n" +
-                ENDE                + ": Beenden\n"
+                SIEL_ERSTELLEN + ": Spiel erstellen\n" +
+                        SPIEL_BEITRETEN + ": Spiel beitreten\n" +
+                        BESTENLISTE + ": Bestenliste anzeigen\n" +
+                        ENDE + ": Beenden\n"
         );
 
         return intEinlesen("\nAuswahl eingeben: ");
     }
 
-    private static void ausfuehrenFunktion(int funktion) {
+    private void ausfuehrenFunktion(int funktion) {
         if (funktion == SIEL_ERSTELLEN) {
             System.out.println("Spiel erstellen");
         } else if (funktion == SPIEL_BEITRETEN) {
             System.out.println("Spiel beitreten");
-        }  else if (funktion == BESTENLISTE) {
+        } else if (funktion == BESTENLISTE) {
             System.out.println("Bestenliste");
+            client_rmi.ShowScoreBoardAll();
         } else if (funktion == ENDE) {
             System.out.println("Das Programm wird beendet.");
         } else {
@@ -62,7 +70,7 @@ public class Menu {
      *
      * @return int-wert(um damit in der Fachklasse zu rechnen)
      */
-    private static int intEinlesen(String txt) {
+    private int intEinlesen(String txt) {
         System.out.println(txt);
         return input.nextInt();
     }
