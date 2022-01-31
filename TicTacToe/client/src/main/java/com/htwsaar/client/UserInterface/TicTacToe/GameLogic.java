@@ -17,18 +17,25 @@ public class GameLogic {
         printGameBoard(gameBoard);
 
         while (true) {
-            player1Logic(gameBoard);
+            //Player1:
             String winBreak = winnerChecker();
-            if (winBreak != "") {
+            if (winBreak == "") {
+                player1Logic(gameBoard);
+            } else if (winBreak != "") {
                 System.out.println(winnerChecker());
+                printGameBoard(gameBoard);
                 break;
             }
             printGameBoard(gameBoard);
 
-            player2Logic(gameBoard);
+            //Player2:
             String winBreak2 = winnerChecker();
-            if (winBreak2 != "") {
+            if (winBreak2 == "") {
+                player2Logic(gameBoard);
+            } else if (winBreak2 != "") {
                 System.out.println(winnerChecker());
+                printGameBoard(gameBoard);
+                break;
             }
             printGameBoard(gameBoard);
         }
@@ -170,21 +177,20 @@ public class GameLogic {
 
         for (List l : winningCondition) {
             if (player1Positions.containsAll(l)) {
-                return "Player1 gewinnt!";
+                return "\n \nPlayer1 gewinnt!";
             } else if (player2Positions.containsAll(l)) {
-                return "Player2 gewinnt!";
+                return "\n \nPlayer2 gewinnt!";
             }
         }
         if (player1Positions.size() + player2Positions.size() == 9) {
             for (List l : winningCondition) {
-
-                if (!(player1Positions.containsAll(l) || !(player2Positions.containsAll(l)))) {
-                    return "Player1&2 gewinnt!";
-
+                if (player1Positions.containsAll(l)) {
+                    return "\n \nPlayer1 gewinnt!";
+                } else if (player2Positions.containsAll(l)) {
+                    return "\n \nPlayer2 gewinnt!";
                 }
-
             }
-            return "Bord ist voll, keiner gewinnt!";
+            return "\n \nBord ist voll, keiner gewinnt!";
         }
         return "";
     }
@@ -239,15 +245,3 @@ public class GameLogic {
     }
 }
 
-
-//KNOWN ISSUES:
-/*
-- Wenn bei vollem Bord einer durch setzten des letzten Symbols gewinnt, wird trotzdem unentschieden ausgegeben.
-
-- Es können zwei Zeichen eingegeben werden. Dass muss verhindert werden.
-
-
-
-
-
- */

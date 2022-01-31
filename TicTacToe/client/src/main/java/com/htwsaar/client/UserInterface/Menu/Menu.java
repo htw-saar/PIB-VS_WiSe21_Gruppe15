@@ -1,5 +1,7 @@
 package com.htwsaar.client.UserInterface.Menu;
 
+import com.htwsaar.client.UserInterface.TicTacToe.GameLogic;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -44,6 +46,7 @@ public class Menu {
     private static void ausfuehrenFunktion(int funktion) {
         if (funktion == SIEL_ERSTELLEN) {
             System.out.println("Spiel erstellen");
+            GameLogic.startGame();
         } else if (funktion == SPIEL_BEITRETEN) {
             System.out.println("Spiel beitreten");
         }  else if (funktion == BESTENLISTE) {
