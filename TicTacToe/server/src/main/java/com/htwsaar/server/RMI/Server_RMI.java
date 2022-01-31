@@ -54,11 +54,11 @@ public class Server_RMI implements ServerClient_Connect_Interface{
 
     public List<String> scoreboardRequest() throws RemoteException{
         try{
-            String format = "%12s %2s %6s %2s %6s %2s %6s";
+            String format = " %2s %12s %2s %6s %2s %6s %2s %6s %2s";
             UserDao userDao = new UserDao();
             List<String> stringList = new ArrayList<>();
             for (User user :  userDao.getScoreboard()) {
-                String print = String.format(format, user.getUsername(), "|", user.getWins(), "|", user.getLoses(), "|", user.getScore());
+                String print = String.format(format, "|", user.getUsername(), "|", user.getWins(), "|", user.getLoses(), "|", user.getScore(), "|");
                 stringList.add(print);
             }
             return stringList;
