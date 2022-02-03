@@ -9,9 +9,20 @@ import org.hibernate.service.ServiceRegistry;
 
 import java.util.Properties;
 
+/**
+ * Eine Utils Klasse um Hibernate Einstellungen festzulegen
+ */
 public class HibernateUtils {
     private static SessionFactory sessionFactory;
 
+    /**
+     * Eine Utils Methode für Hibernate um Einstellungen wie Login(user/passwort)
+     * oder die URL der Datenbank zu bestimmen. Wird auch benutzt, um den HBM2DDL_AUTO Wert
+     * einzustellen (create-drop für eine neue Datenbank bei jedem Start / update für eine
+     * persistente Datenbank, die neue Daten einträgt
+     *
+     * @return Gibt eine SessionFactory mit allen Einstellungen zurück
+     */
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
             try {

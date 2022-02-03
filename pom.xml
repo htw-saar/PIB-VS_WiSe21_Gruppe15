@@ -12,8 +12,8 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>TicTAcToe/client</module>
-    <module>TicTAcToe/server</module>
+    <module>TicTacToe/client</module>
+    <module>TicTacToe/server</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

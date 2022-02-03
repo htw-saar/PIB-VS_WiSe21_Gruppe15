@@ -19,24 +19,20 @@ public class DatabaseService {
         userDao = new UserDao();
     }
 
-    /*
-     * -----------------------------------------------------------------------------
-     */
-
     public User getUserData(String username) {
         return userDao.getUser(username);
     }
 
     private void updateLosesAndWins(User user, int additionalWins, int additionalLoses) {
         int score = user.getScore();
-        if (additionalWins > additionalLoses){
+        if (additionalWins > additionalLoses) {
             int wins = user.getWins();
             user.setWins(wins + 1);
             user.setScore(score + 10);
         } else {
             int loses = user.getLoses();
             user.setLoses(loses + 1);
-            if (score >= 10 ){
+            if (score >= 10) {
                 user.setScore(score - 10);
             }
         }
@@ -44,9 +40,9 @@ public class DatabaseService {
     }
 
     public void addUser(String username, String password) {
-        if (username != null && !username.isEmpty()){
-            if (userDao.getUser(username) == null){
-                if (password != null && !password.isEmpty()){
+        if (username != null && !username.isEmpty()) {
+            if (userDao.getUser(username) == null) {
+                if (password != null && !password.isEmpty()) {
                     User user = new User(username, password);
                     userDao.saveUser(user);
                 } else {
@@ -72,10 +68,10 @@ public class DatabaseService {
     }
 
     public void changePassword(String username, String oldPassword, String newPassword) {
-        if (newPassword != null && !newPassword.isEmpty()){
-            if (oldPassword != null && !oldPassword.isEmpty()){
+        if (newPassword != null && !newPassword.isEmpty()) {
+            if (oldPassword != null && !oldPassword.isEmpty()) {
                 User user = getUserData(username);
-                if (oldPassword.equals(user.getPassword())){
+                if (oldPassword.equals(user.getPassword())) {
                     user.setPassword(newPassword);
                     userDao.updateUser(user);
                 }
