@@ -2,6 +2,9 @@ package com.htwsaar.server.Hibernate.entity;
 
 import javax.persistence.*;
 
+/**
+ * User Entity Klasse, wird als Schema für die Hibernate Datenbank benutzt
+ */
 @Entity
 public class User {
     @Id
@@ -19,18 +22,19 @@ public class User {
     private int score;
 
 
-    public User(){}
+    public User() {
+    }
 
     public User(String username, String password) {
         setUsername(username);
         setPassword(password);
     }
+
     public User(int userId, String username, String password) {
         setUserId(userId);
         setUsername(username);
         setPassword(password);
     }
-
 
     public int getUserId() {
         return userId;
@@ -80,9 +84,14 @@ public class User {
         this.score = score;
     }
 
+    /**
+     * Eine ToString Methode um User formatiert auszugeben
+     *
+     * @return Gibt formatierten User als String aus
+     */
     @Override
     public String toString() {
-        return  "username='" + username + '\'' +
+        return "username='" + username + '\'' +
                 ", wins=" + wins +
                 ", loses=" + loses +
                 ", score=" + score;
