@@ -28,6 +28,7 @@ public class TicTacToe {
 
     private String[] gameboard = new String[9];
     private final int[][] winConditions;
+    private int joinCode;
 
     /**
      * Konstruktor von TicTacToe
@@ -43,6 +44,7 @@ public class TicTacToe {
                                     {1, 5, 9},
                                     {3, 5, 7}};
         initGameboard();
+        createJoinCode();
     }
 
     /**
@@ -105,5 +107,17 @@ public class TicTacToe {
             }
         }
         return Winner.UNSETTELD;
+    }
+
+    private int createJoinCode() {
+        joinCode = (int) ((Math.random() * (99999 - 10000)) + 10000);
+    }
+
+    public int compareJoinCode(int joinCode) {
+        if(joinCode == this.joinCode){
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

@@ -12,6 +12,32 @@ import java.util.List;
 public class Client_RMI {
     private ServerClient_Connect_Interface clientStub;
 
+    public int createGame() throws RemoteException {
+        try {
+            return clientStub.createGame();
+        } catch (Exception e) {
+            System.err.println("Client exception: " + e.toString());
+            return 0;
+        }
+    }
+
+    public int joinGame(int joinCode) throws RemoteException {
+        try {
+            return clientStub.joinGame(joinCode);
+        } catch (Exception e) {
+            System.err.println("Client exception: " + e.toString());
+            return 0;
+        }
+    }
+
+    public int setField(String username, int pos) throws RemoteException {
+        try {
+            return clientStub.setField(username, pos);
+        } catch(Exeption e) {
+            System.err.println("Client exception: " + e.toString());
+            return 0;
+        }
+    }
 
     private int testLoginData(String userName, String password){
         try {
