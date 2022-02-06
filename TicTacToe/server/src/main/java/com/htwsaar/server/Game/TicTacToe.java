@@ -72,7 +72,7 @@ public class TicTacToe {
      * @param player der Spieler X oder O
      * @param pos die Position wo der Marker gesetzt wird
      */
-    private void setField(Winner player, int pos){
+    public void setField(Winner player, int pos){
         gameboard[pos] = player.label;
     }
 
@@ -139,5 +139,19 @@ public class TicTacToe {
         } else {
             return 0;
         }
+    }
+
+    public int comparePlayerX(String username) {
+        if(x == username){
+            return 1;
+        }
+        return 0;
+    }
+
+    public int comparePlayerO(String username) {
+        if(o == username){
+            return 1;
+        }
+        return 0;
     }
 }
