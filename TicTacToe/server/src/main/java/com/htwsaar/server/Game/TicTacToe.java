@@ -5,6 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Die TicTacToe Klasse enthält die gesamte Spiellogic die auf dem Server ausgeführt wird.
+ *
+ * @author Mario, Simon, Alex, Oliver, Ahmad und Maximilian
+ * @version 1.0
+ */
 public class TicTacToe {
 
     public enum Winner {
@@ -15,7 +21,7 @@ public class TicTacToe {
 
         public final String label;
 
-        private Winner(String label) {
+        Winner(String label) {
             this.label = label;
         }
     }
@@ -23,6 +29,10 @@ public class TicTacToe {
     private String[] gameboard = new String[9];
     private final int[][] winConditions;
 
+    /**
+     * Konstruktor von TicTacToe
+     * Erstellt die Win Konditionen und initialisiert das Spielbrett
+     */
     public TicTacToe(){
         winConditions= new int[][]{{1, 2, 3},
                                     {4, 5, 6},
@@ -35,10 +45,19 @@ public class TicTacToe {
         initGameboard();
     }
 
+    /**
+     * Setzt einen Spielermarker an Position pos
+     * @param player der Spieler X oder O
+     * @param pos die Position wo der Marker gesetzt wird
+     */
     private void setField(Winner player, int pos){
         gameboard[pos] = player.label;
     }
 
+    /**
+     * Initialisiert das Spielbrett
+     * @return String[] Gibt ein Array zurück mit den Zahlen des Spielfeldes(das Spielbrett)
+     */
     private String[] initGameboard(){
         for (int i = 0; i < gameboard.length; i++) {
             int field = i + 1;
@@ -67,7 +86,6 @@ public class TicTacToe {
                 }
             }
         }
-
         return checkGameboardFull();
     }
 
