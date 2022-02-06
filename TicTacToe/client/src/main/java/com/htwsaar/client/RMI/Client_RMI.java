@@ -33,7 +33,7 @@ public class Client_RMI {
     public int setField(String username, int pos) throws RemoteException {
         try {
             return clientStub.setField(username, pos);
-        } catch(Exeption e) {
+        } catch(Exception e) {
             System.err.println("Client exception: " + e.toString());
             return 0;
         }

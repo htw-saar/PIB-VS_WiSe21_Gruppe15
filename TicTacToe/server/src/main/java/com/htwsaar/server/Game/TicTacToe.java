@@ -26,6 +26,8 @@ public class TicTacToe {
         }
     }
 
+    private String x;
+    private String o;
     private String[] gameboard = new String[9];
     private final int[][] winConditions;
     private int joinCode;
@@ -45,6 +47,24 @@ public class TicTacToe {
                                     {3, 5, 7}};
         initGameboard();
         createJoinCode();
+    }
+
+    /**
+     * Setzt den Username der zu X gehört
+     * @param name enthält den Username
+     */
+    public void setX(String name)
+    {
+        x = name;
+    }
+
+    /**
+     * Setzt den Username der zu X gehört
+     * @param name enthält den Username
+     */
+    public void setO(String name)
+    {
+        o = name;
     }
 
     /**
@@ -109,7 +129,7 @@ public class TicTacToe {
         return Winner.UNSETTELD;
     }
 
-    private int createJoinCode() {
+    private void createJoinCode() {
         joinCode = (int) ((Math.random() * (99999 - 10000)) + 10000);
     }
 
