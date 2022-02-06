@@ -12,6 +12,8 @@ public class Menu {
     private final int BESTENLISTE = 3;
     private final int ENDE = 0;
     private int funktion = -1;
+    private String username;
+    int versuche = 0;
     private final Client_RMI client_rmi;
     private final Scanner input = new Scanner(System.in);
 
@@ -57,6 +59,7 @@ public class Menu {
         if (funktion == SIEL_ERSTELLEN) {
             System.out.println("Spiel erstellen:");
             GameLogic.startGame();
+            
         } else if (funktion == SPIEL_BEITRETEN) {
             System.out.println("Spiel beitreten:");
         } else if (funktion == BESTENLISTE) {
@@ -68,6 +71,28 @@ public class Menu {
             System.out.println("Fehlerhafte Auswahl einer Funktion!");
         }
         System.out.println("\n\n\n\n");
+    }
+
+    //Alpha methode (User kann noch nicht angelegt werden)
+    public void login() {
+        String pw;
+        Bool log;
+        System.out.println("Benutzername: ");
+        username = input.nextLine();
+        System.out.println("Passwort: ");
+        pw = input.nextLine();
+        log = client_rmi.login(username, pw);
+        if(log && versuche <= 3) {
+            System.out.println("Login war erfolgreich!");
+        } else if(!log && versuche <= 3) {
+            System.out.println("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
+            versuche++;
+            login();
+        } else {
+            System.out.println("Login fehlgeschlagen!\nLogin wurde gesperrt!");
+            //massnahme ergreifen
+        }
+        startMenu();
     }
 
     /**

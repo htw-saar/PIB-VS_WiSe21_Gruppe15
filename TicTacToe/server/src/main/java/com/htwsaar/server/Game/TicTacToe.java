@@ -128,11 +128,21 @@ public class TicTacToe {
         }
         return Winner.UNSETTELD;
     }
-
+    
+    /**
+     * Die Methode createJoinCode erstellt einen JoinCode zwischen 10000 - 99999
+     */
     private void createJoinCode() {
         joinCode = (int) ((Math.random() * (99999 - 10000)) + 10000);
     }
 
+    /**
+     * Die Methode compareJoinCode vergleicht ob es sich bei dem erhaltenen Code um den eigenen handelt
+     * 
+     * @param joinCode Der erhaltene Code zum vergleichen
+     * 
+     * @return 1 wenn die Codes uebereinstimmen und 0 wenn sie ungleich sind
+     */
     public int compareJoinCode(int joinCode) {
         if(joinCode == this.joinCode){
             return 1;
