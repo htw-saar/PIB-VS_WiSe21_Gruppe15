@@ -12,18 +12,18 @@ import java.util.List;
 public class Client_RMI {
     private ServerClient_Connect_Interface clientStub;
 
-    public int createGame() throws RemoteException {
+    public int createGame(String username) throws RemoteException {
         try {
-            return clientStub.createGame();
+            return clientStub.createGame(username);
         } catch (Exception e) {
             System.err.println("Client exception: " + e.toString());
             return 0;
         }
     }
 
-    public int joinGame(int joinCode) throws RemoteException {
+    public int joinGame(int joinCode, String username) throws RemoteException {
         try {
-            return clientStub.joinGame(joinCode);
+            return clientStub.joinGame(username, joinCode);
         } catch (Exception e) {
             System.err.println("Client exception: " + e.toString());
             return 0;
