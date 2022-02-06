@@ -48,8 +48,18 @@ public class TicTacToe {
     }
 
 
-
-    public Winner checkWinCondition(Winner player, int pos){
+    /**
+     * Die Methode checkWinCondition ueberprueft ob der Spieler der zuletzt am Zug war eine 
+     * Tik-Tak-Toe Win-Condition erfuellt.
+     * Sollte dies der Fall sein wird der Spieler "X" oder "O" zurueckgegeben andernfalls
+     * wird die Methode checkGameboardFull ausgeführt und ein Return von "none" oder "unsetteld"
+     * ausgegeben
+     * 
+     * @param player Der Spieler der zuletzt am Zug war
+     * 
+     * @return Ein Gewinner in Form von "O" oder "X", oder ob das Spiel weiter geht "none"/beendet "unsetteld" wird
+     */
+    public Winner checkWinCondition(Winner player){
         for (int[] winCondition : winConditions){
             if (Objects.equals(gameboard[winCondition[0]], gameboard[winCondition[1]])){
                 if (Objects.equals(gameboard[winCondition[1]], gameboard[winCondition[2]])){
@@ -61,6 +71,14 @@ public class TicTacToe {
         return checkGameboardFull();
     }
 
+    /**
+     * Die Methode checkGameboardFull ueberprueft alle Felder die im Gameboard-Array beinhaltet sind
+     * und  schaut nach ob sich noch eine Zahl von 1-9 darin befindet.
+     * Sollte dies der Fall sein wird "none" als Winner zurueckgegeben andernfalls ist das Gameboard
+     * voll und somit wird als Rueckgabewert "unsetteld" ausgegeben.
+     * 
+     * @return entscheidung ob das Gameboard voll ist ("unsetteld") oder es noch unbesetzte Felder gibt ("none")
+     */
     private Winner checkGameboardFull(){
         for (int i = 0; i < gameboard.length; i++) {
             int field = i+1;
