@@ -76,7 +76,7 @@ public class Menu {
     //Alpha methode (User kann noch nicht angelegt werden)
     public void login() {
         String pw;
-        Bool log;
+        Boolean log;
         System.out.println("Benutzername: ");
         username = input.nextLine();
         System.out.println("Passwort: ");

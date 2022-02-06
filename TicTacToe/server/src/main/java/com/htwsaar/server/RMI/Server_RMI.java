@@ -36,20 +36,20 @@ public class Server_RMI implements ServerClient_Connect_Interface{
     }
 
 
-    public int sendLoginData(String name, String password) throws RemoteException {
+    public Boolean sendLoginData(String name, String password) throws RemoteException {
         try {
             UserDao userDao = new UserDao();
             User user = userDao.getUser(name);
             if (user != null) {
                 if (password.equalsIgnoreCase(user.getPassword())) {
-                    return 1;
+                    return true;
                 }
             }
-            return 0;
+            return false;
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
-            return 0;
+            return false;
         }
     }
 
@@ -88,59 +88,59 @@ public class Server_RMI implements ServerClient_Connect_Interface{
     }
 
 
-    public int createGame(String username) throws RemoteException {
+    public Boolean createGame(String username) throws RemoteException {
         try {
             TicTacToe game;
             game = new TicTacToe();
             game.setX(username);
             games.add(game);
-            return 1;
+            return true;
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
-            return 0;
+            return false;
         }
     }
 
 
-    public int joinGame(String username, int joinCode) throws RemoteException {
+    public Boolean joinGame(String username, int joinCode) throws RemoteException {
         try {
             for (int i = 0; i < games.size(); i++) {
                 if (games.get(i).compareJoinCode(joinCode) == 1) {
                     games.get(i).setO(username);
-                    return 1;
+                    return true;
                 }
             }
-            return 0;
+            return false;
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
-            return 0;
+            return false;
         }
     }
 
 
-    public int setField(String username, int pos) throws RemoteException {
+    public Boolean setField(String username, int pos) throws RemoteException {
         try {
             int gameNumber;
             gameNumber = playerInWhichGameAsX(username);
             if (gameNumber != -1) {
                 TicTacToe.Winner player = TicTacToe.Winner.Player1;
                 games.get(gameNumber).setField(player, pos);
-                return 1;
+                return true;
             } else {
                 gameNumber = playerInWhichGameAsO(username);
                 if (gameNumber != -1) {
                     TicTacToe.Winner player = TicTacToe.Winner.Player2;
                     games.get(gameNumber).setField(player, pos);
-                    return 1;
+                    return true;
                 }
             }
-            return 0;
+            return false;
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
-            return 0;
+            return false;
         }
     }
 
@@ -156,7 +156,7 @@ public class Server_RMI implements ServerClient_Connect_Interface{
                 Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
-            return 0;
+            return -1;
         }
     }
 
@@ -172,7 +172,7 @@ public class Server_RMI implements ServerClient_Connect_Interface{
                 Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();
-            return 0;
+            return -1;
         }
     }
 }
