@@ -12,9 +12,9 @@ public interface ServerClient_Connect_Interface extends Remote {
 
         String scoreboardRequestForUser(String name) throws RemoteException;
 
-        int createGame() throws  RemoteException;
+        int createGame(String username) throws  RemoteException;
 
-        int joinGame(int joinCode) throws RemoteException;
+        int joinGame(String username, int joinCode) throws RemoteException;
 
         int setField(String username, int pos) throws RemoteException;
 

@@ -1,4 +1,5 @@
 package com.htwsaar.server.RMI;
+import com.htwsaar.server.Game.TicTacToe;
 import com.htwsaar.server.Hibernate.dao.UserDao;
 import com.htwsaar.server.Hibernate.entity.User;
 
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Server_RMI implements ServerClient_Connect_Interface{
+
+    private ArrayList<TicTacToe> games = new ArrayList<>();
 
     public Server_RMI(){
 
@@ -69,24 +72,52 @@ public class Server_RMI implements ServerClient_Connect_Interface{
     }
 
     
-    public String scoreboardRequestForUser(String name) throws RemoteException{
-        UserDao dao = new UserDao();
-        User user = dao.getUser(name);
-        if(user != null) {
-            return user.toString();
-        } else {
+    public String scoreboardRequestForUser(String name) throws RemoteException {
+        try {
+            UserDao dao = new UserDao();
+            User user = dao.getUser(name);
+            if (user != null) {
+                return user.toString();
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            System.err.println("Server exception: " + e.toString());
+            e.printStackTrace();
             return null;
         }
     }
 
     
-    public int createGame() throws  RemoteException{
-        return 0;
+    public int createGame(String username) throws  RemoteException {
+        try {
+            TicTacToe game;
+            game = new TicTacToe();
+            game.setX(username);
+            games.add(game);
+            return 1;
+        } catch (Exception e) {
+            System.err.println("Server exception: " + e.toString());
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     
-    public int joinGame(int joinCode) throws RemoteException{
-        return 0;
+    public int joinGame(String username, int joinCode) throws RemoteException {
+        try {
+            for (int i = 0; i < games.size(); i++) {
+                if (games.get(i).compareJoinCode(joinCode) == 1) {
+                    games.get(i).setO(username);
+                    return 1;
+                }
+            }
+            return 0;
+        } catch (Exception e) {
+            System.err.println("Server exception: " + e.toString());
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     
