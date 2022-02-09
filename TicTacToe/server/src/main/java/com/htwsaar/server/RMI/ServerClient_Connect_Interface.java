@@ -6,16 +6,16 @@ import java.util.List;
 
 public interface ServerClient_Connect_Interface extends Remote {
 
-        int sendLoginData(String name, String password) throws RemoteException;
+        Boolean sendLoginData(String name, String password) throws RemoteException;
 
         List<String> scoreboardRequest() throws RemoteException;
 
         String scoreboardRequestForUser(String name) throws RemoteException;
 
-        int createGame() throws  RemoteException;
+        Boolean createGame(String username) throws  RemoteException;
 
-        int joinGame(int joinCode) throws RemoteException;
+        Boolean joinGame(String username, int joinCode) throws RemoteException;
 
-        int setField(String username, int pos) throws RemoteException;
+        Boolean setField(String username, int pos) throws RemoteException;
 
     }

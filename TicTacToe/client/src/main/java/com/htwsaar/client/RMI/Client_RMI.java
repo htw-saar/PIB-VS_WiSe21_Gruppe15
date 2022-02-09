@@ -2,24 +2,53 @@ package com.htwsaar.client.RMI;
 
 import com.htwsaar.server.RMI.ServerClient_Connect_Interface;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Client_RMI {
+    private static final Logger logger = LogManager.getLogger(Client_RMI.class);
     private ServerClient_Connect_Interface clientStub;
 
+    public Boolean createGame(String username) throws RemoteException {
+        try {
+            return clientStub.createGame(username);
+        } catch (Exception e) {
+            logger.error("Client exception: " + e.toString());
+            return false;
+        }
+    }
 
-    private int testLoginData(String userName, String password){
+    public Boolean joinGame(int joinCode, String username) throws RemoteException {
+        try {
+            return clientStub.joinGame(username, joinCode);
+        } catch (Exception e) {
+            logger.error("Client exception: " + e.toString());
+            return false;
+        }
+    }
+
+    public Boolean setField(String username, int pos) throws RemoteException {
+        try {
+            return clientStub.setField(username, pos);
+        } catch(Exception e) {
+            logger.error("Client exception: " + e.toString());
+            return false;
+        }
+    }
+
+    private boolean testLoginData(String userName, String password){
         try {
             return clientStub.sendLoginData(userName, password);
         } catch(Exception e){
-            System.err.println("Client exception: " + e.toString());
+            logger.error("Client exception: " + e.toString());
             e.printStackTrace();
-            return 0;
+            return false;
         }
     }
 
@@ -40,7 +69,7 @@ public class Client_RMI {
             }
             System.out.println(spacer);
         } catch(Exception e){
-            System.err.println("Client exception: " + e.toString());
+            logger.error("Client exception: " + e.toString());
             e.printStackTrace();
         }
     }
@@ -50,7 +79,7 @@ public class Client_RMI {
             System.out.println(clientStub.scoreboardRequestForUser(username));
             return 1;
         } catch(Exception e){
-            System.err.println("Client exception: " + e.toString());
+            logger.error("Client exception: " + e.toString());
             e.printStackTrace();
             return 0;
         }
@@ -65,7 +94,7 @@ public class Client_RMI {
             return stub;
         }
         catch (NotBoundException | RemoteException e){
-            System.err.println("Client Exception: " + e.toString());
+            logger.error("Client exception: " + e.toString());
             e.printStackTrace();
             return null;
         }
@@ -74,19 +103,11 @@ public class Client_RMI {
     public Boolean login(String username, String password){
         clientStub = connectToServer();
         if(clientStub != null){
-            int ergebnis = testLoginData(username, password);
-            if (ergebnis == 1) {
-                return true;
-            } else {
-                return false;
-            }
+            return testLoginData(username, password);
         }
         else{
-            System.err.println("Stub wurde nicht erstellt!\n");
+            logger.error("Stub wurde nicht erstellt!\n");
         }
         return false;
     }
-
-
-
 }
