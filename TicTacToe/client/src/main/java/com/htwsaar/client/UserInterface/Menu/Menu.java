@@ -59,16 +59,16 @@ public class Menu {
     }
 
     private void printInGame(String format){
-        System.out.println(String.format(format, "|", SPIEL_ERSTELLEN, "|", "Spiel erstellen", "|"));
-        System.out.println(String.format(format, "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|"));
-        System.out.println(String.format(format, "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|"));
-        System.out.println(String.format(format, "|", LOGOUT, "|", "Ausloggen", "|"));
+        System.out.printf((format) + "%n", "|", SPIEL_ERSTELLEN, "|", "Spiel erstellen", "|");
+        System.out.printf((format) + "%n", "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|");
+        System.out.printf((format) + "%n", "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|");
+        System.out.printf((format) + "%n", "|", LOGOUT, "|", "Ausloggen", "|");
     }
 
     private void printLogin(String format){
-        System.out.println(String.format(format, "|", LOGIN, "|", "Einloggen", "|"));
-        System.out.println(String.format(format, "|", SIGNUP, "|", "Registrieren", "|"));
-        System.out.println(String.format(format, "|", ENDE, "|", "Beenden", "|"));
+        System.out.printf((format) + "%n", "|", LOGIN, "|", "Einloggen", "|");
+        System.out.printf((format) + "%n", "|", SIGNUP, "|", "Registrieren", "|");
+        System.out.printf((format) + "%n", "|", ENDE, "|", "Beenden", "|");
     }
 
     private void ausfuehrenFunktion(int funktion) {
