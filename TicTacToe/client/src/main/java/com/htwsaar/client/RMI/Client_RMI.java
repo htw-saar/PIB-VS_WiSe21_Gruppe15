@@ -9,7 +9,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Client_RMI {
@@ -105,7 +104,6 @@ public class Client_RMI {
         clientStub = connectToServer();
         if(clientStub != null){
             return testLoginData(username, password);
-
         }
         else{
             logger.error("Stub wurde nicht erstellt!\n");

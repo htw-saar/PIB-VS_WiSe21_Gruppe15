@@ -7,10 +7,15 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
-    private final int SIEL_ERSTELLEN = 1;
+    private final int ENDE = 0;
+    private final int LOGIN = 1;
+    private final int SIGNUP = 2;
+    private boolean isAuthenticated = false;
+
+    private final int SPIEL_ERSTELLEN = 1;
     private final int SPIEL_BEITRETEN = 2;
     private final int BESTENLISTE = 3;
-    private final int ENDE = 0;
+    private final int LOGOUT = 99;
     private int funktion = -1;
     private String username;
     int versuche = 0;
@@ -26,16 +31,9 @@ public class Menu {
             try {
                 funktion = einlesenFunktion();
                 ausfuehrenFunktion(funktion);
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace(System.out);
-                System.out.println(e);
-            } catch (InputMismatchException e) {
-                e.printStackTrace(System.out);
-                System.out.println(e);
-                input.nextLine();
             } catch (Exception e) {
-                System.out.println("Es wurde eine Ausnahme eingefangen und zwar: " + e);
                 e.printStackTrace(System.out);
+                input.nextLine();
             }
         }
     }
@@ -46,34 +44,68 @@ public class Menu {
         System.out.println(spacer);
         System.out.println(String.format(format, "|", "Nummer", "|", "Funktion", "|"));
         System.out.println(spacer);
-        System.out.println(String.format(format, "|", SIEL_ERSTELLEN, "|", "Spiel erstellen", "|"));
-        System.out.println(String.format(format, "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|"));
-        System.out.println(String.format(format, "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|"));
-        System.out.println(String.format(format, "|", ENDE, "|", "Beenden", "|"));
+        if (isAuthenticated){
+            System.out.println(String.format(format, "|", SPIEL_ERSTELLEN, "|", "Spiel erstellen", "|"));
+            System.out.println(String.format(format, "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|"));
+            System.out.println(String.format(format, "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|"));
+            System.out.println(String.format(format, "|", LOGOUT, "|", "Ausloggen", "|"));
+        } else {
+            System.out.println(String.format(format, "|", LOGIN, "|", "Einloggen", "|"));
+            System.out.println(String.format(format, "|", SIGNUP, "|", "Registrieren", "|"));
+            System.out.println(String.format(format, "|", ENDE, "|", "Beenden", "|"));
+        }
+
         System.out.println(spacer);
 
         return intEinlesen("\nAuswahl eingeben: ");
     }
 
     private void ausfuehrenFunktion(int funktion) {
-        if (funktion == SIEL_ERSTELLEN) {
-            System.out.println("Spiel erstellen:");
-            GameLogic.startGame();
-        } else if (funktion == SPIEL_BEITRETEN) {
-            System.out.println("Spiel beitreten:");
-        } else if (funktion == BESTENLISTE) {
-            System.out.println("Bestenliste:");
-            client_rmi.ShowScoreBoardAll();
-        } else if (funktion == ENDE) {
-            System.out.println("Das Programm wird beendet.");
+        if (isAuthenticated){
+            switch (funktion) {
+                case SPIEL_ERSTELLEN:
+                    System.out.println("Spiel erstellen:");
+                    GameLogic.startGame();
+                    break;
+                case SPIEL_BEITRETEN:
+                    System.out.println("Spiel beitreten:");
+                    break;
+                case BESTENLISTE:
+                    System.out.println("Bestenliste:");
+                    client_rmi.ShowScoreBoardAll();
+                    break;
+                case LOGOUT:
+                    logout();
+                    System.out.println("Benutzer wird abgemeldet.");
+                    break;
+                default:
+                    System.out.println("Fehlerhafte Auswahl einer Funktion!");
+                    break;
+            }
         } else {
-            System.out.println("Fehlerhafte Auswahl einer Funktion!");
-        }
+                switch (funktion){
+                    case LOGIN:
+                        // TODO LOGIN Missing logic
+                        login();
+                        break;
+                    case SIGNUP:
+                        // TODO SIGNUP Missing logic
+                        signup();
+                        break;
+                    case ENDE:
+                        // TODO Ende Programm
+                        break;
+                    default:
+                        System.out.println("Fehlerhafte Auswahl einer Funktion!");
+                        break;
+                }
+            }
         System.out.println("\n\n\n\n");
     }
 
     //Alpha methode (User kann noch nicht angelegt werden)
-    public void login() {
+    private void login() {
+        input.nextLine();
         String pw;
         Boolean log;
         System.out.println("Benutzername: ");
@@ -91,7 +123,17 @@ public class Menu {
             System.out.println("Login fehlgeschlagen!\nLogin wurde gesperrt!");
             //massnahme ergreifen
         }
-        startMenu();
+        setAuthenticated(true);
+    }
+
+    private void signup(){
+        // TODO REPLACE SIGNUP
+        client_rmi.login("simon", "test");
+        setAuthenticated(true);
+    }
+
+    private void logout(){
+        setAuthenticated(false);
     }
 
     /**
@@ -104,4 +146,7 @@ public class Menu {
         return input.nextInt();
     }
 
+    public void setAuthenticated(boolean authenticated) {
+        isAuthenticated = authenticated;
+    }
 }

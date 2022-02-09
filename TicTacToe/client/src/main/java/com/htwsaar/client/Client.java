@@ -19,6 +19,6 @@ public class Client
         Client_RMI client_rmi = new Client_RMI();
         //client_rmi.login(args[0], "test");
         Menu menu = new Menu(client_rmi);
-        menu.login();
+        menu.startMenu();
     }
 }
