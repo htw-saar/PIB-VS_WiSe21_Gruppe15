@@ -2,11 +2,14 @@ package com.htwsaar.client.UserInterface.Menu;
 
 import com.htwsaar.client.UserInterface.TicTacToe.GameLogic;
 import com.htwsaar.client.RMI.Client_RMI;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
+    private static final Logger logger = LogManager.getLogger(Menu.class);
+
     private final int ENDE = 0;
     private final int LOGIN = 1;
     private final int SIGNUP = 2;
@@ -15,7 +18,7 @@ public class Menu {
     private final int SPIEL_ERSTELLEN = 1;
     private final int SPIEL_BEITRETEN = 2;
     private final int BESTENLISTE = 3;
-    private final int LOGOUT = 99;
+    private final int LOGOUT = 9;
     private int funktion = -1;
     private String username;
     int versuche = 0;
@@ -32,7 +35,7 @@ public class Menu {
                 funktion = einlesenFunktion();
                 ausfuehrenFunktion(funktion);
             } catch (Exception e) {
-                e.printStackTrace(System.out);
+                logger.error(e);
                 input.nextLine();
             }
         }
@@ -57,7 +60,7 @@ public class Menu {
 
         System.out.println(spacer);
 
-        return intEinlesen("\nAuswahl eingeben: ");
+        return intEinlesen();
     }
 
     private void ausfuehrenFunktion(int funktion) {
@@ -96,7 +99,7 @@ public class Menu {
                         // TODO Ende Programm
                         break;
                     default:
-                        System.out.println("Fehlerhafte Auswahl einer Funktion!");
+                        logger.error("Fehlerhafte Auswahl einer Funktion!");
                         break;
                 }
             }
@@ -116,11 +119,11 @@ public class Menu {
         if(log && versuche <= 3) {
             System.out.println("Login war erfolgreich!");
         } else if(!log && versuche <= 3) {
-            System.out.println("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
+            logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
             versuche++;
             login();
         } else {
-            System.out.println("Login fehlgeschlagen!\nLogin wurde gesperrt!");
+            logger.error("Login fehlgeschlagen!\nLogin wurde gesperrt!");
             //massnahme ergreifen
         }
         setAuthenticated(true);
@@ -141,8 +144,8 @@ public class Menu {
      *
      * @return int-wert(um damit in der Fachklasse zu rechnen)
      */
-    private int intEinlesen(String txt) {
-        System.out.println(txt);
+    private int intEinlesen() {
+        System.out.println("\nAuswahl eingeben: ");
         return input.nextInt();
     }
 
