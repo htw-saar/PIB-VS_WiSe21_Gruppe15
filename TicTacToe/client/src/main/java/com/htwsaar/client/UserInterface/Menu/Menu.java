@@ -48,14 +48,9 @@ public class Menu {
         System.out.println(String.format(format, "|", "Nummer", "|", "Funktion", "|"));
         System.out.println(spacer);
         if (isAuthenticated){
-            System.out.println(String.format(format, "|", SPIEL_ERSTELLEN, "|", "Spiel erstellen", "|"));
-            System.out.println(String.format(format, "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|"));
-            System.out.println(String.format(format, "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|"));
-            System.out.println(String.format(format, "|", LOGOUT, "|", "Ausloggen", "|"));
+            printInGame(format);
         } else {
-            System.out.println(String.format(format, "|", LOGIN, "|", "Einloggen", "|"));
-            System.out.println(String.format(format, "|", SIGNUP, "|", "Registrieren", "|"));
-            System.out.println(String.format(format, "|", ENDE, "|", "Beenden", "|"));
+            printLogin(format);
         }
 
         System.out.println(spacer);
@@ -63,47 +58,68 @@ public class Menu {
         return intEinlesen();
     }
 
+    private void printInGame(String format){
+        System.out.println(String.format(format, "|", SPIEL_ERSTELLEN, "|", "Spiel erstellen", "|"));
+        System.out.println(String.format(format, "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|"));
+        System.out.println(String.format(format, "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|"));
+        System.out.println(String.format(format, "|", LOGOUT, "|", "Ausloggen", "|"));
+    }
+
+    private void printLogin(String format){
+        System.out.println(String.format(format, "|", LOGIN, "|", "Einloggen", "|"));
+        System.out.println(String.format(format, "|", SIGNUP, "|", "Registrieren", "|"));
+        System.out.println(String.format(format, "|", ENDE, "|", "Beenden", "|"));
+    }
+
     private void ausfuehrenFunktion(int funktion) {
         if (isAuthenticated){
-            switch (funktion) {
-                case SPIEL_ERSTELLEN:
-                    System.out.println("Spiel erstellen:");
-                    GameLogic.startGame();
-                    break;
-                case SPIEL_BEITRETEN:
-                    System.out.println("Spiel beitreten:");
-                    break;
-                case BESTENLISTE:
-                    System.out.println("Bestenliste:");
-                    client_rmi.ShowScoreBoardAll();
-                    break;
-                case LOGOUT:
-                    logout();
-                    System.out.println("Benutzer wird abgemeldet.");
-                    break;
-                default:
-                    System.out.println("Fehlerhafte Auswahl einer Funktion!");
-                    break;
-            }
+            gameFunctions(funktion);
         } else {
-                switch (funktion){
-                    case LOGIN:
-                        // TODO LOGIN Missing logic
-                        login();
-                        break;
-                    case SIGNUP:
-                        // TODO SIGNUP Missing logic
-                        signup();
-                        break;
-                    case ENDE:
-                        // TODO Ende Programm
-                        break;
-                    default:
-                        logger.error("Fehlerhafte Auswahl einer Funktion!");
-                        break;
-                }
-            }
+            loginFunctions(funktion);
+        }
         System.out.println("\n\n\n\n");
+    }
+
+    private void gameFunctions(int funktion){
+        switch (funktion) {
+            case SPIEL_ERSTELLEN:
+                System.out.println("Spiel erstellen:");
+                GameLogic.startGame();
+                break;
+            case SPIEL_BEITRETEN:
+                System.out.println("Spiel beitreten:");
+                break;
+            case BESTENLISTE:
+                System.out.println("Bestenliste:");
+                client_rmi.ShowScoreBoardAll();
+                break;
+            case LOGOUT:
+                logout();
+                System.out.println("Benutzer wird abgemeldet.");
+                break;
+            default:
+                System.out.println("Fehlerhafte Auswahl einer Funktion!");
+                break;
+        }
+    }
+
+    private void loginFunctions(int funktion){
+        switch (funktion){
+            case LOGIN:
+                // TODO LOGIN Missing logic
+                login();
+                break;
+            case SIGNUP:
+                // TODO SIGNUP Missing logic
+                signup();
+                break;
+            case ENDE:
+                // TODO Ende Programm
+                break;
+            default:
+                logger.error("Fehlerhafte Auswahl einer Funktion!");
+                break;
+        }
     }
 
     //Alpha methode (User kann noch nicht angelegt werden)
