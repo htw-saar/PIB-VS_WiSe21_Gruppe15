@@ -16,7 +16,7 @@ public class Client_RMI {
     private static final Logger logger = LogManager.getLogger(Client_RMI.class);
     private ServerClient_Connect_Interface clientStub;
 
-    public int createGame(String username) throws RemoteException {
+    public Boolean createGame(String username) throws RemoteException {
         try {
             return clientStub.createGame(username);
         } catch (Exception e) {
@@ -25,7 +25,7 @@ public class Client_RMI {
         }
     }
 
-    public int joinGame(int joinCode, String username) throws RemoteException {
+    public Boolean joinGame(int joinCode, String username) throws RemoteException {
         try {
             return clientStub.joinGame(username, joinCode);
         } catch (Exception e) {
@@ -34,7 +34,7 @@ public class Client_RMI {
         }
     }
 
-    public int setField(String username, int pos) throws RemoteException {
+    public Boolean setField(String username, int pos) throws RemoteException {
         try {
             return clientStub.setField(username, pos);
         } catch(Exception e) {
@@ -43,13 +43,13 @@ public class Client_RMI {
         }
     }
 
-    private int testLoginData(String userName, String password){
+    private boolean testLoginData(String userName, String password){
         try {
             return clientStub.sendLoginData(userName, password);
         } catch(Exception e){
             logger.error("Client exception: " + e.toString());
             e.printStackTrace();
-            return 0;
+            return false;
         }
     }
 
@@ -104,12 +104,7 @@ public class Client_RMI {
     public Boolean login(String username, String password){
         clientStub = connectToServer();
         if(clientStub != null){
-            int ergebnis = testLoginData(username, password);
-            if (ergebnis == 1) {
-                return true;
-            } else {
-                return false;
-            }
+            return testLoginData(username, password);
         }
         else{
             logger.error("Client exception: " + e.toString());

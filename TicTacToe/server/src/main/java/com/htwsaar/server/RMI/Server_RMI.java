@@ -10,16 +10,20 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.ArrayList;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-public class Server_RMI implements ServerClient_Connect_Interface{
+public class Server_RMI implements ServerClient_Connect_Interface {
 
     private ArrayList<TicTacToe> games = new ArrayList<>();
+    private ArrayList<TicTacToe> waitingGames = new ArrayList<>();
+    private static final Logger logger = LogManager.getLogger(Server_RMI.class);
 
-    public Server_RMI(){
+    public Server_RMI() {
 
     }
-    
-    public void start_Server_RMI(){
+
+    public void start_Server_RMI() {
         try {
             Server_RMI obj = new Server_RMI();
             ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(obj, 0);
@@ -30,49 +34,45 @@ public class Server_RMI implements ServerClient_Connect_Interface{
             registry.rebind("Hello", stub);
             System.err.println("Server ready");
         } catch (Exception e) {
-            System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
-        }
-    }
-  
-    
-    public int sendLoginData(String name, String password) throws RemoteException {
-        try{
-            UserDao userDao = new UserDao();
-            User user = userDao.getUser(name);
-            if(user != null){
-                if(password.equalsIgnoreCase(user.getPassword()))
-                {
-                    return 1;
-                }
-            }
-            return 0;
-        } catch(Exception e){
-            System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
-            return 0;
+            logger.error("Server exception: " + e.toString());
         }
     }
 
-    public List<String> scoreboardRequest() throws RemoteException{
-        try{
+
+    public Boolean sendLoginData(String name, String password) {
+        try {
+            UserDao userDao = new UserDao();
+            User user = userDao.getUser(name);
+            if (user != null) {
+                if (password.equalsIgnoreCase(user.getPassword())) {
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return false;
+        }
+    }
+
+    public List<String> scoreboardRequest() {
+        try {
             String format = " %2s %12s %2s %6s %2s %6s %2s %6s %2s";
             UserDao userDao = new UserDao();
             List<String> stringList = new ArrayList<>();
-            for (User user :  userDao.getScoreboard()) {
+            for (User user : userDao.getScoreboard()) {
                 String print = String.format(format, "|", user.getUsername(), "|", user.getWins(), "|", user.getLoses(), "|", user.getScore(), "|");
                 stringList.add(print);
             }
             return stringList;
-        } catch(Exception e){
-            System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
             return null;
         }
     }
 
-    
-    public String scoreboardRequestForUser(String name) throws RemoteException {
+
+    public String scoreboardRequestForUser(String name) {
         try {
             UserDao dao = new UserDao();
             User user = dao.getUser(name);
@@ -82,47 +82,126 @@ public class Server_RMI implements ServerClient_Connect_Interface{
                 return null;
             }
         } catch (Exception e) {
-            System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
+            logger.error("Server exception: " + e.toString());
             return null;
         }
     }
 
-    
-    public int createGame(String username) throws  RemoteException {
+
+    public Boolean createGame(String username) {
         try {
             TicTacToe game;
-            game = new TicTacToe();
-            game.setX(username);
-            games.add(game);
-            return 1;
+            game = new TicTacToe(username);
+            waitingGames.add(game);
+            return true;
         } catch (Exception e) {
-            System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
-            return 0;
+            logger.error("Server exception: " + e.toString());
+            return false;
         }
     }
 
-    
-    public int joinGame(String username, int joinCode) throws RemoteException {
+
+    public Boolean joinGame(String username, int joinCode) {
         try {
-            for (int i = 0; i < games.size(); i++) {
-                if (games.get(i).compareJoinCode(joinCode) == 1) {
-                    games.get(i).setO(username);
-                    return 1;
+            for (int i = 0; i < waitingGames.size(); i++) {
+                if (waitingGames.get(i).compareJoinCode(joinCode) == 1) {
+                    waitingGames.get(i).setO(username);
+                    games.add(waitingGames.get(i));
+                    waitingGames.remove(i);
+                    return true;
                 }
             }
-            return 0;
+            return false;
         } catch (Exception e) {
-            System.err.println("Server exception: " + e.toString());
-            e.printStackTrace();
-            return 0;
+            logger.error("Server exception: " + e.toString());
+            return false;
         }
     }
 
-    
-    public int setField(String username, int pos) throws RemoteException{
-        return 0;
+
+    public Boolean setField(String username, int pos) {
+        try {
+            int gameNumber;
+            gameNumber = playerInWhichGameAsX(username);
+            if (gameNumber != -1) {
+                TicTacToe.Winner player = TicTacToe.Winner.Player1;
+                games.get(gameNumber).setField(player, pos);
+                return true;
+            } else {
+                gameNumber = playerInWhichGameAsO(username);
+                if (gameNumber != -1) {
+                    TicTacToe.Winner player = TicTacToe.Winner.Player2;
+                    games.get(gameNumber).setField(player, pos);
+                    return true;
+                }
+            }
+            /*switch(playState){
+                case Player1:
+                    //
+                    break;
+                case Player2:
+                    //
+                    break;
+                case UNSETTELD:
+                    //
+                    break;
+                case NONE:
+                    //
+                    break;
+                default:
+                    //
+                    break;
+            }
+             */
+            return false;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return false;
+        }
     }
 
+    private int playerInWhichGameAsX(String username) {
+        try {
+            for (int i = 0; i < games.size(); i++) {
+                if (games.get(i).comparePlayerX(username) == 1) {
+                    return i;
+                }
+            }
+            return -1;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return -1;
+        }
+    }
+
+    private int playerInWhichGameAsO(String username) {
+        try {
+            for (int i = 0; i < games.size(); i++) {
+                if (games.get(i).comparePlayerO(username) == 1) {
+                    return i;
+                }
+            }
+            return -1;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return -1;
+        }
+    }
+
+    private int playerInWhichGame(String username) {
+        try {
+            String[] playerNames;
+            for (int i = 0; i < games.size(); i++) {
+                playerNames = games.get(i).getPlayers();
+                if (playerNames[0] == username || playerNames[1] == username) {
+                    return i;
+                }
+            }
+            return -1;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return -1;
+        }
+    }
 }
+
