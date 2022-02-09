@@ -20,8 +20,6 @@ public class Menu {
     private final int BESTENLISTE = 3;
     private final int LOGOUT = 9;
     private int funktion = -1;
-    private String username;
-    int versuche = 0;
     private final Client_RMI client_rmi;
     private final Scanner input = new Scanner(System.in);
 
@@ -45,7 +43,7 @@ public class Menu {
         String format = " %2s %6s %2s %22s %2s";
         String spacer = "  +---------+-------------------------+";
         System.out.println(spacer);
-        System.out.println(String.format(format, "|", "Nummer", "|", "Funktion", "|"));
+        System.out.printf((format) + "%n", "|", "Nummer", "|", "Funktion", "|");
         System.out.println(spacer);
         if (isAuthenticated){
             printInGame(format);
@@ -125,10 +123,11 @@ public class Menu {
     //Alpha methode (User kann noch nicht angelegt werden)
     private void login() {
         input.nextLine();
+        int versuche = 0;
         String pw;
-        Boolean log;
+        Boolean log = false;
         System.out.println("Benutzername: ");
-        username = input.nextLine();
+        String username = input.nextLine();
         System.out.println("Passwort: ");
         pw = input.nextLine();
         log = client_rmi.login(username, pw);
