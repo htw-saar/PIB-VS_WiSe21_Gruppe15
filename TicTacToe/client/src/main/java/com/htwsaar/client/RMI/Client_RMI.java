@@ -21,7 +21,7 @@ public class Client_RMI {
             return clientStub.createGame(username);
         } catch (Exception e) {
             logger.error("Client exception: " + e.toString());
-            return 0;
+            return false;
         }
     }
 
@@ -30,7 +30,7 @@ public class Client_RMI {
             return clientStub.joinGame(username, joinCode);
         } catch (Exception e) {
             logger.error("Client exception: " + e.toString());
-            return 0;
+            return false;
         }
     }
 
@@ -39,7 +39,7 @@ public class Client_RMI {
             return clientStub.setField(username, pos);
         } catch(Exception e) {
             logger.error("Client exception: " + e.toString());
-            return 0;
+            return false;
         }
     }
 
@@ -105,9 +105,10 @@ public class Client_RMI {
         clientStub = connectToServer();
         if(clientStub != null){
             return testLoginData(username, password);
+
         }
         else{
-            logger.error("Client exception: " + e.toString());
+            logger.error("Stub wurde nicht erstellt!\n");
         }
         return false;
     }

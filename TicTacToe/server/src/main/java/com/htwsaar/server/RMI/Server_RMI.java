@@ -122,69 +122,38 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     public Boolean setField(String username, int pos) {
         try {
             int gameNumber;
-            gameNumber = playerInWhichGameAsX(username);
+            TicTacToe.Winner player;
+            gameNumber = playerInWhichGame(username);
             if (gameNumber != -1) {
-                TicTacToe.Winner player = TicTacToe.Winner.Player1;
-                games.get(gameNumber).setField(player, pos);
-                return true;
-            } else {
-                gameNumber = playerInWhichGameAsO(username);
-                if (gameNumber != -1) {
-                    TicTacToe.Winner player = TicTacToe.Winner.Player2;
-                    games.get(gameNumber).setField(player, pos);
-                    return true;
+                if(games.get(gameNumber).whichPlayer(username) == 1) {
+                    player = TicTacToe.Winner.Player1;
+                }
+                else{
+                    player = TicTacToe.Winner.Player2;
+                }
+                TicTacToe.Winner playState = games.get(gameNumber).setField(player, pos);
+                switch (playState) {
+                    case Player1:
+                        //Player1 Win
+                        break;
+                    case Player2:
+                        //Player2 Win
+                        break;
+                    case UNSETTELD:
+                        //Unentschieden
+                        break;
+                    case NONE:
+                        //Spiel noch nicht beendet
+                        break;
+                    default:
+                        logger.error("GameState Fehler!");
+                        break;
                 }
             }
-            /*switch(playState){
-                case Player1:
-                    //
-                    break;
-                case Player2:
-                    //
-                    break;
-                case UNSETTELD:
-                    //
-                    break;
-                case NONE:
-                    //
-                    break;
-                default:
-                    //
-                    break;
-            }
-             */
             return false;
         } catch (Exception e) {
             logger.error("Server exception: " + e.toString());
             return false;
-        }
-    }
-
-    private int playerInWhichGameAsX(String username) {
-        try {
-            for (int i = 0; i < games.size(); i++) {
-                if (games.get(i).comparePlayerX(username) == 1) {
-                    return i;
-                }
-            }
-            return -1;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return -1;
-        }
-    }
-
-    private int playerInWhichGameAsO(String username) {
-        try {
-            for (int i = 0; i < games.size(); i++) {
-                if (games.get(i).comparePlayerO(username) == 1) {
-                    return i;
-                }
-            }
-            return -1;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return -1;
         }
     }
 

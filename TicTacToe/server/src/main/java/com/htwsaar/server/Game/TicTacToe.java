@@ -172,15 +172,8 @@ public class TicTacToe {
         }
     }
 
-    public int comparePlayerX(String username) {
+    public int whichPlayer(String username) {
         if (x == username) {
-            return 1;
-        }
-        return 0;
-    }
-
-    public int comparePlayerO(String username) {
-        if (o == username) {
             return 1;
         }
         return 0;

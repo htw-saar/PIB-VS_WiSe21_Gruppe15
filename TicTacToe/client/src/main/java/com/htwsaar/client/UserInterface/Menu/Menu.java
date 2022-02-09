@@ -59,7 +59,6 @@ public class Menu {
         if (funktion == SIEL_ERSTELLEN) {
             System.out.println("Spiel erstellen:");
             GameLogic.startGame();
-            
         } else if (funktion == SPIEL_BEITRETEN) {
             System.out.println("Spiel beitreten:");
         } else if (funktion == BESTENLISTE) {
