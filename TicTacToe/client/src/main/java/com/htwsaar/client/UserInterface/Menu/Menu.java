@@ -83,7 +83,7 @@ public class Menu {
         switch (funktion) {
             case SPIEL_ERSTELLEN:
                 System.out.println("Spiel erstellen:");
-                client_rmi.createGame(client_rmi.getLoggedInUser());
+                client_rmi.createGame("testuser");
                 break;
             case SPIEL_BEITRETEN:
                 System.out.println("Spiel beitreten:");
