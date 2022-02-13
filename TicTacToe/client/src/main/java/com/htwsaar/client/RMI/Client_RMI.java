@@ -14,7 +14,16 @@ import java.util.List;
 public class Client_RMI {
     private static final Logger logger = LogManager.getLogger(Client_RMI.class);
     private ServerClient_Connect_Interface clientStub;
+    private String loggedInUser;
 
+    public String getLoggedInUser() {
+        try {
+            return loggedInUser;
+        } catch (Exception e) {
+            logger.error("Client exception: " + e.toString());
+            return "logged in user not found";
+        }
+    }
     public Boolean createGame(String username) throws RemoteException {
         try {
             return clientStub.createGame(username);
@@ -102,7 +111,8 @@ public class Client_RMI {
 
     public Boolean login(String username, String password){
         clientStub = connectToServer();
-        if(clientStub != null){
+        if(clientStub != null) {
+            loggedInUser = username;
             return testLoginData(username, password);
         }
         else{

@@ -5,6 +5,7 @@ import com.htwsaar.client.RMI.Client_RMI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class Menu {
@@ -69,7 +70,7 @@ public class Menu {
         System.out.printf((format) + "%n", "|", ENDE, "|", "Beenden", "|");
     }
 
-    private void ausfuehrenFunktion(int funktion) {
+    private void ausfuehrenFunktion(int funktion) throws RemoteException {
         if (isAuthenticated){
             gameFunctions(funktion);
         } else {
@@ -78,11 +79,11 @@ public class Menu {
         System.out.println("\n\n\n\n");
     }
 
-    private void gameFunctions(int funktion){
+    private void gameFunctions(int funktion) throws RemoteException {
         switch (funktion) {
             case SPIEL_ERSTELLEN:
                 System.out.println("Spiel erstellen:");
-                GameLogic.startGame();
+                client_rmi.createGame(client_rmi.getLoggedInUser());
                 break;
             case SPIEL_BEITRETEN:
                 System.out.println("Spiel beitreten:");
