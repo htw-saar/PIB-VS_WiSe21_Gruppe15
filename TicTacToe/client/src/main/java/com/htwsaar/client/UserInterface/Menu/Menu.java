@@ -87,6 +87,7 @@ public class Menu {
                 break;
             case SPIEL_BEITRETEN:
                 System.out.println("Spiel beitreten:");
+                client_rmi.joinGame(1234, client_rmi.getLoggedInUser() ); //Test
                 break;
             case BESTENLISTE:
                 System.out.println("Bestenliste:");
