@@ -114,7 +114,7 @@ public class GameLogic {
             }
         }
 
-        /* Switch Case Block der an der jeweiligen Stelle die mitgegeben
+        /** Switch Case Block der an der jeweiligen Stelle die mitgegeben
            wird das Symbol des jeweiligen Spielers einträgt*/
         switch (pos) {
             case 1:
