@@ -1,5 +1,6 @@
 package com.htwsaar.server;
 
+import com.htwsaar.server.Hibernate.entity.User;
 import com.htwsaar.server.RMI.Server_RMI;
 import com.htwsaar.server.Services.DatabaseService;
 

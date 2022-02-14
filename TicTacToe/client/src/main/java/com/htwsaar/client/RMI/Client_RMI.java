@@ -24,7 +24,7 @@ public class Client_RMI {
             return "logged in user not found";
         }
     }
-    public Boolean createGame(String username) throws RemoteException {
+    public Boolean createGame(String username) {
         try {
             return clientStub.createGame(username);
         } catch (Exception e) {
@@ -33,7 +33,7 @@ public class Client_RMI {
         }
     }
 
-    public Boolean joinGame(int joinCode, String username) throws RemoteException {
+    public Boolean joinGame(int joinCode, String username) {
         try {
             return clientStub.joinGame(username, joinCode);
         } catch (Exception e) {
@@ -42,7 +42,7 @@ public class Client_RMI {
         }
     }
 
-    public Boolean setField(String username, int pos) throws RemoteException {
+    public Boolean setField(String username, int pos) {
         try {
             return clientStub.setField(username, pos);
         } catch(Exception e) {
@@ -120,4 +120,19 @@ public class Client_RMI {
         }
         return false;
     }
+
+    public Boolean checkGameStart(String username) {
+        try {
+            return clientStub.checkGameStart(username);
+        } catch (RemoteException e){
+            logger.error("Client exception: " + e.toString());
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    /*public String[] returnGameboard() {
+        return ;
+    }*/
 }

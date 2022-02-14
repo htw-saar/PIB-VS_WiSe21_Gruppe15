@@ -1,5 +1,7 @@
 package com.htwsaar.client.UserInterface.TicTacToe;
 
+import com.htwsaar.client.RMI.Client_RMI;
+
 import java.util.*;
 
 public class GameLogic {
@@ -11,11 +13,12 @@ public class GameLogic {
     /**
      * Eine Methode für die locale Ausführung des Spiels WIP/umstellung auf Onlinefunktionalität
      */
-    public static void startGame() {
+    public static void startGame(Client_RMI client_rmi, String username) {
         char[][] gameBoard = initGameboard();
         // Game Board ins Terminal Printen:
         printGameBoard(gameBoard);
-
+        client_rmi.createGame(client_rmi.getLoggedInUser());
+        while(client_rmi.checkGameStart(username) == false)
         while (true) {
             //Player1:
             String winBreak = winnerChecker();

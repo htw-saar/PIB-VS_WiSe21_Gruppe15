@@ -23,6 +23,7 @@ public class Menu {
     private int funktion = -1;
     private final Client_RMI client_rmi;
     private final Scanner input = new Scanner(System.in);
+    private String username;
 
     public Menu(Client_RMI client_rmi) {
         this.client_rmi = client_rmi;
@@ -83,7 +84,9 @@ public class Menu {
         switch (funktion) {
             case SPIEL_ERSTELLEN:
                 System.out.println("Spiel erstellen:");
-                client_rmi.createGame("testuser");
+
+                GameLogic.startGame(client_rmi, username);
+                //client_rmi.returnGameboard();
                 break;
             case SPIEL_BEITRETEN:
                 System.out.println("Spiel beitreten:");
@@ -124,12 +127,13 @@ public class Menu {
 
     //Alpha methode (User kann noch nicht angelegt werden)
     private void login() {
+        username = null;
         input.nextLine();
         int versuche = 0;
         String pw;
         Boolean log = false;
         System.out.println("Benutzername: ");
-        String username = input.nextLine();
+        username = input.nextLine();
         System.out.println("Passwort: ");
         pw = input.nextLine();
         log = client_rmi.login(username, pw);

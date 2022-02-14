@@ -23,14 +23,25 @@ public class Server_RMI implements ServerClient_Connect_Interface {
 
     }
 
+    public Boolean checkGameStart(String username) {
+        UserDao userDao = new UserDao();
+        User user = userDao.getUser(username);
+        for (TicTacToe game: waitingGames) {
+            if (user.getUserId() == game.getJoinCode()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void start_Server_RMI() {
         try {
             Server_RMI obj = new Server_RMI();
             ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(obj, 0);
             System.out.println(obj.toString());
             // Bind the remote object's stub in the registry
-            LocateRegistry.createRegistry(42424);
-            Registry registry = LocateRegistry.getRegistry(42424);
+            LocateRegistry.createRegistry(42421);
+            Registry registry = LocateRegistry.getRegistry(42421);
             registry.rebind("Hello", stub);
             System.err.println("Server ready");
         } catch (Exception e) {
@@ -100,6 +111,11 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
+    public String[] returnGameboard(int userId){
+        String[] gameboard;
+        gameboard = waitingGames.get(userId).outputGameboard();
+        return gameboard;
+    }
 
     public Boolean joinGame(String username, int joinCode) {
         try {

@@ -41,7 +41,8 @@ public class TicTacToe {
      * Erstellt die Win Konditionen und initialisiert das Spielbrett
      */
     public TicTacToe(String username) {
-        winConditions = new int[][]{{1, 2, 3},
+        winConditions = new int[][]{
+                {1, 2, 3},
                 {4, 5, 6},
                 {7, 8, 9},
                 {1, 4, 7},
@@ -52,6 +53,10 @@ public class TicTacToe {
         initGameboard();
         setX(username);
         createJoinCode(username);
+    }
+
+    public int getJoinCode() {
+        return joinCode;
     }
 
     /**
@@ -104,6 +109,10 @@ public class TicTacToe {
             int field = i + 1;
             this.gameboard[i] = field + "";
         }
+        return this.gameboard;
+    }
+
+    public String[] outputGameboard() {
         return this.gameboard;
     }
 
