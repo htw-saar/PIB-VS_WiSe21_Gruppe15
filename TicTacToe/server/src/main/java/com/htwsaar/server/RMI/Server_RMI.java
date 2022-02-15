@@ -40,8 +40,8 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(obj, 0);
             System.out.println(obj.toString());
             // Bind the remote object's stub in the registry
-            LocateRegistry.createRegistry(42421);
-            Registry registry = LocateRegistry.getRegistry(42421);
+            LocateRegistry.createRegistry(42424);
+            Registry registry = LocateRegistry.getRegistry(42424);
             registry.rebind("Hello", stub);
             System.err.println("Server ready");
         } catch (Exception e) {
