@@ -13,6 +13,7 @@ public class Server {
   
     private void start(String[] args) {
         DatabaseService databaseService = new DatabaseService();
+        //databaseService.addUser("oliver","test");
         Server_RMI server_rmi = new Server_RMI();
         server_rmi.start_Server_RMI();
     }
