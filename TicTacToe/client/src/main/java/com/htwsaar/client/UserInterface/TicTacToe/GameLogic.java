@@ -18,7 +18,9 @@ public class GameLogic {
         // Game Board ins Terminal Printen:
         printGameBoard(gameBoard);
         client_rmi.createGame(client_rmi.getLoggedInUser());
-        while(client_rmi.checkGameStart(username) == false)
+        while(client_rmi.checkGameStart(username) == false){
+            System.out.println("Server waits for Player 2");;
+        }
         while (true) {
             //Player1:
             String winBreak = winnerChecker();
@@ -243,6 +245,9 @@ public class GameLogic {
                 {'7', '|', '8', '|', '9'}
         };
         return gameBoard;
+    }
+
+    public static void joinGame(int GameID) {
     }
 }
 
