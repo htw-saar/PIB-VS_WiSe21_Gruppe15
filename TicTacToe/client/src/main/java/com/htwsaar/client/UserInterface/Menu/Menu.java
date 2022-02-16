@@ -90,7 +90,7 @@ public class Menu {
                 break;
             case SPIEL_BEITRETEN:
                 System.out.println("Spiel beitreten:");
-                GameLogic.joinGame(1); //Test
+                GameLogic.joinGame(1); //leer
                 break;
             case BESTENLISTE:
                 System.out.println("Bestenliste:");
