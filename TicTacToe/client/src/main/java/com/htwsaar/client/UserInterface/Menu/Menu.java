@@ -24,10 +24,18 @@ public class Menu {
     private final Client_RMI client_rmi;
     private final Scanner input = new Scanner(System.in);
 
+    /**
+     * Konstruktor fuer das Menu Objekt
+     * 
+     * @param client_rmi client_rmi Objekt fuer die Remote Functions
+     */
     public Menu(Client_RMI client_rmi) {
         this.client_rmi = client_rmi;
     }
 
+    /**
+     * Methode zum starten des Menus
+     */
     public void startMenu() {
         while (funktion != ENDE) {
             try {
@@ -40,6 +48,12 @@ public class Menu {
         }
     }
 
+    /**
+     * Gibt abhaengig von der Variable isAuthenticated entweder das Menu fuer die
+     * Spieloptionen oder das Menu fuer die Anmeldeoptionen aus
+     * 
+     * @return die vom User gewaehlte Zahl(Funktion)
+     */
     private int einlesenFunktion() {
         String format = " %2s %6s %2s %22s %2s";
         String spacer = "  +---------+-------------------------+";
@@ -57,6 +71,11 @@ public class Menu {
         return intEinlesen();
     }
 
+    /**
+     * Gibt ein Menu aus mit den Auswahlmoeglichkeiten des Spieles
+     * 
+     * @param format Format mit dem das Menu formatiert werden soll
+     */
     private void printInGame(String format) {
         System.out.printf((format) + "%n", "|", SPIEL_ERSTELLEN, "|", "Spiel erstellen", "|");
         System.out.printf((format) + "%n", "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|");
@@ -64,12 +83,22 @@ public class Menu {
         System.out.printf((format) + "%n", "|", LOGOUT, "|", "Ausloggen", "|");
     }
 
+    /**
+     * Gibt ein Menu aus mit den Auswahlmoeglichkeiten der Anmeldeoptionen
+     * 
+     * @param format Format mit dem das Menu formatiert werden soll
+     */
     private void printLogin(String format) {
         System.out.printf((format) + "%n", "|", LOGIN, "|", "Einloggen", "|");
         System.out.printf((format) + "%n", "|", SIGNUP, "|", "Registrieren", "|");
         System.out.printf((format) + "%n", "|", ENDE, "|", "Beenden", "|");
     }
 
+    /**
+     * Methode die die vom User gewaehlte Funktion ausfuerht
+     * 
+     * @param funktion die gewaehlte Zahl(Funktion)
+     */
     private void ausfuehrenFunktion(int funktion) {
         if (isAuthenticated) {
             gameFunctions(funktion);
@@ -79,6 +108,12 @@ public class Menu {
         System.out.println("\n\n\n\n");
     }
 
+    /**
+     * Stellt verschiedene Auswahlmoeglichkeiten im Bereich des
+     * Spieles fuer den User bereit.
+     * 
+     * @param funktion Zahl passend zur ausgewaehlten Funktion
+     */
     private void gameFunctions(int funktion) {
         switch (funktion) {
             case SPIEL_ERSTELLEN:
@@ -102,6 +137,12 @@ public class Menu {
         }
     }
 
+    /**
+     * Stellt verschiedene Auswahlmoeglichkeiten im Bereich des
+     * Anmeldeverfahrens fuer den User bereit.
+     * 
+     * @param funktion Zahl passend zur ausgewaehlten Funktion
+     */
     private void loginFunctions(int funktion) {
         switch (funktion) {
             case LOGIN:
@@ -113,7 +154,8 @@ public class Menu {
                 signup();
                 break;
             case ENDE:
-                // TODO Ende Programm
+                System.out.println("Programm ende:");
+                //ende();
                 break;
             default:
                 logger.error("Fehlerhafte Auswahl einer Funktion!");
@@ -121,9 +163,7 @@ public class Menu {
         }
     }
 
-    //Maßnahmen wie Account sperren oder ip sperren 
-    //bei mehrmaligem falschen anmelden muessen vom server uebernohmen werden
-
+    //TODO Maßnahmen wie Account sperren oder ip sperren bei mehrmaligem falschen anmelden muessen vom server uebernohmen werden
     /**
      * Eine Methode die zum login des Users benutzt wird.
      * Ueberprueft zuerst ob der Username richtig ist/ vorhanden ist
@@ -181,6 +221,9 @@ public class Menu {
         setAuthenticated(false);
     }
 
+    /**
+     * Methode um den User auszuloggen
+     */
     private void logout() {
         setAuthenticated(false);
     }
@@ -195,6 +238,11 @@ public class Menu {
         return input.nextInt();
     }
 
+    /**
+     * Einfache Methode zum setzen der isAuthenticated Variable
+     * 
+     * @param authenticated bool Wert der von isAuthenticated angenommen werden soll
+     */
     public void setAuthenticated(boolean authenticated) {
         isAuthenticated = authenticated;
     }
