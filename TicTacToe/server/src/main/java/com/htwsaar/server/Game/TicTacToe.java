@@ -3,9 +3,6 @@ package com.htwsaar.server.Game;
 import com.htwsaar.server.Hibernate.dao.UserDao;
 import com.htwsaar.server.Hibernate.entity.User;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 /**

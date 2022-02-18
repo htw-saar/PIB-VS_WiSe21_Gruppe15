@@ -100,6 +100,33 @@ public class Client_RMI {
         }
     }
 
+    public Boolean userLoginExists(String name) {
+        try {
+            if (clientStub == null) {
+                clientStub = connectToServer();
+                if (clientStub == null) {
+                    logger.error("Stub wurde nicht erstellt!\n");
+                    return true;
+                }
+            }
+            return clientStub.userLoginExists(name);
+        } catch (Exception e) {
+            logger.error("Client exception: " + e.toString());
+            e.printStackTrace();
+            return true;
+        }
+    }
+
+    public Boolean createLoginData(String name, String password) {
+        try {
+            return clientStub.createLoginData(name, password);
+        } catch (Exception e) {
+            logger.error("Client exception: " + e.toString());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public Boolean login(String username, String password){
         clientStub = connectToServer();
         if(clientStub != null){

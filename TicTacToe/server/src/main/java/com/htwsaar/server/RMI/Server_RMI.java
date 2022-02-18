@@ -38,6 +38,32 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
+    public Boolean userLoginExists(String name) throws RemoteException {
+        try {
+            UserDao userDao = new UserDao();
+            User user = userDao.getUser(name);
+            if (user != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return true;
+        }
+    }
+
+    public Boolean createLoginData(String name, String password) throws RemoteException {
+        try {
+        User user = new User(name, password);
+        UserDao userDao = new UserDao();
+        userDao.saveUser(user);
+        return true;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return  false;
+        }
+    }
 
     public Boolean sendLoginData(String name, String password) {
         try {

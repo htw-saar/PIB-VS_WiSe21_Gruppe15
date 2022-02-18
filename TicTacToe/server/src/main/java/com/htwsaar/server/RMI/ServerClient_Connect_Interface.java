@@ -6,6 +6,10 @@ import java.util.List;
 
 public interface ServerClient_Connect_Interface extends Remote {
 
+        Boolean userLoginExists(String name) throws RemoteException;
+
+        Boolean createLoginData(String name, String password) throws RemoteException;
+
         Boolean sendLoginData(String name, String password) throws RemoteException;
 
         List<String> scoreboardRequest() throws RemoteException;

@@ -5,6 +5,7 @@ import com.htwsaar.client.RMI.Client_RMI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class Menu {
@@ -45,7 +46,7 @@ public class Menu {
         System.out.println(spacer);
         System.out.printf((format) + "%n", "|", "Nummer", "|", "Funktion", "|");
         System.out.println(spacer);
-        if (isAuthenticated){
+        if (isAuthenticated) {
             printInGame(format);
         } else {
             printLogin(format);
@@ -56,21 +57,21 @@ public class Menu {
         return intEinlesen();
     }
 
-    private void printInGame(String format){
+    private void printInGame(String format) {
         System.out.printf((format) + "%n", "|", SPIEL_ERSTELLEN, "|", "Spiel erstellen", "|");
         System.out.printf((format) + "%n", "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|");
         System.out.printf((format) + "%n", "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|");
         System.out.printf((format) + "%n", "|", LOGOUT, "|", "Ausloggen", "|");
     }
 
-    private void printLogin(String format){
+    private void printLogin(String format) {
         System.out.printf((format) + "%n", "|", LOGIN, "|", "Einloggen", "|");
         System.out.printf((format) + "%n", "|", SIGNUP, "|", "Registrieren", "|");
         System.out.printf((format) + "%n", "|", ENDE, "|", "Beenden", "|");
     }
 
     private void ausfuehrenFunktion(int funktion) {
-        if (isAuthenticated){
+        if (isAuthenticated) {
             gameFunctions(funktion);
         } else {
             loginFunctions(funktion);
@@ -78,7 +79,7 @@ public class Menu {
         System.out.println("\n\n\n\n");
     }
 
-    private void gameFunctions(int funktion){
+    private void gameFunctions(int funktion) {
         switch (funktion) {
             case SPIEL_ERSTELLEN:
                 System.out.println("Spiel erstellen:");
@@ -101,14 +102,14 @@ public class Menu {
         }
     }
 
-    private void loginFunctions(int funktion){
-        switch (funktion){
+    private void loginFunctions(int funktion) {
+        switch (funktion) {
             case LOGIN:
                 System.out.println("Login starten:");
                 login();
                 break;
             case SIGNUP:
-                // TODO SIGNUP Missing logic
+                System.out.println("Signup starten:");
                 signup();
                 break;
             case ENDE:
@@ -122,10 +123,11 @@ public class Menu {
 
     //Maßnahmen wie Account sperren oder ip sperren 
     //bei mehrmaligem falschen anmelden muessen vom server uebernohmen werden
+
     /**
-     * Eine Methode die zum login des Users benutzt wird. 
-     * Ueberprueft zuerst ob der Username richtig ist/ vorhanden ist 
-     * und startet dann den login Versuch sollte dies erfolgreich sein so wird 
+     * Eine Methode die zum login des Users benutzt wird.
+     * Ueberprueft zuerst ob der Username richtig ist/ vorhanden ist
+     * und startet dann den login Versuch sollte dies erfolgreich sein so wird
      * isAuthenticated auf true gesetzt andernfalls auf false
      */
     private void login() {
@@ -137,11 +139,11 @@ public class Menu {
         System.out.println("Passwort: ");
         pw = input.nextLine();
 
-        if(!client_rmi.userLoginExists(username)) {
-            logger.error("Benutzername nicht gefunden.");
+        if (!client_rmi.userLoginExists(username)) {
+            logger.warn("Benutzername nicht gefunden.");
             setAuthenticated(false);
         } else {
-            if(client_rmi.login(username, pw)){
+            if (client_rmi.login(username, pw)) {
                 System.out.println("Login war erfolgreich!");
                 setAuthenticated(true);
             } else {
@@ -151,13 +153,35 @@ public class Menu {
         }
     }
 
-    private void signup(){
-        // TODO REPLACE SIGNUP
-        client_rmi.login("simon", "test");
-        setAuthenticated(true);
+    //TODO Bessere Fehlerbehandlung im Falle eines vergebenen Benutzernames
+    /**
+     * Eine Methode zum Registrieren des Benutzers
+     * Überprüft ob der Name bereits vergeben ist.
+     */
+    private void signup() {
+        input.nextLine();
+        String username;
+        String pw;
+        boolean erg;
+        System.out.println("Benutzername: ");
+        username = input.nextLine();
+        erg = client_rmi.userLoginExists(username);
+        if (erg) {
+            logger.warn("Benutzername bereits vergeben! \nBitte versuchen Sie es erneut.");
+            // TODO Bessere Fehlerbehandlung im Falle eines vergebenen Benutzernames
+            signup();
+        } else {
+            System.out.println("Passwort: ");
+            pw = input.nextLine();
+            erg = client_rmi.createLoginData(username, pw);
+            if (!erg) {
+                logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
+            }
+        }
+        setAuthenticated(false);
     }
 
-    private void logout(){
+    private void logout() {
         setAuthenticated(false);
     }
 
