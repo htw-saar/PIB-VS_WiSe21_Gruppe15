@@ -44,7 +44,8 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             UserDao userDao = new UserDao();
             User user = userDao.getUser(name);
             if (user != null) {
-                if (password.equalsIgnoreCase(user.getPassword())) {
+                //equalsIgnoreCase durch equals ersetzt 
+                if (password.equals(user.getPassword())) {
                     return true;
                 }
             }

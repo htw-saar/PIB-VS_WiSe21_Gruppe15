@@ -104,7 +104,7 @@ public class Menu {
     private void loginFunctions(int funktion){
         switch (funktion){
             case LOGIN:
-                // TODO LOGIN Missing logic
+                System.out.println("Login starten:");
                 login();
                 break;
             case SIGNUP:
@@ -120,28 +120,35 @@ public class Menu {
         }
     }
 
-    //Alpha methode (User kann noch nicht angelegt werden)
+    //Maßnahmen wie Account sperren oder ip sperren 
+    //bei mehrmaligem falschen anmelden muessen vom server uebernohmen werden
+    /**
+     * Eine Methode die zum login des Users benutzt wird. 
+     * Ueberprueft zuerst ob der Username richtig ist/ vorhanden ist 
+     * und startet dann den login Versuch sollte dies erfolgreich sein so wird 
+     * isAuthenticated auf true gesetzt andernfalls auf false
+     */
     private void login() {
         input.nextLine();
-        int versuche = 0;
-        String pw;
-        Boolean log = false;
+        String pw, username;
+
         System.out.println("Benutzername: ");
-        String username = input.nextLine();
+        username = input.nextLine();
         System.out.println("Passwort: ");
         pw = input.nextLine();
-        log = client_rmi.login(username, pw);
-        if(log && versuche <= 3) {
-            System.out.println("Login war erfolgreich!");
-        } else if(!log && versuche <= 3) {
-            logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
-            versuche++;
-            login();
+
+        if(!client_rmi.userLoginExists(username)) {
+            logger.error("Benutzername nicht gefunden.");
+            setAuthenticated(false);
         } else {
-            logger.error("Login fehlgeschlagen!\nLogin wurde gesperrt!");
-            //massnahme ergreifen
+            if(client_rmi.login(username, pw)){
+                System.out.println("Login war erfolgreich!");
+                setAuthenticated(true);
+            } else {
+                logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
+                setAuthenticated(false);
+            }
         }
-        setAuthenticated(true);
     }
 
     private void signup(){
