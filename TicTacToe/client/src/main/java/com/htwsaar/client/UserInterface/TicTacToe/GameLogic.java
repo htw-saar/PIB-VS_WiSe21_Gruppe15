@@ -247,7 +247,13 @@ public class GameLogic {
         return gameBoard;
     }
 
-    public static void joinGame(int GameID) {
+    public static void joinGame(int GameID, Client_RMI client_rmi, String username) {
+        if(client_rmi.joinGame(GameID,username)){
+            System.out.println("Spiel erfolgreich beigetreten!");
+        }
+        else{
+            System.out.println("Spiel nicht erfolgreich beigetreten!");
+        }
     }
 }
 
