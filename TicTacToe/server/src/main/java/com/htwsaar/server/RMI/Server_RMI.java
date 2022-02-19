@@ -135,7 +135,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     }
 
 
-    public Boolean setField(String username, int pos) {
+    public String setField(String username, int pos) {
         try {
             int gameNumber;
             TicTacToe.Winner player;
@@ -150,26 +150,26 @@ public class Server_RMI implements ServerClient_Connect_Interface {
                 TicTacToe.Winner playState = games.get(gameNumber).setField(player, pos);
                 switch (playState) {
                     case Player1:
-                        //Player1 Win
-                        break;
+                        return "Player 1 hat gewonnen!";
+
                     case Player2:
-                        //Player2 Win
-                        break;
+                        return "Player 2 hat gewonnen!";
+
                     case UNSETTELD:
-                        //Unentschieden
-                        break;
+                        return "unentschieden!";
+
                     case NONE:
-                        //Spiel noch nicht beendet
-                        break;
+                        return "noch nicht beendet";
+
                     default:
                         logger.error("GameState Fehler!");
                         break;
                 }
             }
-            return false;
+            return "";
         } catch (Exception e) {
             logger.error("Server exception: " + e.toString());
-            return false;
+            return "";
         }
     }
 

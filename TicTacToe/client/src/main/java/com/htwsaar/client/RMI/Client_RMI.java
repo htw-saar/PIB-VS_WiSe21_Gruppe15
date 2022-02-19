@@ -42,12 +42,12 @@ public class Client_RMI {
         }
     }
 
-    public Boolean setField(String username, int pos) {
+    public String setField(String username, int pos) {
         try {
             return clientStub.setField(username, pos);
         } catch(Exception e) {
             logger.error("Client exception: " + e.toString());
-            return false;
+            return "";
         }
     }
 

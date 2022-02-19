@@ -16,7 +16,7 @@ public interface ServerClient_Connect_Interface extends Remote {
 
         Boolean joinGame(String username, int joinCode) throws RemoteException;
 
-        Boolean setField(String username, int pos) throws RemoteException;
+       String setField(String username, int pos) throws RemoteException;
 
         String[] returnGameboard(int userId) throws RemoteException;
 

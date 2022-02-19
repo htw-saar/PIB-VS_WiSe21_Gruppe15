@@ -22,27 +22,33 @@ public class GameLogic {
             System.out.println("Server waits for Player 2");;
         }
         while (true) {
+            printGameBoard(gameBoard);
+            System.out.println("Setze Feld 1 bis 9");
+            int field = intEinlesen();
             //Player1:
-            String winBreak = winnerChecker();
-            if (winBreak == "") {
-                player1Logic(gameBoard);
-            } else if (winBreak != "") {
-                System.out.println(winnerChecker());
-                printGameBoard(gameBoard);
-                break;
-            }
-            printGameBoard(gameBoard);
+            String winBreak = client_rmi.setField(username,field);
+            switch (winBreak) {
+                case "Player 1 hat gewonnen!":
+                    System.out.println("Player 1 win");
+                    break;
 
-            //Player2:
-            String winBreak2 = winnerChecker();
-            if (winBreak2 == "") {
-                player2Logic(gameBoard);
-            } else if (winBreak2 != "") {
-                System.out.println(winnerChecker());
-                printGameBoard(gameBoard);
-                break;
+                case "Player 2 hat gewonnen!":
+                    System.out.println("Player 2 win");
+                   break;
+
+                case "unentschieden!":
+                    System.out.println("unsettled");
+                    break;
+
+                case "noch nicht beendet":
+                    System.out.println("not ended");
+                    break;
+
+                default:
+                    System.out.println("GameState Error");
+                    break;
             }
-            printGameBoard(gameBoard);
+
         }
     }
 
@@ -250,6 +256,9 @@ public class GameLogic {
     public static void joinGame(int GameID, Client_RMI client_rmi, String username) {
         if(client_rmi.joinGame(GameID,username)){
             System.out.println("Spiel erfolgreich beigetreten!");
+            while (true){
+                System.out.println("Spieler 2 spielt über diese Methode"); // ab dieser Zeile müsste die Game Logic für Spieler 2 definiert werden
+            }
         }
         else{
             System.out.println("Spiel nicht erfolgreich beigetreten!");
