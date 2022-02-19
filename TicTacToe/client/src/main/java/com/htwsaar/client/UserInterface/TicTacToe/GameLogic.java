@@ -1,8 +1,10 @@
 package com.htwsaar.client.UserInterface.TicTacToe;
 
 import com.htwsaar.client.RMI.Client_RMI;
+import com.htwsaar.server.Game.TicTacToe;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class GameLogic {
     //Initialisierung (Zurücksetzung) des Spielbretts.
@@ -19,35 +21,23 @@ public class GameLogic {
         printGameBoard(gameBoard);
         client_rmi.createGame(client_rmi.getLoggedInUser());
         while(client_rmi.checkGameStart(username) == false){
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             System.out.println("Server waits for Player 2");;
         }
         while (true) {
+
             printGameBoard(gameBoard);
             System.out.println("Setze Feld 1 bis 9");
             int field = intEinlesen();
             //Player1:
-            String winBreak = client_rmi.setField(username,field);
-            switch (winBreak) {
-                case "Player 1 hat gewonnen!":
-                    System.out.println("Player 1 win");
-                    break;
+            TicTacToe.Winner winBreak = client_rmi.setField(username,field);
+            System.out.println(winBreak.label);
 
-                case "Player 2 hat gewonnen!":
-                    System.out.println("Player 2 win");
-                   break;
 
-                case "unentschieden!":
-                    System.out.println("unsettled");
-                    break;
-
-                case "noch nicht beendet":
-                    System.out.println("not ended");
-                    break;
-
-                default:
-                    System.out.println("GameState Error");
-                    break;
-            }
 
         }
     }
@@ -257,6 +247,11 @@ public class GameLogic {
         if(client_rmi.joinGame(GameID,username)){
             System.out.println("Spiel erfolgreich beigetreten!");
             while (true){
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 System.out.println("Spieler 2 spielt über diese Methode"); // ab dieser Zeile müsste die Game Logic für Spieler 2 definiert werden
             }
         }

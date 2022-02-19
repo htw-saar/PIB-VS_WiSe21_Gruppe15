@@ -1,5 +1,6 @@
 package com.htwsaar.client.RMI;
 
+import com.htwsaar.server.Game.TicTacToe;
 import com.htwsaar.server.RMI.ServerClient_Connect_Interface;
 
 import org.apache.logging.log4j.LogManager;
@@ -42,12 +43,12 @@ public class Client_RMI {
         }
     }
 
-    public String setField(String username, int pos) {
+    public TicTacToe.Winner setField(String username, int pos) {
         try {
             return clientStub.setField(username, pos);
         } catch(Exception e) {
             logger.error("Client exception: " + e.toString());
-            return "";
+            return TicTacToe.Winner.NONE;
         }
     }
 
