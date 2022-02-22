@@ -1,8 +1,10 @@
 package com.htwsaar.client.UserInterface.TicTacToe;
 
 import com.htwsaar.client.RMI.Client_RMI;
+import com.htwsaar.server.Game.TicTacToe;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class GameLogic {
     //Initialisierung (Zurücksetzung) des Spielbretts.
@@ -18,29 +20,25 @@ public class GameLogic {
         // Game Board ins Terminal Printen:
         printGameBoard(gameBoard);
         client_rmi.createGame(client_rmi.getLoggedInUser());
-        while(client_rmi.checkGameStart(username) == false)
+        while(client_rmi.checkGameStart(username) == false){
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Server waits for Player 2");;
+        }
         while (true) {
-            //Player1:
-            String winBreak = winnerChecker();
-            if (winBreak == "") {
-                player1Logic(gameBoard);
-            } else if (winBreak != "") {
-                System.out.println(winnerChecker());
-                printGameBoard(gameBoard);
-                break;
-            }
-            printGameBoard(gameBoard);
 
-            //Player2:
-            String winBreak2 = winnerChecker();
-            if (winBreak2 == "") {
-                player2Logic(gameBoard);
-            } else if (winBreak2 != "") {
-                System.out.println(winnerChecker());
-                printGameBoard(gameBoard);
-                break;
-            }
             printGameBoard(gameBoard);
+            System.out.println("Setze Feld 1 bis 9");
+            int field = intEinlesen();
+            //Player1:
+            TicTacToe.Winner winBreak = client_rmi.setField(username,field);
+            System.out.println(winBreak.label);
+
+
+
         }
     }
 
@@ -243,6 +241,23 @@ public class GameLogic {
                 {'7', '|', '8', '|', '9'}
         };
         return gameBoard;
+    }
+
+    public static void joinGame(int GameID, Client_RMI client_rmi, String username) {
+        if(client_rmi.joinGame(GameID,username)){
+            System.out.println("Spiel erfolgreich beigetreten!");
+            while (true){
+                try {
+                    TimeUnit.SECONDS.sleep(3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Spieler 2 spielt über diese Methode"); // ab dieser Zeile müsste die Game Logic für Spieler 2 definiert werden
+            }
+        }
+        else{
+            System.out.println("Spiel nicht erfolgreich beigetreten!");
+        }
     }
 }
 
