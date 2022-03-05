@@ -128,8 +128,8 @@ public class Menu {
                 client_rmi.ShowScoreBoardAll();
                 break;
             case LOGOUT:
-                logout();
                 System.out.println("Benutzer wird abgemeldet.");
+                logout();
                 break;
             default:
                 System.out.println("Fehlerhafte Auswahl einer Funktion!");
