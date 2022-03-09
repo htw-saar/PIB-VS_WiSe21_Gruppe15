@@ -117,8 +117,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
 
     public Boolean createGame(String username) {
         try {
-            TicTacToe game;
-            game = new TicTacToe(username);
+            TicTacToe game = new TicTacToe(username);;
             waitingGames.add(game);
             return true;
         } catch (Exception e) {
@@ -189,7 +188,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             String[] playerNames;
             for (int i = 0; i < games.size(); i++) {
                 playerNames = games.get(i).getPlayers();
-                if (playerNames[0] == username || playerNames[1] == username) {
+                if (playerNames.equals(username) || playerNames.equals(username)) {
                     return i;
                 }
             }
