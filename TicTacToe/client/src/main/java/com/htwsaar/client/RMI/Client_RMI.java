@@ -47,8 +47,6 @@ public class Client_RMI {
 
     public String[] returnGameboard(String username) {
         try {
-            int userId;
-            userId = clientStub.getUserId(username);
             return clientStub.returnGameboard(username);
         } catch (Exception e) {
             logger.error("Client exception: " + e.toString());
