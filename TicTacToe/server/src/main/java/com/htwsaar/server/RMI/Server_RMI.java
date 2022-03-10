@@ -117,6 +117,14 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         return gameboard;
     }
 
+    public int getUserId(String username){
+        int userId;
+        UserDao userDao = new UserDao();
+        User user = userDao.getUser(username);
+        userId = user.getUserId();
+        return userId;
+    }
+
     public Boolean joinGame(String username, int joinCode) {
         try {
             for (int i = 0; i < waitingGames.size(); i++) {

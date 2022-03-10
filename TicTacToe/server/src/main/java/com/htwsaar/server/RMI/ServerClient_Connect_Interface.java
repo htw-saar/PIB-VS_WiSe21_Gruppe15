@@ -18,9 +18,11 @@ public interface ServerClient_Connect_Interface extends Remote {
 
         Boolean joinGame(String username, int joinCode) throws RemoteException;
 
-    TicTacToe.Winner setField(String username, int pos) throws RemoteException;
+        TicTacToe.Winner setField(String username, int pos) throws RemoteException;
 
         String[] returnGameboard(int userId) throws RemoteException;
 
         Boolean checkGameStart(String username) throws RemoteException;
+
+        int getUserId(String username) throws RemoteException;
     }

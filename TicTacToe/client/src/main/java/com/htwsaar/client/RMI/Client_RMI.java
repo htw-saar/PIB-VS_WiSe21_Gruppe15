@@ -34,6 +34,17 @@ public class Client_RMI {
         }
     }
 
+    public String[] returnGameboard(String username) {
+        try {
+            int userId;
+            userId = clientStub.getUserId(username);
+            return clientStub.returnGameboard(userId);
+        } catch (Exception e) {
+            logger.error("Client exception: " + e.toString());
+            return null;
+        }
+    }
+
     public Boolean joinGame(int joinCode, String username) {
         try {
             return clientStub.joinGame(username, joinCode);

@@ -1,5 +1,6 @@
 package com.htwsaar.client.UserInterface.TicTacToe;
 
+import com.htwsaar.client.Client;
 import com.htwsaar.client.RMI.Client_RMI;
 import com.htwsaar.server.Game.TicTacToe;
 
@@ -36,10 +37,18 @@ public class GameLogic {
             //Player1:
             TicTacToe.Winner winBreak = client_rmi.setField(username,field);
             System.out.println(winBreak.label);
+            System.out.println(onlineBoard(username));
 
 
 
         }
+    }
+
+    public static String[] onlineBoard(String username){
+        Client_RMI client_rmi = new Client_RMI();
+        String[] gameboard;
+        gameboard = client_rmi.returnGameboard(username);
+        return gameboard;
     }
 
     /**
@@ -236,7 +245,7 @@ public class GameLogic {
         char[][] gameBoard = {
                 {'1', '|', '2', '|', '3'},
                 {'-', '+', '-', '+', '-'},
-                {'4', '|', '5', '|', '6'},
+                {'4', '|', 'U', '|', '6'},
                 {'-', '+', '-', '+', '-'},
                 {'7', '|', '8', '|', '9'}
         };
