@@ -23,6 +23,21 @@ public class Server_RMI implements ServerClient_Connect_Interface {
 
     }
 
+    //TODO CreateLoginData
+    public Boolean createLoginData(String name, String password) {
+        return false;
+    }
+
+    //TODO userLoginExists
+    public Boolean userLoginExists(String name) {
+        try {
+            return false;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return false;
+        }
+    }
+
     public Boolean checkGameStart(String username) {
         UserDao userDao = new UserDao();
         User user = userDao.getUser(username);
@@ -111,9 +126,10 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
-    public String[] returnGameboard(int userId){
+    public String[] returnGameboard(String username){
         String[] gameboard;
-        gameboard = waitingGames.get(userId).outputGameboard();
+        int gameId = playerInWhichGame(username);
+        gameboard = games.get(gameId).outputGameboard();
         return gameboard;
     }
 
@@ -149,11 +165,14 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             TicTacToe.Winner player;
             gameNumber = playerInWhichGame(username);
             if (gameNumber != -1) {
-                if(games.get(gameNumber).whichPlayer(username) == 1) {
+                TicTacToe game = games.get(gameNumber);
+                if(game.whichPlayer(username) == 1) {
                     player = TicTacToe.Winner.Player1;
+                    game.setActivePlayer(game.getPlayers()[1]);
                 }
                 else{
                     player = TicTacToe.Winner.Player2;
+                    game.setActivePlayer(game.getPlayers()[0]);
                 }
                 TicTacToe.Winner playState = games.get(gameNumber).setField(player, pos);
                 return playState;
@@ -170,7 +189,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             String[] playerNames;
             for (int i = 0; i < games.size(); i++) {
                 playerNames = games.get(i).getPlayers();
-                if (playerNames.equals(username) || playerNames.equals(username)) {
+                if (playerNames[0].equals(username) || playerNames[1].equals(username)) {
                     return i;
                 }
             }
@@ -179,6 +198,11 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             logger.error("Server exception: " + e.toString());
             return -1;
         }
+    }
+
+    public String getActivePlayer(String username){
+        int gameID = playerInWhichGame(username);
+        return games.get(gameID).getActivePlayer();
     }
 }
 

@@ -35,6 +35,7 @@ public class TicTacToe {
     private final int[][] winConditions;
     private String[] players = new String[2];
     private int joinCode;
+    private String activePlayer;
 
     /**
      * Konstruktor von TicTacToe
@@ -42,14 +43,14 @@ public class TicTacToe {
      */
     public TicTacToe(String username) {
         winConditions = new int[][]{
-                {1, 2, 3},
-                {4, 5, 6},
-                {7, 8, 9},
+                {0, 1, 2},
+                {3, 4, 5},
+                {6, 7, 8},
+                {0, 3, 6},
                 {1, 4, 7},
                 {2, 5, 8},
-                {3, 6, 9},
-                {1, 5, 9},
-                {3, 5, 7}};
+                {0, 4, 8},
+                {2, 4, 6}};
         initGameboard();
         setX(username);
         createJoinCode(username);
@@ -75,7 +76,8 @@ public class TicTacToe {
      */
     public void setX(String name) {
         x = name;
-        players[0] = name;
+        players[0] = x;
+        activePlayer = x;
     }
 
     /**
@@ -88,6 +90,22 @@ public class TicTacToe {
         players[1] = name;
     }
 
+    /**
+     * Setzt den Active Player
+     *
+     * @param activePlayer enthält den Username
+     */
+    public void setActivePlayer(String activePlayer) {
+        this.activePlayer = activePlayer;
+    }
+
+    /**
+     * Gibt Active Player zurueck
+     *
+     */
+    public String getActivePlayer() {
+        return activePlayer;
+    }
     /**
      * Setzt einen Spielermarker an Position pos
      *
@@ -182,7 +200,7 @@ public class TicTacToe {
     }
 
     public int whichPlayer(String username) {
-        if (x == username) {
+        if (x.equals(username)) {
             return 1;
         }
         return 0;

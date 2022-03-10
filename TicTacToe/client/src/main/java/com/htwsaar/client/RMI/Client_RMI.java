@@ -144,7 +144,13 @@ public class Client_RMI {
 
     }
 
-    /*public String[] returnGameboard() {
-        return ;
-    }*/
+    public String getActivePlayer(String username){
+        try {
+            return clientStub.getActivePlayer(username);
+        } catch (RemoteException e){
+            logger.error("Client exception: " + e.toString());
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
