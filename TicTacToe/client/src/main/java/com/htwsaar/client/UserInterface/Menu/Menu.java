@@ -24,6 +24,7 @@ public class Menu {
     private final Client_RMI client_rmi;
     private final Scanner input = new Scanner(System.in);
     private String username;
+    private GameLogic gameLogic = new GameLogic();
 
     public Menu(Client_RMI client_rmi) {
         this.client_rmi = client_rmi;
@@ -84,13 +85,12 @@ public class Menu {
         switch (funktion) {
             case SPIEL_ERSTELLEN:
                 System.out.println("Spiel erstellen:");
-
-                GameLogic.startGame(client_rmi, username);
+                gameLogic.startGame(client_rmi, username);
                 //client_rmi.returnGameboard();
                 break;
             case SPIEL_BEITRETEN:
                 System.out.println("Spiel beitreten:");
-                GameLogic.joinGame(3, client_rmi, username); //leer
+                gameLogic.joinGame(1, client_rmi, username); //leer
                 break;
             case BESTENLISTE:
                 System.out.println("Bestenliste:");
