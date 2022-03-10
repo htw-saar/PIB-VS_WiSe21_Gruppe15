@@ -12,8 +12,8 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>TicTAcToe/client</module>
-    <module>TicTAcToe/server</module>
+    <module>TicTacToe/client</module>
+    <module>TicTacToe/server</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -91,5 +91,15 @@
         </plugin>
       </plugins>
     </pluginManagement>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-compiler-plugin</artifactId>
+              <configuration>
+                  <source>14</source>
+                  <target>14</target>
+              </configuration>
+          </plugin>
+      </plugins>
   </build>
 </project>

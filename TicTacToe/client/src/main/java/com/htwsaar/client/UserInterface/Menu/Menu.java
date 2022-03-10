@@ -2,18 +2,29 @@ package com.htwsaar.client.UserInterface.Menu;
 
 import com.htwsaar.client.UserInterface.TicTacToe.GameLogic;
 import com.htwsaar.client.RMI.Client_RMI;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.InputMismatchException;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class Menu {
-    private final int SIEL_ERSTELLEN = 1;
+    private static final Logger logger = LogManager.getLogger(Menu.class);
+
+    private final int ENDE = 0;
+    private final int LOGIN = 1;
+    private final int SIGNUP = 2;
+    private boolean isAuthenticated = false;
+
+    private final int SPIEL_ERSTELLEN = 1;
     private final int SPIEL_BEITRETEN = 2;
     private final int BESTENLISTE = 3;
-    private final int ENDE = 0;
+    private final int LOGOUT = 9;
     private int funktion = -1;
     private final Client_RMI client_rmi;
     private final Scanner input = new Scanner(System.in);
+    private String username;
+    private GameLogic gameLogic = new GameLogic();
 
     public Menu(Client_RMI client_rmi) {
         this.client_rmi = client_rmi;
@@ -24,47 +35,145 @@ public class Menu {
             try {
                 funktion = einlesenFunktion();
                 ausfuehrenFunktion(funktion);
-            } catch (IllegalArgumentException e) {
-                e.printStackTrace(System.out);
-                System.out.println(e);
-            } catch (InputMismatchException e) {
-                e.printStackTrace(System.out);
-                System.out.println(e);
-                input.nextLine();
             } catch (Exception e) {
-                System.out.println("Es wurde eine Ausnahme eingefangen und zwar: " + e);
-                e.printStackTrace(System.out);
+                logger.error(e);
+                input.nextLine();
             }
         }
     }
 
     private int einlesenFunktion() {
-        System.out.print(
-                SIEL_ERSTELLEN + ": Spiel erstellen\n" +
-                        SPIEL_BEITRETEN + ": Spiel beitreten\n" +
-                        BESTENLISTE + ": Bestenliste anzeigen\n" +
-                        ENDE + ": Beenden\n"
-        );
-
-        return intEinlesen("\nAuswahl eingeben: ");
-    }
-
-    private void ausfuehrenFunktion(int funktion) {
-        if (funktion == SIEL_ERSTELLEN) {
-            System.out.println("Spiel erstellen");
-            GameLogic.startGame();
-        } else if (funktion == SPIEL_BEITRETEN) {
-            System.out.println("Spiel beitreten");
-        } else if (funktion == BESTENLISTE) {
-            System.out.println("Bestenliste");
-            client_rmi.ShowScoreBoardAll();
-        } else if (funktion == ENDE) {
-            System.out.println("Das Programm wird beendet.");
+        String format = " %2s %6s %2s %22s %2s";
+        String spacer = "  +---------+-------------------------+";
+        System.out.println(spacer);
+        System.out.printf((format) + "%n", "|", "Nummer", "|", "Funktion", "|");
+        System.out.println(spacer);
+        if (isAuthenticated){
+            printInGame(format);
         } else {
-            System.out.println("Fehlerhafte Auswahl einer Funktion!");
+            printLogin(format);
         }
 
-        System.out.println("---------------------------------------");
+        System.out.println(spacer);
+
+        return intEinlesen();
+    }
+
+    private void printInGame(String format){
+        System.out.printf((format) + "%n", "|", SPIEL_ERSTELLEN, "|", "Spiel erstellen", "|");
+        System.out.printf((format) + "%n", "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|");
+        System.out.printf((format) + "%n", "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|");
+        System.out.printf((format) + "%n", "|", LOGOUT, "|", "Ausloggen", "|");
+    }
+
+    private void printLogin(String format){
+        System.out.printf((format) + "%n", "|", LOGIN, "|", "Einloggen", "|");
+        System.out.printf((format) + "%n", "|", SIGNUP, "|", "Registrieren", "|");
+        System.out.printf((format) + "%n", "|", ENDE, "|", "Beenden", "|");
+    }
+
+    private void ausfuehrenFunktion(int funktion) throws RemoteException {
+        if (isAuthenticated){
+            gameFunctions(funktion);
+        } else {
+            loginFunctions(funktion);
+        }
+        System.out.println("\n\n\n\n");
+    }
+
+    private void gameFunctions(int funktion) throws RemoteException {
+        switch (funktion) {
+            case SPIEL_ERSTELLEN:
+                System.out.println("Spiel erstellt ... \n ... Join Code: " + client_rmi.getUserId(username));
+                gameLogic.startGame(client_rmi, username);
+                //client_rmi.returnGameboard();
+                break;
+            case SPIEL_BEITRETEN:
+                System.out.println("Join Code eingeben:");
+                int joinCodeEntry = input.nextInt();
+                gameLogic.joinGame(joinCodeEntry, client_rmi, username); //leer
+                break;
+            case BESTENLISTE:
+                System.out.println("Bestenliste:");
+                client_rmi.ShowScoreBoardAll();
+                break;
+            case LOGOUT:
+                logout();
+                System.out.println("Benutzer wird abgemeldet.");
+                break;
+            default:
+                System.out.println("Fehlerhafte Auswahl einer Funktion!");
+                break;
+        }
+    }
+
+    private void loginFunctions(int funktion){
+        switch (funktion){
+            case LOGIN:
+                login();
+                break;
+            case SIGNUP:
+                signup();
+                break;
+            case ENDE:
+                // TODO Ende Programm
+                break;
+            default:
+                logger.error("Fehlerhafte Auswahl einer Funktion!");
+                break;
+        }
+    }
+
+    //Alpha methode (User kann noch nicht angelegt werden)
+    private void login() {
+        username = null;
+        input.nextLine();
+        int versuche = 0;
+        String pw;
+        Boolean log = false;
+        System.out.println("Benutzername: ");
+        username = input.nextLine();
+        System.out.println("Passwort: ");
+        pw = input.nextLine();
+        log = client_rmi.login(username, pw);
+        if(log && versuche <= 3) {
+            System.out.println("Login war erfolgreich!");
+        } else if(!log && versuche <= 3) {
+            logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
+            versuche++;
+            login();
+        } else {
+            logger.error("Login fehlgeschlagen!\nLogin wurde gesperrt!");
+            //massnahme ergreifen
+        }
+        setAuthenticated(true);
+    }
+
+    private void signup() {
+        input.nextLine();
+        String username;
+        String pw;
+        boolean erg;
+        System.out.println("Benutzername: ");
+        username = input.nextLine();
+        erg = client_rmi.userLoginExists(username);
+        if (erg) {
+            logger.warn("Benutzername bereits vergeben! \nBitte versuchen Sie es erneut.");
+            // TODO Bessere Fehlerbehandlung im Falle eines vergebenen Benutzernames
+            signup();
+        } else {
+            System.out.println("Passwort: ");
+            pw = input.nextLine();
+            erg = client_rmi.createLoginData(username, pw);
+            if (!erg) {
+                logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
+            }
+        }
+        setAuthenticated(false);
+    }
+
+    private void logout(){
+        setAuthenticated(false);
     }
 
     /**
@@ -72,9 +181,12 @@ public class Menu {
      *
      * @return int-wert(um damit in der Fachklasse zu rechnen)
      */
-    private int intEinlesen(String txt) {
-        System.out.println(txt);
+    private int intEinlesen() {
+        System.out.println("\nAuswahl eingeben: ");
         return input.nextInt();
     }
 
+    public void setAuthenticated(boolean authenticated) {
+        isAuthenticated = authenticated;
+    }
 }
