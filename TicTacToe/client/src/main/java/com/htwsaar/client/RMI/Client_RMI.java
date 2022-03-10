@@ -17,6 +17,24 @@ public class Client_RMI {
     private ServerClient_Connect_Interface clientStub;
     private String loggedInUser;
 
+    public Boolean userLoginExists(String name) {
+        try {
+            return clientStub.userLoginExists(name);
+        } catch (Exception e) {
+            logger.error("Client exception: " + e.toString());
+            return false;
+        }
+    }
+
+    public Boolean createLoginData(String name, String password) {
+        try {
+            return clientStub.createLoginData(name, password);
+        } catch (Exception e) {
+            logger.error("Client exception: " + e.toString());
+            return false;
+        }
+    }
+
     public String getLoggedInUser() {
         try {
             return loggedInUser;
@@ -150,10 +168,10 @@ public class Client_RMI {
 
     }
 
-    public String getActivePlayer(String username){
+    public String getActivePlayer(String username) {
         try {
             return clientStub.getActivePlayer(username);
-        } catch (RemoteException e){
+        } catch (RemoteException e) {
             logger.error("Client exception: " + e.toString());
             e.printStackTrace();
             return null;
