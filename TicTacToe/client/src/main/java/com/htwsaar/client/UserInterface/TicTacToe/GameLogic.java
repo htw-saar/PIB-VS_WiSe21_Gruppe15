@@ -1,54 +1,100 @@
 package com.htwsaar.client.UserInterface.TicTacToe;
 
+import com.htwsaar.client.Client;
+import com.htwsaar.client.RMI.Client_RMI;
+import com.htwsaar.server.Game.TicTacToe;
+
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class GameLogic {
     //Initialisierung (Zurücksetzung) des Spielbretts.
-    static ArrayList<Integer> player1Positions = new ArrayList<Integer>();
-    static ArrayList<Integer> player2Positions = new ArrayList<Integer>();
-    static final Scanner input = new Scanner(System.in);
+    private ArrayList<Integer> player1Positions = new ArrayList<Integer>();
+    private ArrayList<Integer> player2Positions = new ArrayList<Integer>();
+    private final Scanner input = new Scanner(System.in);
+    private String[][] gameBoard;
+    private Client_RMI client_rmi;
+    private String username;
+
 
     /**
      * Eine Methode für die locale Ausführung des Spiels WIP/umstellung auf Onlinefunktionalität
      */
-    public static void startGame() {
-        char[][] gameBoard = initGameboard();
+    public void startGame(Client_RMI client_rmi, String username) {
+        this.client_rmi = client_rmi;
+        this.username = username;
+        gameBoard = initGameboard();
         // Game Board ins Terminal Printen:
-        printGameBoard(gameBoard);
+//        printGameBoard(gameBoard);
+        client_rmi.createGame(client_rmi.getLoggedInUser());
+        while (!client_rmi.checkGameStart(username)) {
+            System.out.println("Server waits for Player 2");
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        playGame();
+    }
 
-        while (true) {
-            //Player1:
-            String winBreak = winnerChecker();
-            if (winBreak == "") {
-                player1Logic(gameBoard);
-            } else if (winBreak != "") {
-                System.out.println(winnerChecker());
-                printGameBoard(gameBoard);
+    private void playGame() {
+        TicTacToe.Winner winBreak = TicTacToe.Winner.NONE;
+        String[] serverGameboard;
+        while (winBreak == TicTacToe.Winner.NONE) {
+
+            waitOnPlayer();
+            serverGameboard = client_rmi.returnGameboard(username);
+            placeSymb(serverGameboard);
+            printGameBoard(gameBoard);
+            System.out.println("Setze Feld 1 bis 9");
+            int field = intEinlesen();
+            System.out.println();
+            //Player:
+            //TODO: Überprüfung ob Felder bereits gesetzt sind
+            //TODO: Wincondition nach return von gameboard
+            winBreak = client_rmi.setField(username, field - 1);
+            while (winBreak.equals(TicTacToe.Winner.FIELDSET)) {
+                System.out.println("Das Feld ist bereits gesetzt, bitte anderes Feld wählen: ");
+                field = intEinlesen();
+                winBreak = client_rmi.setField(username, field - 1);
+            }
+            System.out.println("TEEEEEEEEEEEEEEEEEEEEEST");
+            serverGameboard = client_rmi.returnGameboard(username);
+            placeSymb(serverGameboard);
+            printGameBoard(gameBoard);
+            if (!winBreak.label.equals("none")){
+                System.out.println("Der Sieger ist: \"" + username + "\" mit dem Symbol: " + winBreak.label);
                 break;
             }
-            printGameBoard(gameBoard);
+        }
+    }
 
-            //Player2:
-            String winBreak2 = winnerChecker();
-            if (winBreak2 == "") {
-                player2Logic(gameBoard);
-            } else if (winBreak2 != "") {
-                System.out.println(winnerChecker());
-                printGameBoard(gameBoard);
-                break;
+
+    public static String[] onlineBoard(String username) {
+        Client_RMI client_rmi = new Client_RMI();
+        String[] gameboard;
+        gameboard = client_rmi.returnGameboard(username);
+        return gameboard;
+    }
+
+    private void waitOnPlayer() {
+        while (!client_rmi.getActivePlayer(username).equals(username)) {
+            System.out.println("Warte auf anderen Spieler"); // ab dieser Zeile müsste die Game Logic für Spieler 2 definiert werden
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            printGameBoard(gameBoard);
         }
     }
 
     /**
-     * Eine Methode für die Spieler 2 Logik
-     *
-     * @param gameBoard, Spielbrett
+     * Eine Methode für die Spieler Logik
      */
     //Umschreiben der übergabeparameter für Onlinefunktionalität wegen Input
     // Player1:
-    public static void player1Logic(char[][] gameBoard) {
+    public void playerLogic() {
         System.out.println("Player1: Trage eine Ziffer ein zwischen 1 und 9:");
         int player1Pos = intEinlesen();
         while (player1Positions.contains(player1Pos) || player2Positions.contains(player1Pos)) {
@@ -56,7 +102,7 @@ public class GameLogic {
             player1Pos = intEinlesen();
         }
         System.out.println(player1Pos);
-        placeSymb(gameBoard, "player1", player1Pos);
+        //placeSymb(gameBoard);
     }
 
     /**
@@ -66,7 +112,7 @@ public class GameLogic {
      */
     //Umschreiben der übergabeparameter für Onlinefunktionalität wegen Input
     // Player2:
-    public static void player2Logic(char[][] gameBoard) {
+    public void player2Logic(char[][] gameBoard) {
         System.out.println("Player2: Trage eine Ziffern ein zwischen 1 und 9:");
         int player2Pos = intEinlesen();
         while (player1Positions.contains(player2Pos) || player2Positions.contains(player2Pos)) {
@@ -74,7 +120,7 @@ public class GameLogic {
             player2Pos = intEinlesen();
         }
         System.out.println(player2Pos);
-        placeSymb(gameBoard, "player2", player2Pos);
+//        placeSymb(gameBoard, "player2", player2Pos);
     }
 
     /**
@@ -82,9 +128,9 @@ public class GameLogic {
      *
      * @param gameBoard, Spielbrett
      */
-    public static void printGameBoard(char[][] gameBoard) {
-        for (char[] row : gameBoard) { // for each Schleife für jeweilige Reihe in GameBoard
-            for (char c : row) { // for each Character an der jeweiligen Stelle
+    public static void printGameBoard(String[][] gameBoard) {
+        for (String[] row : gameBoard) { // for each Schleife für jeweilige Reihe in GameBoard
+            for (String c : row) { // for each Character an der jeweiligen Stelle
                 System.out.print(c);
             }
             System.out.println();
@@ -93,60 +139,43 @@ public class GameLogic {
 
     /**
      * Eine Methode zum setzen von Symbolen auf dem Spielbrett
-     *
-     * @param gameBoard, Spielbrett
-     * @param user,      Spielerbezeichnung (player1 oder player2)
-     * @param pos,       vom Spieler gesetzte Position
+     * <p>
+     * //     * @param gameBoard, Spielbrett
+     * //     * @param user,      Spielerbezeichnung (player1 oder player2)
      */
-    public static void placeSymb(char[][] gameBoard, String user, int pos) {
-        char symbol = 'U';
-
-        // Spielerunterscheidung ob ein X oder ein O gesetzt wird
-        if (user.equals("player1")) {
-            symbol = 'X';
-            if (!(player1Positions.contains(pos)) && !(player2Positions.contains(pos))) {
-                player1Positions.add(pos);
+    public void placeSymb(String[] server_gameboard) {
+        for (int i = 0; i < server_gameboard.length; i++) {
+            switch (i + 1) {
+                case 1:
+                    gameBoard[0][0] = server_gameboard[i];
+                    break;
+                case 2:
+                    gameBoard[0][2] = server_gameboard[i];
+                    break;
+                case 3:
+                    gameBoard[0][4] = server_gameboard[i];
+                    break;
+                case 4:
+                    gameBoard[2][0] = server_gameboard[i];
+                    break;
+                case 5:
+                    gameBoard[2][2] = server_gameboard[i];
+                    break;
+                case 6:
+                    gameBoard[2][4] = server_gameboard[i];
+                    break;
+                case 7:
+                    gameBoard[4][0] = server_gameboard[i];
+                    break;
+                case 8:
+                    gameBoard[4][2] = server_gameboard[i];
+                    break;
+                case 9:
+                    gameBoard[4][4] = server_gameboard[i];
+                    break;
+                default:
+                    break;
             }
-        } else if (user.equals("player2")) {
-            symbol = 'O';
-            if (!(player1Positions.contains(pos)) && !(player2Positions.contains(pos))) {
-                player2Positions.add(pos);
-            }
-        }
-
-        /* Switch Case Block der an der jeweiligen Stelle die mitgegeben
-           wird das Symbol des jeweiligen Spielers einträgt*/
-        switch (pos) {
-            case 1:
-                gameBoard[0][0] = symbol;
-                break;
-            case 2:
-                gameBoard[0][2] = symbol;
-                break;
-            case 3:
-                gameBoard[0][4] = symbol;
-                break;
-            case 4:
-                gameBoard[2][0] = symbol;
-                break;
-            case 5:
-                gameBoard[2][2] = symbol;
-                break;
-            case 6:
-                gameBoard[2][4] = symbol;
-                break;
-            case 7:
-                gameBoard[4][0] = symbol;
-                break;
-            case 8:
-                gameBoard[4][2] = symbol;
-                break;
-            case 9:
-                gameBoard[4][4] = symbol;
-                break;
-            default:
-                System.out.println("Bitte Zahl zwischen 1 und 9 eingeben!");
-                break;
         }
     }
 
@@ -155,7 +184,7 @@ public class GameLogic {
      *
      * @return String-wert(Gibt Ergebnis zurück)
      */
-    public static String winnerChecker() {
+    public String winnerChecker() {
         List upperRow = Arrays.asList(1, 2, 3);
         List middleRow = Arrays.asList(4, 5, 6);
         List bottomRow = Arrays.asList(7, 8, 9);
@@ -201,7 +230,7 @@ public class GameLogic {
      *
      * @return int-wert(um damit in der Fachklasse zu rechnen)
      */
-    private static int intEinlesen() {
+    private int intEinlesen() {
         try {
             int zahl = input.nextInt();
 
@@ -227,19 +256,31 @@ public class GameLogic {
      *
      * @return Spielbrett
      */
-    public static char[][] initGameboard() {
+    public String[][] initGameboard() {
         player1Positions = new ArrayList<Integer>();
         player2Positions = new ArrayList<Integer>();
 
         //Gameboard Array 3 Reihen 3 Spalten, 3x3 Matrix
-        char[][] gameBoard = {
-                {'1', '|', '2', '|', '3'},
-                {'-', '+', '-', '+', '-'},
-                {'4', '|', '5', '|', '6'},
-                {'-', '+', '-', '+', '-'},
-                {'7', '|', '8', '|', '9'}
+        String[][] gameBoard = {
+                {"1", "|", "2", "|", "3"},
+                {"-", "+", "-", "+", "-"},
+                {"4", "|", "5", "|", "6"},
+                {"-", "+", "-", "+", "-"},
+                {"7", "|", "8", "|", "9"}
         };
         return gameBoard;
+    }
+
+    public void joinGame(int GameID, Client_RMI client_rmi, String username) {
+        if (client_rmi.joinGame(GameID, username)) {
+            System.out.println("Spiel erfolgreich beigetreten!");
+            this.client_rmi = client_rmi;
+            this.username = username;
+            gameBoard = initGameboard();
+            playGame();
+        } else {
+            System.out.println("Spiel nicht erfolgreich beigetreten!");
+        }
     }
 }
 

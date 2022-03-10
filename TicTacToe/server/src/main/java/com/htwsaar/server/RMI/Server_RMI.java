@@ -1,4 +1,5 @@
 package com.htwsaar.server.RMI;
+
 import com.htwsaar.server.Game.TicTacToe;
 import com.htwsaar.server.Hibernate.dao.UserDao;
 import com.htwsaar.server.Hibernate.entity.User;
@@ -10,6 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,9 +20,43 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     private ArrayList<TicTacToe> games = new ArrayList<>();
     private ArrayList<TicTacToe> waitingGames = new ArrayList<>();
     private static final Logger logger = LogManager.getLogger(Server_RMI.class);
+    UserDao userDao = new UserDao();
 
     public Server_RMI() {
+    }
 
+    public Boolean createLoginData(String name, String password) {
+        try {
+            User user = new User(name, password);
+            userDao.saveUser(user);
+            return true;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return false;
+        }
+    }
+
+    public Boolean userLoginExists(String name) {
+        try {
+            if(userDao.getUser(name) != null){
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return false;
+        }
+    }
+
+    public Boolean checkGameStart(String username) {
+        UserDao userDao = new UserDao();
+        User user = userDao.getUser(username);
+        for (TicTacToe game : waitingGames) {
+            if (user.getUserId() == game.getJoinCode()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void start_Server_RMI() {
@@ -100,6 +136,20 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
+    public String[] returnGameboard(String username) {
+        String[] gameboard;
+        int gameId = playerInWhichGame(username);
+        gameboard = games.get(gameId).outputGameboard();
+        return gameboard;
+    }
+
+    public int getUserId(String username) {
+        int userId;
+        UserDao userDao = new UserDao();
+        User user = userDao.getUser(username);
+        userId = user.getUserId();
+        return userId;
+    }
 
     public Boolean joinGame(String username, int joinCode) {
         try {
@@ -119,41 +169,27 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     }
 
 
-    public Boolean setField(String username, int pos) {
+    public TicTacToe.Winner setField(String username, int pos) {
         try {
             int gameNumber;
             TicTacToe.Winner player;
             gameNumber = playerInWhichGame(username);
             if (gameNumber != -1) {
-                if(games.get(gameNumber).whichPlayer(username) == 1) {
+                TicTacToe game = games.get(gameNumber);
+                if (game.whichPlayer(username) == 1) {
                     player = TicTacToe.Winner.Player1;
-                }
-                else{
+                    game.setActivePlayer(game.getPlayers()[1]);
+                } else {
                     player = TicTacToe.Winner.Player2;
+                    game.setActivePlayer(game.getPlayers()[0]);
                 }
                 TicTacToe.Winner playState = games.get(gameNumber).setField(player, pos);
-                switch (playState) {
-                    case Player1:
-                        //Player1 Win
-                        break;
-                    case Player2:
-                        //Player2 Win
-                        break;
-                    case UNSETTELD:
-                        //Unentschieden
-                        break;
-                    case NONE:
-                        //Spiel noch nicht beendet
-                        break;
-                    default:
-                        logger.error("GameState Fehler!");
-                        break;
-                }
+                return playState;
             }
-            return false;
+            return TicTacToe.Winner.NONE;
         } catch (Exception e) {
             logger.error("Server exception: " + e.toString());
-            return false;
+            return TicTacToe.Winner.NONE;
         }
     }
 
@@ -162,7 +198,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             String[] playerNames;
             for (int i = 0; i < games.size(); i++) {
                 playerNames = games.get(i).getPlayers();
-                if (playerNames[0] == username || playerNames[1] == username) {
+                if (playerNames[0].equals(username) || playerNames[1].equals(username)) {
                     return i;
                 }
             }
@@ -171,6 +207,11 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             logger.error("Server exception: " + e.toString());
             return -1;
         }
+    }
+
+    public String getActivePlayer(String username) {
+        int gameID = playerInWhichGame(username);
+        return games.get(gameID).getActivePlayer();
     }
 }
 

@@ -20,7 +20,8 @@ public class TicTacToe {
         Player1("X"),
         Player2("O"),
         NONE("none"),
-        UNSETTELD("unsetteld");
+        UNSETTELD("unsetteld"),
+        FIELDSET("fieldset");
 
         public final String label;
 
@@ -35,23 +36,29 @@ public class TicTacToe {
     private final int[][] winConditions;
     private String[] players = new String[2];
     private int joinCode;
+    private String activePlayer;
 
     /**
      * Konstruktor von TicTacToe
      * Erstellt die Win Konditionen und initialisiert das Spielbrett
      */
     public TicTacToe(String username) {
-        winConditions = new int[][]{{1, 2, 3},
-                {4, 5, 6},
-                {7, 8, 9},
+        winConditions = new int[][]{
+                {0, 1, 2},
+                {3, 4, 5},
+                {6, 7, 8},
+                {0, 3, 6},
                 {1, 4, 7},
                 {2, 5, 8},
-                {3, 6, 9},
-                {1, 5, 9},
-                {3, 5, 7}};
+                {0, 4, 8},
+                {2, 4, 6}};
         initGameboard();
         setX(username);
         createJoinCode(username);
+    }
+
+    public int getJoinCode() {
+        return joinCode;
     }
 
     /**
@@ -70,7 +77,8 @@ public class TicTacToe {
      */
     public void setX(String name) {
         x = name;
-        players[0] = name;
+        players[0] = x;
+        activePlayer = x;
     }
 
     /**
@@ -84,12 +92,32 @@ public class TicTacToe {
     }
 
     /**
+     * Setzt den Active Player
+     *
+     * @param activePlayer enthält den Username
+     */
+    public void setActivePlayer(String activePlayer) {
+        this.activePlayer = activePlayer;
+    }
+
+    /**
+     * Gibt Active Player zurueck
+     *
+     */
+    public String getActivePlayer() {
+        return activePlayer;
+    }
+    /**
      * Setzt einen Spielermarker an Position pos
      *
      * @param player der Spieler X oder O
      * @param pos    die Position wo der Marker gesetzt wird
      */
     public Winner setField(Winner player, int pos) {
+        if (gameboard[pos].equals(Winner.Player1.label) || gameboard[pos].equals(Winner.Player2.label)) {
+            return Winner.FIELDSET;
+        }
+
         gameboard[pos] = player.label;
         return checkWinCondition(player);
     }
@@ -104,6 +132,10 @@ public class TicTacToe {
             int field = i + 1;
             this.gameboard[i] = field + "";
         }
+        return this.gameboard;
+    }
+
+    public String[] outputGameboard() {
         return this.gameboard;
     }
 
@@ -173,7 +205,7 @@ public class TicTacToe {
     }
 
     public int whichPlayer(String username) {
-        if (x == username) {
+        if (x.equals(username)) {
             return 1;
         }
         return 0;

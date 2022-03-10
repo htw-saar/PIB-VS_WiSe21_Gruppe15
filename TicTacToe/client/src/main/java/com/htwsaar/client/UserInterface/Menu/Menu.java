@@ -5,6 +5,7 @@ import com.htwsaar.client.RMI.Client_RMI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class Menu {
@@ -22,6 +23,8 @@ public class Menu {
     private int funktion = -1;
     private final Client_RMI client_rmi;
     private final Scanner input = new Scanner(System.in);
+    private String username;
+    private GameLogic gameLogic = new GameLogic();
 
     public Menu(Client_RMI client_rmi) {
         this.client_rmi = client_rmi;
@@ -69,7 +72,7 @@ public class Menu {
         System.out.printf((format) + "%n", "|", ENDE, "|", "Beenden", "|");
     }
 
-    private void ausfuehrenFunktion(int funktion) {
+    private void ausfuehrenFunktion(int funktion) throws RemoteException {
         if (isAuthenticated){
             gameFunctions(funktion);
         } else {
@@ -78,14 +81,17 @@ public class Menu {
         System.out.println("\n\n\n\n");
     }
 
-    private void gameFunctions(int funktion){
+    private void gameFunctions(int funktion) throws RemoteException {
         switch (funktion) {
             case SPIEL_ERSTELLEN:
-                System.out.println("Spiel erstellen:");
-                GameLogic.startGame();
+                System.out.println("Spiel erstellt ... \n ... Join Code: " + client_rmi.getUserId(username));
+                gameLogic.startGame(client_rmi, username);
+                //client_rmi.returnGameboard();
                 break;
             case SPIEL_BEITRETEN:
-                System.out.println("Spiel beitreten:");
+                System.out.println("Join Code eingeben:");
+                int joinCodeEntry = input.nextInt();
+                gameLogic.joinGame(joinCodeEntry, client_rmi, username); //leer
                 break;
             case BESTENLISTE:
                 System.out.println("Bestenliste:");
@@ -104,11 +110,9 @@ public class Menu {
     private void loginFunctions(int funktion){
         switch (funktion){
             case LOGIN:
-                // TODO LOGIN Missing logic
                 login();
                 break;
             case SIGNUP:
-                // TODO SIGNUP Missing logic
                 signup();
                 break;
             case ENDE:
@@ -122,12 +126,13 @@ public class Menu {
 
     //Alpha methode (User kann noch nicht angelegt werden)
     private void login() {
+        username = null;
         input.nextLine();
         int versuche = 0;
         String pw;
         Boolean log = false;
         System.out.println("Benutzername: ");
-        String username = input.nextLine();
+        username = input.nextLine();
         System.out.println("Passwort: ");
         pw = input.nextLine();
         log = client_rmi.login(username, pw);
@@ -144,10 +149,27 @@ public class Menu {
         setAuthenticated(true);
     }
 
-    private void signup(){
-        // TODO REPLACE SIGNUP
-        client_rmi.login("simon", "test");
-        setAuthenticated(true);
+    private void signup() {
+        input.nextLine();
+        String username;
+        String pw;
+        boolean erg;
+        System.out.println("Benutzername: ");
+        username = input.nextLine();
+        erg = client_rmi.userLoginExists(username);
+        if (erg) {
+            logger.warn("Benutzername bereits vergeben! \nBitte versuchen Sie es erneut.");
+            // TODO Bessere Fehlerbehandlung im Falle eines vergebenen Benutzernames
+            signup();
+        } else {
+            System.out.println("Passwort: ");
+            pw = input.nextLine();
+            erg = client_rmi.createLoginData(username, pw);
+            if (!erg) {
+                logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
+            }
+        }
+        setAuthenticated(false);
     }
 
     private void logout(){

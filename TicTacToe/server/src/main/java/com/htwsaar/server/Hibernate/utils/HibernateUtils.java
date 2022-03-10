@@ -30,7 +30,7 @@ public class HibernateUtils {
 
                 Properties settings = new Properties();
                 settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-                settings.put(Environment.URL, "jdbc:mysql://localhost/gameserver?useSSL=false");
+                settings.put(Environment.URL, "jdbc:mysql://localhost/gameserver");
                 settings.put(Environment.USER, "testuser");
                 settings.put(Environment.PASS, "test");
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
