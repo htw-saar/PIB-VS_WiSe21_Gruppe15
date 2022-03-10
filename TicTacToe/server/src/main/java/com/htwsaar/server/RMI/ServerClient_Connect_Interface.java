@@ -1,5 +1,7 @@
 package com.htwsaar.server.RMI;
 
+import com.htwsaar.server.Game.TicTacToe;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -20,6 +22,12 @@ public interface ServerClient_Connect_Interface extends Remote {
 
         Boolean joinGame(String username, int joinCode) throws RemoteException;
 
-        Boolean setField(String username, int pos) throws RemoteException;
+        TicTacToe.Winner setField(String username, int pos) throws RemoteException;
+
+        public String getActivePlayer(String username) throws RemoteException;
+
+        public String[] returnGameboard(String username) throws RemoteException;
+
+        public Boolean checkGameStart(String username) throws RemoteException;
 
     }

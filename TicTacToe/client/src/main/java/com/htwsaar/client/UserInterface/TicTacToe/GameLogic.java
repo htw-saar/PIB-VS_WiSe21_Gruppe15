@@ -58,13 +58,13 @@ public class GameLogic {
 
     private void waitOnPlayer(){
         while (!client_rmi.getActivePlayer(username).equals(username)){
-                System.out.println("Warte auf anderen Spieler"); // ab dieser Zeile müsste die Game Logic für Spieler 2 definiert werden
-                try {
-                    TimeUnit.SECONDS.sleep(3);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            System.out.println("Warte auf anderen Spieler"); // ab dieser Zeile müsste die Game Logic für Spieler 2 definiert werden
+            try {
+                TimeUnit.SECONDS.sleep(3);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+        }
     }
 
     /**
@@ -120,8 +120,8 @@ public class GameLogic {
     /**
      * Eine Methode zum setzen von Symbolen auf dem Spielbrett
      *
-//     * @param gameBoard, Spielbrett
-//     * @param user,      Spielerbezeichnung (player1 oder player2)
+     //     * @param gameBoard, Spielbrett
+     //     * @param user,      Spielerbezeichnung (player1 oder player2)
      */
     public void placeSymb(String[] server_gameboard) {
 //    public void placeSymb(char[][] gameBoard, String user, int pos) {
@@ -175,7 +175,7 @@ public class GameLogic {
             }
         }
         /** Switch Case Block der an der jeweiligen Stelle die mitgegeben
-           wird das Symbol des jeweiligen Spielers einträgt*/
+         wird das Symbol des jeweiligen Spielers einträgt*/
 
     }
 
@@ -284,4 +284,3 @@ public class GameLogic {
         }
     }
 }
-
