@@ -1,4 +1,5 @@
 package com.htwsaar.server.RMI;
+
 import com.htwsaar.server.Game.TicTacToe;
 import com.htwsaar.server.Hibernate.dao.UserDao;
 import com.htwsaar.server.Hibernate.entity.User;
@@ -10,6 +11,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.ArrayList;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,19 +20,27 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     private ArrayList<TicTacToe> games = new ArrayList<>();
     private ArrayList<TicTacToe> waitingGames = new ArrayList<>();
     private static final Logger logger = LogManager.getLogger(Server_RMI.class);
+    UserDao userDao = new UserDao();
 
     public Server_RMI() {
-
     }
 
-    //TODO CreateLoginData
     public Boolean createLoginData(String name, String password) {
-        return false;
+        try {
+            User user = new User(name, password);
+            userDao.saveUser(user);
+            return true;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return false;
+        }
     }
 
-    //TODO userLoginExists
     public Boolean userLoginExists(String name) {
         try {
+            if(userDao.getUser(name) != null){
+                return true;
+            }
             return false;
         } catch (Exception e) {
             logger.error("Server exception: " + e.toString());
@@ -41,7 +51,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     public Boolean checkGameStart(String username) {
         UserDao userDao = new UserDao();
         User user = userDao.getUser(username);
-        for (TicTacToe game: waitingGames) {
+        for (TicTacToe game : waitingGames) {
             if (user.getUserId() == game.getJoinCode()) {
                 return false;
             }
@@ -126,14 +136,14 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
-    public String[] returnGameboard(String username){
+    public String[] returnGameboard(String username) {
         String[] gameboard;
         int gameId = playerInWhichGame(username);
         gameboard = games.get(gameId).outputGameboard();
         return gameboard;
     }
 
-    public int getUserId(String username){
+    public int getUserId(String username) {
         int userId;
         UserDao userDao = new UserDao();
         User user = userDao.getUser(username);
@@ -166,11 +176,10 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             gameNumber = playerInWhichGame(username);
             if (gameNumber != -1) {
                 TicTacToe game = games.get(gameNumber);
-                if(game.whichPlayer(username) == 1) {
+                if (game.whichPlayer(username) == 1) {
                     player = TicTacToe.Winner.Player1;
                     game.setActivePlayer(game.getPlayers()[1]);
-                }
-                else{
+                } else {
                     player = TicTacToe.Winner.Player2;
                     game.setActivePlayer(game.getPlayers()[0]);
                 }
@@ -200,7 +209,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
-    public String getActivePlayer(String username){
+    public String getActivePlayer(String username) {
         int gameID = playerInWhichGame(username);
         return games.get(gameID).getActivePlayer();
     }

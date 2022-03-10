@@ -110,11 +110,9 @@ public class Menu {
     private void loginFunctions(int funktion){
         switch (funktion){
             case LOGIN:
-                // TODO LOGIN Missing logic
                 login();
                 break;
             case SIGNUP:
-                // TODO SIGNUP Missing logic
                 signup();
                 break;
             case ENDE:
@@ -151,10 +149,27 @@ public class Menu {
         setAuthenticated(true);
     }
 
-    private void signup(){
-        // TODO REPLACE SIGNUP
-        client_rmi.login("simon", "test");
-        setAuthenticated(true);
+    private void signup() {
+        input.nextLine();
+        String username;
+        String pw;
+        boolean erg;
+        System.out.println("Benutzername: ");
+        username = input.nextLine();
+        erg = client_rmi.userLoginExists(username);
+        if (erg) {
+            logger.warn("Benutzername bereits vergeben! \nBitte versuchen Sie es erneut.");
+            // TODO Bessere Fehlerbehandlung im Falle eines vergebenen Benutzernames
+            signup();
+        } else {
+            System.out.println("Passwort: ");
+            pw = input.nextLine();
+            erg = client_rmi.createLoginData(username, pw);
+            if (!erg) {
+                logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
+            }
+        }
+        setAuthenticated(false);
     }
 
     private void logout(){
