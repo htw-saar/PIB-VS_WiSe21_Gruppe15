@@ -29,5 +29,7 @@ public interface ServerClient_Connect_Interface extends Remote {
 
         Boolean checkGameStart(String username) throws RemoteException;
 
+        TicTacToe.Winner getGameStatus(String username) throws RemoteException;
+
         int getUserId(String username) throws RemoteException;
     }

@@ -21,7 +21,7 @@ public class Client_RMI {
         try {
             return clientStub.userLoginExists(name);
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
+            logger.error("Client exception: " + e);
             return false;
         }
     }
@@ -30,7 +30,7 @@ public class Client_RMI {
         try {
             return clientStub.createLoginData(name, password);
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
+            logger.error("Client exception: " + e);
             return false;
         }
     }
@@ -39,7 +39,7 @@ public class Client_RMI {
         try {
             return loggedInUser;
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
+            logger.error("Client exception: " + e);
             return "logged in user not found";
         }
     }
@@ -49,7 +49,7 @@ public class Client_RMI {
         try {
             return clientStub.getUserId(username);
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
+            logger.error("Client exception: " + e);
             return -1;
         }
     }
@@ -58,7 +58,7 @@ public class Client_RMI {
         try {
             return clientStub.createGame(username);
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
+            logger.error("Client exception: " + e);
             return false;
         }
     }
@@ -67,7 +67,7 @@ public class Client_RMI {
         try {
             return clientStub.returnGameboard(username);
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
+            logger.error("Client exception: " + e);
             return null;
         }
     }
@@ -76,7 +76,7 @@ public class Client_RMI {
         try {
             return clientStub.joinGame(username, joinCode);
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
+            logger.error("Client exception: " + e);
             return false;
         }
     }
@@ -85,7 +85,7 @@ public class Client_RMI {
         try {
             return clientStub.setField(username, pos);
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
+            logger.error("Client exception: " + e);
             return TicTacToe.Winner.NONE;
         }
     }
@@ -94,8 +94,7 @@ public class Client_RMI {
         try {
             return clientStub.sendLoginData(userName, password);
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
-            e.printStackTrace();
+            logger.error("Client exception: " + e);
             return false;
         }
     }
@@ -105,9 +104,8 @@ public class Client_RMI {
             String format = " %2s %12s %2s %6s %2s %6s %2s %6s %2s";
             String spacer = "  +---------------+---------+---------+---------+";
             System.out.println(spacer);
-            System.out.println(String.format(format, "|", "Username", "|", "Wins", "|", "Loses", "|", "Score", "|"));
+            System.out.printf((format) + "%n", "|", "Username", "|", "Wins", "|", "Loses", "|", "Score", "|");
             System.out.println(spacer);
-//            System.out.println(String.format(format,"-"));
             List<String> stringList;
             stringList = clientStub.scoreboardRequest();
             if (stringList != null) {
@@ -117,8 +115,7 @@ public class Client_RMI {
             }
             System.out.println(spacer);
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
-            e.printStackTrace();
+            logger.error("Client exception: " + e);
         }
     }
 
@@ -127,8 +124,7 @@ public class Client_RMI {
             System.out.println(clientStub.scoreboardRequestForUser(username));
             return 1;
         } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
-            e.printStackTrace();
+            logger.error("Client exception: " + e);
             return 0;
         }
     }
@@ -140,8 +136,7 @@ public class Client_RMI {
             System.out.println("Server Verbindung besteht!\n");
             return stub;
         } catch (NotBoundException | RemoteException e) {
-            logger.error("Client exception: " + e.toString());
-            e.printStackTrace();
+            logger.error("Client exception: " + e);
             return null;
         }
     }
@@ -161,8 +156,7 @@ public class Client_RMI {
         try {
             return clientStub.checkGameStart(username);
         } catch (RemoteException e) {
-            logger.error("Client exception: " + e.toString());
-            e.printStackTrace();
+            logger.error("Client exception: " + e);
             return null;
         }
 
@@ -172,9 +166,19 @@ public class Client_RMI {
         try {
             return clientStub.getActivePlayer(username);
         } catch (RemoteException e) {
-            logger.error("Client exception: " + e.toString());
-            e.printStackTrace();
+            logger.error("Client exception: " + e);
             return null;
         }
     }
+
+    public TicTacToe.Winner getGameStatus(String username) {
+        try{
+            return clientStub.getGameStatus(username);
+        } catch (RemoteException e) {
+            logger.error("Client exception: " + e);
+            return null;
+        }
+    }
+
+
 }

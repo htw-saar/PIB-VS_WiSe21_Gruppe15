@@ -31,7 +31,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             userDao.saveUser(user);
             return true;
         } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
+            logger.error("Server exception: " + e);
             return false;
         }
     }
@@ -43,7 +43,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             }
             return false;
         } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
+            logger.error("Server exception: " + e);
             return false;
         }
     }
@@ -183,8 +183,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
                     player = TicTacToe.Winner.Player2;
                     game.setActivePlayer(game.getPlayers()[0]);
                 }
-                TicTacToe.Winner playState = games.get(gameNumber).setField(player, pos);
-                return playState;
+                return games.get(gameNumber).setField(player, pos);
             }
             return TicTacToe.Winner.NONE;
         } catch (Exception e) {
@@ -212,6 +211,11 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     public String getActivePlayer(String username) {
         int gameID = playerInWhichGame(username);
         return games.get(gameID).getActivePlayer();
+    }
+
+    public TicTacToe.Winner getGameStatus(String username){
+        int gameID = playerInWhichGame(username);
+        return games.get(gameID).getGameStatus();
     }
 }
 
