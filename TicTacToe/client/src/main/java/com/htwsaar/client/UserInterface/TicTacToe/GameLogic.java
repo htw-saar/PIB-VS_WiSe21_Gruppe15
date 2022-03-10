@@ -42,17 +42,31 @@ public class GameLogic {
         TicTacToe.Winner winBreak = TicTacToe.Winner.NONE;
         String[] serverGameboard;
         while (winBreak == TicTacToe.Winner.NONE) {
+
             waitOnPlayer();
             serverGameboard = client_rmi.returnGameboard(username);
             placeSymb(serverGameboard);
             printGameBoard(gameBoard);
             System.out.println("Setze Feld 1 bis 9");
             int field = intEinlesen();
-            //Player1:
+            System.out.println();
+            //Player:
+            //TODO: Überprüfung ob Felder bereits gesetzt sind
+            //TODO: Wincondition nach return von gameboard
             winBreak = client_rmi.setField(username, field - 1);
+            while (winBreak.equals(TicTacToe.Winner.FIELDSET)) {
+                System.out.println("Das Feld ist bereits gesetzt, bitte anderes Feld wählen: ");
+                field = intEinlesen();
+                winBreak = client_rmi.setField(username, field - 1);
+            }
+            System.out.println("TEEEEEEEEEEEEEEEEEEEEEST");
             serverGameboard = client_rmi.returnGameboard(username);
             placeSymb(serverGameboard);
-            System.out.println("\n" + winBreak.label + "\n");
+            printGameBoard(gameBoard);
+            if (!winBreak.label.equals("none")){
+                System.out.println("Der Sieger ist: \"" + username + "\" mit dem Symbol: " + winBreak.label);
+                break;
+            }
         }
     }
 
@@ -76,13 +90,11 @@ public class GameLogic {
     }
 
     /**
-     * Eine Methode für die Spieler 2 Logik
-     *
-     * @param gameBoard, Spielbrett
+     * Eine Methode für die Spieler Logik
      */
     //Umschreiben der übergabeparameter für Onlinefunktionalität wegen Input
     // Player1:
-    public void player1Logic(char[][] gameBoard) {
+    public void playerLogic() {
         System.out.println("Player1: Trage eine Ziffer ein zwischen 1 und 9:");
         int player1Pos = intEinlesen();
         while (player1Positions.contains(player1Pos) || player2Positions.contains(player1Pos)) {
@@ -162,7 +174,6 @@ public class GameLogic {
                     gameBoard[4][4] = server_gameboard[i];
                     break;
                 default:
-                    System.out.println("Bitte Zahl zwischen 1 und 9 eingeben!");
                     break;
             }
         }

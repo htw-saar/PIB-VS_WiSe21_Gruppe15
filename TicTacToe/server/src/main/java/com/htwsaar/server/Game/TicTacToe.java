@@ -20,7 +20,8 @@ public class TicTacToe {
         Player1("X"),
         Player2("O"),
         NONE("none"),
-        UNSETTELD("unsetteld");
+        UNSETTELD("unsetteld"),
+        FIELDSET("fieldset");
 
         public final String label;
 
@@ -113,6 +114,10 @@ public class TicTacToe {
      * @param pos    die Position wo der Marker gesetzt wird
      */
     public Winner setField(Winner player, int pos) {
+        if (gameboard[pos].equals(Winner.Player1.label) || gameboard[pos].equals(Winner.Player2.label)) {
+            return Winner.FIELDSET;
+        }
+
         gameboard[pos] = player.label;
         return checkWinCondition(player);
     }
