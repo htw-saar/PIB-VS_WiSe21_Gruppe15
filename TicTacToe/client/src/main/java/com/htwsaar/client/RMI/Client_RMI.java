@@ -25,6 +25,17 @@ public class Client_RMI {
             return "logged in user not found";
         }
     }
+
+
+    public int getUserId(String username) {
+        try {
+            return clientStub.getUserId(username);
+        } catch (Exception e) {
+            logger.error("Client exception: " + e.toString());
+            return -1;
+        }
+    }
+
     public Boolean createGame(String username) {
         try {
             return clientStub.createGame(username);
@@ -38,7 +49,7 @@ public class Client_RMI {
         try {
             int userId;
             userId = clientStub.getUserId(username);
-            return clientStub.returnGameboard(userId);
+            return clientStub.returnGameboard(username);
         } catch (Exception e) {
             logger.error("Client exception: " + e.toString());
             return null;
@@ -57,77 +68,74 @@ public class Client_RMI {
     public TicTacToe.Winner setField(String username, int pos) {
         try {
             return clientStub.setField(username, pos);
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.error("Client exception: " + e.toString());
             return TicTacToe.Winner.NONE;
         }
     }
 
-    private boolean testLoginData(String userName, String password){
+    private boolean testLoginData(String userName, String password) {
         try {
             return clientStub.sendLoginData(userName, password);
-        } catch(Exception e){
+        } catch (Exception e) {
             logger.error("Client exception: " + e.toString());
             e.printStackTrace();
             return false;
         }
     }
 
-    public void ShowScoreBoardAll(){
+    public void ShowScoreBoardAll() {
         try {
             String format = " %2s %12s %2s %6s %2s %6s %2s %6s %2s";
             String spacer = "  +---------------+---------+---------+---------+";
             System.out.println(spacer);
-            System.out.println(String.format(format, "|", "Username", "|", "Wins", "|", "Loses", "|", "Score" , "|"));
+            System.out.println(String.format(format, "|", "Username", "|", "Wins", "|", "Loses", "|", "Score", "|"));
             System.out.println(spacer);
 //            System.out.println(String.format(format,"-"));
             List<String> stringList;
             stringList = clientStub.scoreboardRequest();
-            if (stringList != null){
+            if (stringList != null) {
                 for (String score : stringList) {
                     System.out.println(score);
                 }
             }
             System.out.println(spacer);
-        } catch(Exception e){
+        } catch (Exception e) {
             logger.error("Client exception: " + e.toString());
             e.printStackTrace();
         }
     }
 
-    public int ShowOwnStats(String username){
+    public int ShowOwnStats(String username) {
         try {
             System.out.println(clientStub.scoreboardRequestForUser(username));
             return 1;
-        } catch(Exception e){
+        } catch (Exception e) {
             logger.error("Client exception: " + e.toString());
             e.printStackTrace();
             return 0;
         }
     }
 
-    private ServerClient_Connect_Interface connectToServer(){
-        try
-        {
+    private ServerClient_Connect_Interface connectToServer() {
+        try {
             Registry registry = LocateRegistry.getRegistry("127.0.0.1", 42424);
             ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) registry.lookup("Hello");
             System.out.println("Server Verbindung besteht!\n");
             return stub;
-        }
-        catch (NotBoundException | RemoteException e){
+        } catch (NotBoundException | RemoteException e) {
             logger.error("Client exception: " + e.toString());
             e.printStackTrace();
             return null;
         }
     }
 
-    public Boolean login(String username, String password){
+    public Boolean login(String username, String password) {
         clientStub = connectToServer();
-        if(clientStub != null) {
+        if (clientStub != null) {
             loggedInUser = username;
             return testLoginData(username, password);
-        }
-        else{
+        } else {
             logger.error("Stub wurde nicht erstellt!\n");
         }
         return false;
@@ -136,7 +144,7 @@ public class Client_RMI {
     public Boolean checkGameStart(String username) {
         try {
             return clientStub.checkGameStart(username);
-        } catch (RemoteException e){
+        } catch (RemoteException e) {
             logger.error("Client exception: " + e.toString());
             e.printStackTrace();
             return null;

@@ -84,13 +84,14 @@ public class Menu {
     private void gameFunctions(int funktion) throws RemoteException {
         switch (funktion) {
             case SPIEL_ERSTELLEN:
-                System.out.println("Spiel erstellen:");
+                System.out.println("Spiel erstellt ... \n ... Join Code: " + client_rmi.getUserId(username));
                 gameLogic.startGame(client_rmi, username);
                 //client_rmi.returnGameboard();
                 break;
             case SPIEL_BEITRETEN:
-                System.out.println("Spiel beitreten:");
-                gameLogic.joinGame(1, client_rmi, username); //leer
+                System.out.println("Join Code eingeben:");
+                int joinCodeEntry = input.nextInt();
+                gameLogic.joinGame(joinCodeEntry, client_rmi, username); //leer
                 break;
             case BESTENLISTE:
                 System.out.println("Bestenliste:");
