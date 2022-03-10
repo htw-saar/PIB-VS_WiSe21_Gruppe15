@@ -1,5 +1,6 @@
 package com.htwsaar.client.RMI;
 
+import com.htwsaar.server.Game.TicTacToe;
 import com.htwsaar.server.RMI.ServerClient_Connect_Interface;
 
 import org.apache.logging.log4j.LogManager;
@@ -14,8 +15,17 @@ import java.util.List;
 public class Client_RMI {
     private static final Logger logger = LogManager.getLogger(Client_RMI.class);
     private ServerClient_Connect_Interface clientStub;
+    private String loggedInUser;
 
-    public Boolean createGame(String username) throws RemoteException {
+    public String getLoggedInUser() {
+        try {
+            return loggedInUser;
+        } catch (Exception e) {
+            logger.error("Client exception: " + e.toString());
+            return "logged in user not found";
+        }
+    }
+    public Boolean createGame(String username) {
         try {
             return clientStub.createGame(username);
         } catch (Exception e) {
@@ -24,7 +34,7 @@ public class Client_RMI {
         }
     }
 
-    public Boolean joinGame(int joinCode, String username) throws RemoteException {
+    public Boolean joinGame(int joinCode, String username) {
         try {
             return clientStub.joinGame(username, joinCode);
         } catch (Exception e) {
@@ -33,12 +43,12 @@ public class Client_RMI {
         }
     }
 
-    public Boolean setField(String username, int pos) throws RemoteException {
+    public TicTacToe.Winner setField(String username, int pos) {
         try {
             return clientStub.setField(username, pos);
         } catch(Exception e) {
             logger.error("Client exception: " + e.toString());
-            return false;
+            return TicTacToe.Winner.NONE;
         }
     }
 
@@ -100,41 +110,46 @@ public class Client_RMI {
         }
     }
 
-    public Boolean userLoginExists(String name) {
-        try {
-            if (clientStub == null) {
-                clientStub = connectToServer();
-                if (clientStub == null) {
-                    logger.error("Stub wurde nicht erstellt!\n");
-                    return true;
-                }
-            }
-            return clientStub.userLoginExists(name);
-        } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
-            e.printStackTrace();
-            return true;
-        }
-    }
-
-    public Boolean createLoginData(String name, String password) {
-        try {
-            return clientStub.createLoginData(name, password);
-        } catch (Exception e) {
-            logger.error("Client exception: " + e.toString());
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public Boolean login(String username, String password){
         clientStub = connectToServer();
-        if(clientStub != null){
+        if(clientStub != null) {
+            loggedInUser = username;
             return testLoginData(username, password);
         }
         else{
             logger.error("Stub wurde nicht erstellt!\n");
         }
         return false;
+    }
+
+    public Boolean checkGameStart(String username) {
+        try {
+            return clientStub.checkGameStart(username);
+        } catch (RemoteException e){
+            logger.error("Client exception: " + e.toString());
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public String[] returnGameboard(String username) {
+        try {
+            return clientStub.returnGameboard(username);
+        } catch (RemoteException e){
+            logger.error("Client exception: " + e.toString());
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getActivePlayer(String username){
+        try {
+            return clientStub.getActivePlayer(username);
+        } catch (RemoteException e){
+            logger.error("Client exception: " + e.toString());
+            e.printStackTrace();
+            return null;
+        }
     }
 }
