@@ -168,6 +168,47 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
+    public TicTacToe.Winner setField(String username, int pos) {
+        try {
+            int gameNumber;
+            int isX;
+            String[] players;
+            TicTacToe.Winner player;
+            gameNumber = playerInWhichGame(username);
+            if (gameNumber != -1) {
+                TicTacToe game = games.get(gameNumber);
+                players = game.getPlayers();
+                isX = game.whichPlayer(username);
+                if (isX == 1) {
+                    player = TicTacToe.Winner.Player1;
+                    game.setActivePlayer(game.getPlayers()[1]);
+                } else {
+                    player = TicTacToe.Winner.Player2;
+                    game.setActivePlayer(game.getPlayers()[0]);
+                }
+                TicTacToe.Winner playState = games.get(gameNumber).setField(player, pos);
+                if(playState.equals(TicTacToe.Winner.Player1)){
+                    games.remove(gameNumber);
+                    databaseService.addLose(players[1]);
+                    databaseService.addWin(players[0]);
+                }
+                else if(playState.equals(TicTacToe.Winner.Player2)){
+                    games.remove(gameNumber);
+                    databaseService.addLose(players[0]);
+                    databaseService.addWin(players[1]);
+                }
+                else if(playState == TicTacToe.Winner.UNSETTELD){
+                    games.remove(gameNumber);
+                }
+                return playState;
+            }
+            logger.error(("SetField: Kein Spiel gefunden"));
+            return TicTacToe.Winner.NONE;
+        } catch (Exception e) {
+            logger.error("Server exception: " + e.toString());
+            return TicTacToe.Winner.NONE;
+        }
+    }
 
     public TicTacToe.Winner setField(String username, int pos) {
         try {
