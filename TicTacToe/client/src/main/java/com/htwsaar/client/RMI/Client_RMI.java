@@ -11,11 +11,27 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Client_RMI {
     private static final Logger logger = LogManager.getLogger(Client_RMI.class);
+    private static final String HOST_IP = "127.0.0.1";
+    private static final int PORT = 42424;
+
     private ServerClient_Connect_Interface clientStub;
     private String loggedInUser;
+
+    public Client_RMI(){
+        while(clientStub == null){
+            clientStub = connectToServer();
+            if (clientStub == null){
+                System.out.println("Verbindung zum Server fehlgeschlagen!");
+                System.out.println("Nächster Versuch startet gleich...");
+                waitOn(2);
+            }
+        }
+        logger.debug("Verbindung zum Server wurde erfolgreich hergestellt!");
+    }
 
     public Boolean userLoginExists(String name) {
         try {
@@ -54,12 +70,11 @@ public class Client_RMI {
         }
     }
 
-    public Boolean createGame(String username) {
+    public void createGame(String username) {
         try {
-            return clientStub.createGame(username);
+            clientStub.createGame(username);
         } catch (Exception e) {
             logger.error("Client exception: " + e);
-            return false;
         }
     }
 
@@ -131,7 +146,7 @@ public class Client_RMI {
 
     private ServerClient_Connect_Interface connectToServer() {
         try {
-            Registry registry = LocateRegistry.getRegistry("127.0.0.1", 42424);
+            Registry registry = LocateRegistry.getRegistry(HOST_IP, PORT);
             ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) registry.lookup("Hello");
             System.out.println("Server Verbindung besteht!\n");
             return stub;
@@ -142,14 +157,8 @@ public class Client_RMI {
     }
 
     public Boolean login(String username, String password) {
-        clientStub = connectToServer();
-        if (clientStub != null) {
-            loggedInUser = username;
-            return testLoginData(username, password);
-        } else {
-            logger.error("Stub wurde nicht erstellt!\n");
-        }
-        return false;
+        loggedInUser = username;
+        return testLoginData(username, password);
     }
 
     public Boolean checkGameStart(String username) {
@@ -180,5 +189,12 @@ public class Client_RMI {
         }
     }
 
+    private void waitOn(int sec){
+        try {
+            TimeUnit.SECONDS.sleep(sec);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

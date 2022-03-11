@@ -4,8 +4,6 @@ import com.htwsaar.client.UserInterface.TicTacToe.GameLogic;
 import com.htwsaar.client.RMI.Client_RMI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.rmi.RemoteException;
 import java.util.Scanner;
 
 public class Menu {
@@ -149,7 +147,6 @@ public class Menu {
     }
 
     private void signup() {
-        input.nextLine();
         String username;
         String pw;
         boolean erg;

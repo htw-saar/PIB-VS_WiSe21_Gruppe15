@@ -129,11 +129,11 @@ public class GameLogic {
     }
 
     private void waitForInteraction(){
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+    }
 }
 
