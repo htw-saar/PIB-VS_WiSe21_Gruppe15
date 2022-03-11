@@ -11,7 +11,7 @@ public class Server {
   
     private void start(String[] args) {
         DatabaseService databaseService = new DatabaseService();
-        Server_RMI server_rmi = new Server_RMI();
+        Server_RMI server_rmi = new Server_RMI(databaseService);
         server_rmi.start_Server_RMI();
     }
 }
