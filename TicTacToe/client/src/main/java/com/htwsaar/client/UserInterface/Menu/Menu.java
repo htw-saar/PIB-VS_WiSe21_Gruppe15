@@ -72,7 +72,7 @@ public class Menu {
         System.out.printf((format) + "%n", "|", ENDE, "|", "Beenden", "|");
     }
 
-    private void ausfuehrenFunktion(int funktion) throws RemoteException {
+    private void ausfuehrenFunktion(int funktion){
         if (isAuthenticated){
             gameFunctions(funktion);
         } else {
@@ -111,44 +111,41 @@ public class Menu {
 
     private void loginFunctions(int funktion){
         input.nextLine();
-        switch (funktion){
-            case LOGIN:
-                login();
+        switch (funktion) {
+            case LOGIN -> readLoginData();
+            case SIGNUP -> signup();
+            case ENDE -> System.exit(0);
+            default -> logger.error("Fehlerhafte Auswahl einer Funktion!");
+        }
+    }
+
+    private void readLoginData(){
+        username = null;
+        int versuche = 0;
+        String pw;
+        Boolean log = false;
+        System.out.println("Benutzername: ");
+        username = input.nextLine();
+        while(!log) {
+            System.out.println("Passwort: ");
+            pw = input.nextLine();
+            log = login(username, pw);
+            if (log && versuche < 3) {
+                System.out.println("Login war erfolgreich!");
+                setAuthenticated(true);
+            } else if (!log && versuche < 3) {
+                logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
+                versuche++;
+            } else {
+                logger.error("Login fehlgeschlagen!\nLogin wurde gesperrt!");
                 break;
-            case SIGNUP:
-                signup();
-                break;
-            case ENDE:
-                // TODO Ende Programm
-                break;
-            default:
-                logger.error("Fehlerhafte Auswahl einer Funktion!");
-                break;
+            }
         }
     }
 
     //Alpha methode (User kann noch nicht angelegt werden)
-    private void login() {
-        username = null;
-        int versuche = 0;
-        String pw;
-
-        System.out.println("Benutzername: ");
-        username = input.nextLine();
-        System.out.println("Passwort: ");
-        pw = input.nextLine();
-        Boolean log = client_rmi.login(username, pw);
-        if(log && versuche <= 3) {
-            System.out.println("Login war erfolgreich!");
-        } else if(!log && versuche <= 3) {
-            logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
-            versuche++;
-            login();
-        } else {
-            logger.error("Login fehlgeschlagen!\nLogin wurde gesperrt!");
-            //massnahme ergreifen
-        }
-        setAuthenticated(true);
+    private Boolean login(String username, String password) {
+        return client_rmi.login(username, password);
     }
 
     private void signup() {
