@@ -79,7 +79,6 @@ public class GameLogic {
     private TicTacToe.Winner waitOnPlayer() {
         System.out.println("Warte auf anderen Spieler");
         while(!client_rmi.getActivePlayer(username).equals(username)) {
-            System.out.println(username + " wartet auf anderen Spieler: " + client_rmi.getActivePlayer(username));
             waitForInteraction();
         }
 
