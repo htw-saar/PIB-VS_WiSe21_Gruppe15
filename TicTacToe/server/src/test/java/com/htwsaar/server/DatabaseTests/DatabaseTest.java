@@ -64,17 +64,17 @@ public class DatabaseTest
 //        }
 //    }
 
-
-    @Test
-    public void CheckChangePassword(){
-        databaseService.changePassword(testuser1.getUsername(), testuser1.getPassword(), changePassword);
-        User user = databaseService.getUserData(testuser1.getUsername());
-        assertEquals(changePassword, user.getPassword());
-        databaseService.changePassword(testuser1.getUsername(), changePassword, testuser1.getPassword());
-    }
-
-    @Test
-    public void clearDatabase(){
-//        databaseService.
-    }
+//
+//    @Test
+//    public void CheckChangePassword(){
+//        databaseService.changePassword(testuser1.getUsername(), testuser1.getPassword(), changePassword);
+//        User user = databaseService.getUserData(testuser1.getUsername());
+//        assertEquals(changePassword, user.getPassword());
+//        databaseService.changePassword(testuser1.getUsername(), changePassword, testuser1.getPassword());
+//    }
+//
+//    @Test
+//    public void clearDatabase(){
+////        databaseService.
+//    }
 }

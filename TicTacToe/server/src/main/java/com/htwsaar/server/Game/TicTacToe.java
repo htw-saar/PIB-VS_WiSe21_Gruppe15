@@ -2,10 +2,6 @@ package com.htwsaar.server.Game;
 
 import com.htwsaar.server.Hibernate.dao.UserDao;
 import com.htwsaar.server.Hibernate.entity.User;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -31,18 +27,19 @@ public class TicTacToe {
     }
 
     private String x;
-    private String o;
     private String[] gameboard = new String[9];
     private final int[][] winConditions;
     private String[] players = new String[2];
     private int joinCode;
     private String activePlayer;
+    private Winner gameStatus;
 
     /**
      * Konstruktor von TicTacToe
      * Erstellt die Win Konditionen und initialisiert das Spielbrett
      */
     public TicTacToe(String username) {
+        setGameStatus(Winner.NONE);
         winConditions = new int[][]{
                 {0, 1, 2},
                 {3, 4, 5},
@@ -87,7 +84,6 @@ public class TicTacToe {
      * @param name enthält den Username
      */
     public void setO(String name) {
-        o = name;
         players[1] = name;
     }
 
@@ -119,7 +115,9 @@ public class TicTacToe {
         }
 
         gameboard[pos] = player.label;
-        return checkWinCondition(player);
+        Winner winner = checkWinCondition(player);
+        setGameStatus(winner);
+        return winner;
     }
 
     /**
@@ -127,12 +125,11 @@ public class TicTacToe {
      *
      * @return String[] Gibt ein Array zurück mit den Zahlen des Spielfeldes(das Spielbrett)
      */
-    private String[] initGameboard() {
+    private void initGameboard() {
         for (int i = 0; i < gameboard.length; i++) {
             int field = i + 1;
             this.gameboard[i] = field + "";
         }
-        return this.gameboard;
     }
 
     public String[] outputGameboard() {
@@ -209,5 +206,13 @@ public class TicTacToe {
             return 1;
         }
         return 0;
+    }
+
+    public Winner getGameStatus(){
+        return gameStatus;
+    }
+
+    public void setGameStatus(Winner gameStatus){
+        this.gameStatus = gameStatus;
     }
 }
