@@ -2,7 +2,6 @@ package com.htwsaar.server.RMI;
 import com.htwsaar.server.Game.TicTacToe;
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.ArrayList;
@@ -14,10 +13,14 @@ import org.apache.logging.log4j.Logger;
 
 public class Server_RMI implements ServerClient_Connect_Interface {
 
-    private ArrayList<TicTacToe> games = new ArrayList<>();
-    private ArrayList<TicTacToe> waitingGames = new ArrayList<>();
     private static final Logger logger = LogManager.getLogger(Server_RMI.class);
+    private static final int PORT = 42424;
+    private static final String REGISTRY = "GAME";
     private final DatabaseService databaseService;
+
+    private ArrayList<TicTacToe> games = new ArrayList<>();
+    private ArrayList<TicTacToe> finishedGames = new ArrayList<>();
+    private ArrayList<TicTacToe> waitingGames = new ArrayList<>();
 
 
     public Server_RMI(DatabaseService databaseService) {
@@ -30,10 +33,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     }
 
     public Boolean userLoginExists(String name) {
-            if(databaseService.getUserData(name) != null){
-                return true;
-            }
-            return false;
+        return databaseService.getUserData(name) != null;
     }
 
     public Boolean checkGameStart(String username) {
@@ -50,14 +50,12 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         try {
             Server_RMI obj = new Server_RMI(databaseService);
             ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(obj, 0);
-            System.out.println(obj.toString());
-            // Bind the remote object's stub in the registry
-            LocateRegistry.createRegistry(42424);
-            Registry registry = LocateRegistry.getRegistry(42424);
-            registry.rebind("Hello", stub);
+            LocateRegistry.createRegistry(PORT);
+            Registry registry = LocateRegistry.getRegistry(PORT);
+            registry.rebind(REGISTRY, stub);
             System.err.println("Server ready");
         } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
+            logger.error("Server exception: " + e);
         }
     }
 
@@ -65,9 +63,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     public Boolean sendLoginData(String name, String password) {
             User user = databaseService.getUserData(name);
             if (user != null) {
-                if (password.equalsIgnoreCase(user.getPassword())) {
-                    return true;
-                }
+                return password.equals(user.getPassword());
             }
             return false;
     }
@@ -100,15 +96,20 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             waitingGames.add(game);
             return true;
         } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
+            logger.error("Server exception: " + e);
             return false;
         }
     }
 
     public String[] returnGameboard(String username) {
         String[] gameboard;
-        int gameId = playerInWhichGame(username);
-        gameboard = games.get(gameId).outputGameboard();
+        int gameId = playerInWhichGame(games, username);
+        if (gameId >= 0){
+            gameboard = games.get(gameId).getGameboard();
+        } else {
+            gameId = playerInWhichGame(finishedGames, username);
+            gameboard = finishedGames.get(gameId).getGameboard();
+        }
         return gameboard;
     }
 
@@ -131,7 +132,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             }
             return false;
         } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
+            logger.error("Server exception: " + e);
             return false;
         }
     }
@@ -139,69 +140,75 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     public TicTacToe.Winner setField(String username, int pos) {
         try {
             int gameNumber;
-            int isX;
             String[] players;
-            TicTacToe.Winner player;
-            gameNumber = playerInWhichGame(username);
+            gameNumber = playerInWhichGame(games, username);
             if (gameNumber != -1) {
                 TicTacToe game = games.get(gameNumber);
                 players = game.getPlayers();
-                isX = game.whichPlayer(username);
-                if (isX == 1) {
-                    player = TicTacToe.Winner.Player1;
-                    game.setActivePlayer(game.getPlayers()[1]);
-                } else {
-                    player = TicTacToe.Winner.Player2;
-                    game.setActivePlayer(game.getPlayers()[0]);
-                }
-                TicTacToe.Winner playState = games.get(gameNumber).setField(player, pos);
-                if(playState.equals(TicTacToe.Winner.Player1)){
-                    games.remove(gameNumber);
-                    databaseService.addLose(players[1]);
-                    databaseService.addWin(players[0]);
-                }
-                else if(playState.equals(TicTacToe.Winner.Player2)){
-                    games.remove(gameNumber);
-                    databaseService.addLose(players[0]);
-                    databaseService.addWin(players[1]);
-                }
-                else if(playState == TicTacToe.Winner.UNSETTELD){
-                    games.remove(gameNumber);
-                }
-                return playState;
+                TicTacToe.Winner gameState = games.get(gameNumber).setField(pos);
+                checkGameEnd(gameNumber, players, gameState);
+                return gameState;
             }
             logger.error(("SetField: Kein Spiel gefunden"));
             return TicTacToe.Winner.NONE;
         } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
+            logger.error("Server exception: " + e);
             return TicTacToe.Winner.NONE;
         }
     }
 
-    private int playerInWhichGame(String username) {
-        try {
-            String[] playerNames;
-            for (int i = 0; i < games.size(); i++) {
-                playerNames = games.get(i).getPlayers();
-                if (playerNames[0].equals(username) || playerNames[1].equals(username)) {
-                    return i;
-                }
+    private void checkGameEnd(int gameId, String[] players, TicTacToe.Winner gameState){
+        if (!gameState.equals(TicTacToe.Winner.NONE)) {
+            if (!gameState.equals(TicTacToe.Winner.FIELDSET)){
+                finishedGames.add(games.get(gameId));
+                TicTacToe newGame = finishedGames.get(playerInWhichGame(finishedGames, players[0]));
+                newGame.switchActivePlayer();
+                games.remove(gameId);
             }
-            return -1;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return -1;
+            if (gameState.equals(TicTacToe.Winner.Player1)) {
+                databaseService.addLose(players[1]);
+                databaseService.addWin(players[0]);
+            } else if (gameState.equals(TicTacToe.Winner.Player2)) {
+                databaseService.addLose(players[0]);
+                databaseService.addWin(players[1]);
+            }
+        } else {
+            games.get(gameId).switchActivePlayer();
         }
     }
 
+    private int playerInWhichGame(ArrayList<TicTacToe> list, String username) {
+        String[] playerNames;
+        for (int i = 0; i < list.size(); i++) {
+            playerNames = list.get(i).getPlayers();
+            if (playerNames[0].equals(username) || playerNames[1].equals(username)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     public String getActivePlayer(String username) {
-        int gameID = playerInWhichGame(username);
-        return games.get(gameID).getActivePlayer();
+        int gameID = playerInWhichGame(games, username);
+        if (gameID >= 0){
+           return games.get(gameID).getActivePlayer();
+        } else {
+            gameID = playerInWhichGame(finishedGames, username);
+            return finishedGames.get(gameID).getActivePlayer();
+        }
     }
 
     public TicTacToe.Winner getGameStatus(String username){
-        int gameID = playerInWhichGame(username);
-        return games.get(gameID).getGameStatus();
+        int gameID = playerInWhichGame(games, username);
+        TicTacToe.Winner status;
+        if (gameID >= 0) {
+            status = games.get(gameID).getGameStatus();
+        } else {
+            gameID = playerInWhichGame(finishedGames, username);
+            status = finishedGames.get(gameID).getGameStatus();
+        }
+        return status;
     }
+
 }
 

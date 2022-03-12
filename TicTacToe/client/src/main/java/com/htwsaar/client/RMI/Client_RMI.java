@@ -17,11 +17,17 @@ public class Client_RMI {
     private static final Logger logger = LogManager.getLogger(Client_RMI.class);
     private static final String HOST_IP = "127.0.0.1";
     private static final int PORT = 42424;
+    private static final String REGISTRY = "GAME";
 
     private ServerClient_Connect_Interface clientStub;
     private String loggedInUser;
 
     public Client_RMI(){
+        init_RMI();
+        logger.debug("Verbindung zum Server wurde erfolgreich hergestellt!");
+    }
+
+    private void init_RMI(){
         while(clientStub == null){
             clientStub = connectToServer();
             if (clientStub == null){
@@ -30,7 +36,6 @@ public class Client_RMI {
                 waitOn(2);
             }
         }
-        logger.debug("Verbindung zum Server wurde erfolgreich hergestellt!");
     }
 
     public Boolean userLoginExists(String name) {
@@ -147,7 +152,7 @@ public class Client_RMI {
     private ServerClient_Connect_Interface connectToServer() {
         try {
             Registry registry = LocateRegistry.getRegistry(HOST_IP, PORT);
-            ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) registry.lookup("Hello");
+            ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) registry.lookup(REGISTRY);
             System.out.println("Server Verbindung besteht!\n");
             return stub;
         } catch (NotBoundException | RemoteException e) {

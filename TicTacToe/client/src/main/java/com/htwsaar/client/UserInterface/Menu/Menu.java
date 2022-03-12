@@ -76,7 +76,6 @@ public class Menu {
         } else {
             loginFunctions(funktion);
         }
-        System.out.println("\n\n\n\n");
     }
 
     private void gameFunctions(int funktion) {
@@ -85,7 +84,18 @@ public class Menu {
             case SPIEL_BEITRETEN -> joinGame();
             case BESTENLISTE -> showScoreboard();
             case LOGOUT -> logout();
+            case ENDE -> System.exit(0);
             default -> System.out.println("Fehlerhafte Auswahl einer Funktion!");
+        }
+    }
+
+    private void loginFunctions(int funktion){
+        input.nextLine();
+        switch (funktion) {
+            case LOGIN -> readLoginData();
+            case SIGNUP -> signup();
+            case ENDE -> System.exit(0);
+            default -> logger.error("Fehlerhafte Auswahl einer Funktion!");
         }
     }
 
@@ -107,15 +117,6 @@ public class Menu {
         client_rmi.ShowScoreBoardAll();
     }
 
-    private void loginFunctions(int funktion){
-        input.nextLine();
-        switch (funktion) {
-            case LOGIN -> readLoginData();
-            case SIGNUP -> signup();
-            case ENDE -> System.exit(0);
-            default -> logger.error("Fehlerhafte Auswahl einer Funktion!");
-        }
-    }
 
     private void readLoginData(){
         username = null;

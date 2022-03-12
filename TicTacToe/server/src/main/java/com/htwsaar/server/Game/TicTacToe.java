@@ -27,9 +27,9 @@ public class TicTacToe {
     }
 
     private String x;
-    private String[] gameboard = new String[9];
+    private final String[] gameboard = new String[9];
     private final int[][] winConditions;
-    private String[] players = new String[2];
+    private final String[] players = new String[2];
     private int joinCode;
     private String activePlayer;
     private Winner gameStatus;
@@ -106,14 +106,14 @@ public class TicTacToe {
     /**
      * Setzt einen Spielermarker an Position pos
      *
-     * @param player der Spieler X oder O
      * @param pos    die Position wo der Marker gesetzt wird
      */
-    public Winner setField(Winner player, int pos) {
+    public Winner setField(int pos) {
         if (gameboard[pos].equals(Winner.Player1.label) || gameboard[pos].equals(Winner.Player2.label)) {
             return Winner.FIELDSET;
         }
 
+        Winner player = getPlayerSymbol();
         gameboard[pos] = player.label;
         Winner winner = checkWinCondition(player);
         setGameStatus(winner);
@@ -132,8 +132,8 @@ public class TicTacToe {
         }
     }
 
-    public String[] outputGameboard() {
-        return this.gameboard;
+    public String[] getGameboard() {
+        return gameboard;
     }
 
 
@@ -201,18 +201,27 @@ public class TicTacToe {
         }
     }
 
-    public int whichPlayer(String username) {
-        if (x.equals(username)) {
-            return 1;
-        }
-        return 0;
-    }
-
     public Winner getGameStatus(){
         return gameStatus;
     }
 
     public void setGameStatus(Winner gameStatus){
         this.gameStatus = gameStatus;
+    }
+
+    public void switchActivePlayer(){
+        if (activePlayer.equals(players[0])){
+            setActivePlayer(players[1]);
+        } else {
+            setActivePlayer(players[0]);
+        }
+    }
+
+    private Winner getPlayerSymbol(){
+        if (x.equals(activePlayer)){
+            return Winner.Player1;
+        } else {
+            return Winner.Player2;
+        }
     }
 }
