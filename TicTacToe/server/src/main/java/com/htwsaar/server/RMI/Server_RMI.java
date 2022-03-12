@@ -18,9 +18,9 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     private static final String REGISTRY = "GAME";
     private final DatabaseService databaseService;
 
-    private ArrayList<TicTacToe> games = new ArrayList<>();
-    private ArrayList<TicTacToe> finishedGames = new ArrayList<>();
-    private ArrayList<TicTacToe> waitingGames = new ArrayList<>();
+    private final ArrayList<TicTacToe> games = new ArrayList<>();
+    private final ArrayList<TicTacToe> finishedGames = new ArrayList<>();
+    private final ArrayList<TicTacToe> waitingGames = new ArrayList<>();
 
 
     public Server_RMI(DatabaseService databaseService) {
@@ -90,15 +90,10 @@ public class Server_RMI implements ServerClient_Connect_Interface {
 
 
     public Boolean createGame(String username) {
-        try {
             TicTacToe game;
             game = new TicTacToe(username);
             waitingGames.add(game);
             return true;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e);
-            return false;
-        }
     }
 
     public String[] returnGameboard(String username) {
@@ -121,7 +116,6 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     }
 
     public Boolean joinGame(String username, int joinCode) {
-        try {
             for (int i = 0; i < waitingGames.size(); i++) {
                 if (waitingGames.get(i).compareJoinCode(joinCode) == 1) {
                     waitingGames.get(i).setO(username);
@@ -131,14 +125,9 @@ public class Server_RMI implements ServerClient_Connect_Interface {
                 }
             }
             return false;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e);
-            return false;
-        }
     }
 
     public TicTacToe.Winner setField(String username, int pos) {
-        try {
             int gameNumber;
             String[] players;
             gameNumber = playerInWhichGame(games, username);
@@ -151,10 +140,6 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             }
             logger.error(("SetField: Kein Spiel gefunden"));
             return TicTacToe.Winner.NONE;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e);
-            return TicTacToe.Winner.NONE;
-        }
     }
 
     private void checkGameEnd(int gameId, String[] players, TicTacToe.Winner gameState){
