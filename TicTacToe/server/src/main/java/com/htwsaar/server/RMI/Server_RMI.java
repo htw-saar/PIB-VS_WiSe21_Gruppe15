@@ -119,12 +119,20 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             for (int i = 0; i < waitingGames.size(); i++) {
                 if (waitingGames.get(i).compareJoinCode(joinCode) == 1) {
                     waitingGames.get(i).setO(username);
+                    deleteOldGames(username);
                     games.add(waitingGames.get(i));
                     waitingGames.remove(i);
                     return true;
                 }
             }
             return false;
+    }
+
+    private void deleteOldGames(String username){
+        int gameID = playerInWhichGame(finishedGames, username);
+        if (gameID >= 0){
+            finishedGames.remove(gameID);
+        }
     }
 
     public TicTacToe.Winner setField(String username, int pos) {
@@ -145,9 +153,8 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     private void checkGameEnd(int gameId, String[] players, TicTacToe.Winner gameState){
         if (!gameState.equals(TicTacToe.Winner.NONE)) {
             if (!gameState.equals(TicTacToe.Winner.FIELDSET)){
+                games.get(gameId).switchActivePlayer();
                 finishedGames.add(games.get(gameId));
-                TicTacToe newGame = finishedGames.get(playerInWhichGame(finishedGames, players[0]));
-                newGame.switchActivePlayer();
                 games.remove(gameId);
             }
             if (gameState.equals(TicTacToe.Winner.Player1)) {
