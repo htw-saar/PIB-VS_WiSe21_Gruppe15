@@ -2,12 +2,11 @@
 
 # "!!!!" Markierungen als Gruppe durchgehen und schreibfehler/grammer überprüfe <br>-> nur ein grundkonzept
 
-
 # Tic-Tac-Toe Server
 
 Dies ist ein Gruppenprojekt im fünften Semester der htwsaar im Fach Verteilte Systeme. Ziel ist es ein Tic-Tac-Toe Spiel
 so zu implementieren, dass es über einen Server läuft und beliebig viele Spiele online parallel erstellt werden können.
-Aufgabe ist es die Technologien aus der Vorlesung wie Java RMI, MQTT usw. zu verwenden um das Projekt zu realisieren.
+Aufgabe ist es die Technologien aus der Vorlesung wie Java RMI, MQTT usw. zu verwenden, um das Projekt zu realisieren.
 Die Spieler spielen klassisch 1v1.
 
 ## Architektur
@@ -25,7 +24,7 @@ wird vom Server eine eindeutige ID vergeben, über die andere Spieler beitreten 
 Spiel über die vom Spieler 1 erstellte Game ID beitreten.
 
 Der Server benutzt Java RMI für die Kommunikation zwischen Client und Server. Der Client bindet auf den Sever und erbt
-demenstprechend Methoden von diesem. Für die Spielhistorie wird eine MYSQL-Datenbank benutzt, wo diese dann
+Methoden von diesem. Für die Spielhistorie wird eine MYSQL-Datenbank benutzt, wo diese dann
 schlussendlich gespeichert wird.
 
 #### Use Cases
@@ -43,15 +42,15 @@ Abgeleitet aus den Use Cases und gemeinsamen Teamsitzungen ergeben sich folgende
 * Einmaliger Benutzername/ ID
 * Lobby hosten
 * Lobby über ID beitreten
-* Tracken von Spielerhistorien und Spielen
+* Tracken von Spielhistorien und Spielen
 * Persistente Serververbindung
-* Erstellen von User-Daten um Historie aller vergangenen Spiele zu erstellen
+* Erstellen von User-Daten, um Historie aller vergangenen Spiele zu erstellen
 
 ###### Nichtfunktionale Anforderungen
 
 * Einheitliche Ausgaben für beide Spieler
 * Fairness/gleiche Spielbedingungen (z. B. selbe Spielzugdauer)
-* System darf nicht länger als eine Sekunde benötigen für die In-Game Kommunikation
+* System darf nicht länger als eine Sekunde benötigen für die In-Game-Kommunikation
 
 #### Lösungsstrategie
 
@@ -92,42 +91,46 @@ Spielhistorie bearbeitet und manuell User angelegt werden.
 
 ###### Klassendiagramme
 
-# !!!! Alten überarbeiten
+![alt text](https://i.imgur.com/1SWntWC.png)
 
 ###### API
 
-# !!! Vll verweis auf Wiki
+[Wiki Link zur API-Dokumentation](https://github.com/htw-saar/PIB-VS_WiSe21_Gruppe15/wiki/API-Dokumentation#api-dokumentation)
 
 #### Dynamisches Modell
 
 ###### Aktivitätsdiagramm
 
-# !!!! Altes aus dem Feinkonzept übernehmen
+![alt text](https://i.imgur.com/GZvQMQs.png)
 
 ###### Sequenzdiagramm
 
-# !!!! Altes aus dem Feinkonzept übernehmen
+![alt text](https://i.imgur.com/dm6JNR5.png)
 
 ## Getting Started
-Um unser Projekt zu bauen wird Maven benötigt und mindestens Java 15. Um den Client zu starten brauchen beide Spieler eine identische Client Konfiguration und die gleiche Server IP. Ein Client wird über **src/main/java/com/htwsaar/client/Client.java** gestartet. Alternativ kann man die jeweiligen Clients über die bereitgestellten Jar Dateien starten.
 
-Der Server wird einmalig über **src/main/java/com/htwsaar/server/Server.java** gestartet. Die IP des Servers muss über die jeweiligen Clients eingetragen werden.
+Um unser Projekt zu bauen wird Maven benötigt und mindestens Java 15. Um den Client zu starten brauchen beide Spieler
+eine identische Client-Konfiguration und die gleiche Server-IP. Ein Client wird über **
+src/main/java/com/htwsaar/client/Client.java** gestartet. Alternativ kann man die jeweiligen Clients über die
+bereitgestellten Jar Dateien starten.
 
-
+Der Server wird einmalig über **src/main/java/com/htwsaar/server/Server.java** gestartet. Die IP des Servers muss über
+die jeweiligen Clients eingetragen werden.
 
 #### Vorraussetzungen
+
 _Client_:
 
 * Java installiert
-* Maven installiert  
+* Maven installiert
 * Grundkenntnisse eines Terminals/IDE
 * Vorhandene Internetverbindung
 
 _Server_:
+
 * Java installiert
 * MYSQL installiert
 * Vorhandene Internetverbindung
-
 
 #### Installation und Deployment
 
@@ -154,7 +157,9 @@ HTW Gruppe 15
 * Mario/Max
 * Ahmad/Oliver
 
+[Liquiditätsplan](https://github.com/htw-saar/PIB-VS_WiSe21_Gruppe15/wiki/Liquidit%C3%A4tsplan)
+
 ## Acknowledgments
 
-Danke an Prof Esch für eine Einweisung eine verteilte Programmierung, dadurch haben wir Java-RMI als Middleware
+Danke an Prof. Esch für eine Einweisung in die verteilte Programmierung, dadurch haben wir Java-RMI als Middleware
 entdeckt.
