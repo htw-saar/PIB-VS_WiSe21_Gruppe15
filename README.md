@@ -109,14 +109,25 @@ Spielhistorie bearbeitet und manuell User angelegt werden.
 # !!!! Altes aus dem Feinkonzept übernehmen
 
 ## Getting Started
+Um unser Projekt zu bauen wird Maven benötigt und mindestens Java 15. Um den Client zu starten brauchen beide Spieler eine identische Client Konfiguration und die gleiche Server IP. Ein Client wird über **src/main/java/com/htwsaar/client/Client.java** gestartet. Alternativ kann man die jeweiligen Clients über die bereitgestellten Jar Dateien starten.
 
-Dokumentieren Sie, wie man ihr Projekt bauen, installieren und starten kann.
+Der Server wird einmalig über **src/main/java/com/htwsaar/server/Server.java** gestartet. Die IP des Servers muss über die jeweiligen Clients eingetragen werden.
+
+
 
 #### Vorraussetzungen
+_Client_:
 
 * Java installiert
+* Maven installiert  
 * Grundkenntnisse eines Terminals/IDE
 * Vorhandene Internetverbindung
+
+_Server_:
+* Java installiert
+* MYSQL installiert
+* Vorhandene Internetverbindung
+
 
 #### Installation und Deployment
 
