@@ -55,6 +55,7 @@ Abgeleitet aus den Use Cases und gemeinsamen Teamsitzungen ergeben sich folgende
 #### Lösungsstrategie
 
 # !!! weitere Infos hier
+Es handelt sich bei unserer Implementierung um einen Thin Client, weshalb man offline nicht spielen kann. Wir haben uns für dieses Design entschieden, da es uns die Implementierung des Codes einfacher macht, indem wir als Übergabeparameter Client RMI Objekte übergeben. Der Code wird dadurch kompakter und ordentlicher. So werden auch lokal weniger Resourcen, Speicher und Rechnerleistung verbraucht. Dementsprechend speichern wir unsere Daten auf dem Server.
 
 _Interface:_ <br>
 Wir haben uns für ein Command Line Interface entschieden, da dieses schnell und einfach gebaut werden kann. Eine solche
@@ -76,6 +77,8 @@ einfügen/löschen.
 
 ![alt text](https://i.imgur.com/UGgXo3g.png)
 
+Es gibt Server und Client. Der User gibt Daten wie z. B. den Spielernamen an den Client weiter. Der Client steht über eine Java RMI Schnittstelle mit dem Server in Verbindung. Über Java RMI erhält der Client Daten über die Spielhistorie durch die Datenbank. Des Weiteren stellt Java RMI die Schnittstelle über den Austausch von Spieldaten da. Es werden neue Daten vom Server an den jeweils anderen Client geschickt und analog Eingaben der jeweilgen Clients an den Server übermittelt. 
+
 ###### Verteilungsdiagramm
 
 ![alt text](https://i.imgur.com/QhfyZ5h.png)
@@ -90,6 +93,7 @@ Spielhistorie bearbeitet und manuell User angelegt werden.
 # !!!!! Kleine übersicht bauen
 
 ###### Klassendiagramme
+#!!! Muss geändert werden
 
 ![alt text](https://i.imgur.com/1SWntWC.png)
 
