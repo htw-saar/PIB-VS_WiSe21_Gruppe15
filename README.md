@@ -24,8 +24,8 @@ wird vom Server eine eindeutige ID vergeben, über die andere Spieler beitreten 
 Spiel über die vom Spieler 1 erstellte Game ID beitreten.
 
 Der Server benutzt Java RMI für die Kommunikation zwischen Client und Server. Der Client bindet auf den Sever und erbt
-Methoden von diesem. Für die Spielhistorie wird eine MYSQL-Datenbank benutzt, wo diese dann
-schlussendlich gespeichert wird.
+Methoden von diesem. Für die Spielhistorie wird eine MYSQL-Datenbank benutzt, wo diese dann schlussendlich gespeichert
+wird.
 
 #### Use Cases
 
@@ -55,7 +55,11 @@ Abgeleitet aus den Use Cases und gemeinsamen Teamsitzungen ergeben sich folgende
 #### Lösungsstrategie
 
 # !!! weitere Infos hier
-Es handelt sich bei unserer Implementierung um einen Thin Client, weshalb man offline nicht spielen kann. Wir haben uns für dieses Design entschieden, da es uns die Implementierung des Codes einfacher macht, indem wir als Übergabeparameter Client RMI Objekte übergeben. Der Code wird dadurch kompakter und ordentlicher. So werden auch lokal weniger Resourcen, Speicher und Rechnerleistung verbraucht. Dementsprechend speichern wir unsere Daten auf dem Server.
+
+Es handelt sich bei unserer Implementierung um einen Thin Client, weshalb man offline nicht spielen kann. Wir haben uns
+für dieses Design entschieden, da es uns die Implementierung des Codes einfacher macht, indem wir als Übergabeparameter
+Client RMI Objekte übergeben. Der Code wird dadurch kompakter und ordentlicher. So werden auch lokal weniger Resourcen,
+Speicher und Rechnerleistung verbraucht. Dementsprechend speichern wir unsere Daten auf dem Server.
 
 _Interface:_ <br>
 Wir haben uns für ein Command Line Interface entschieden, da dieses schnell und einfach gebaut werden kann. Eine solche
@@ -77,7 +81,11 @@ einfügen/löschen.
 
 ![alt text](https://i.imgur.com/UGgXo3g.png)
 
-Es gibt Server und Client. Der User gibt Daten wie z. B. den Spielernamen an den Client weiter. Der Client steht über eine Java RMI Schnittstelle mit dem Server in Verbindung. Über Java RMI erhält der Client Daten über die Spielhistorie durch die Datenbank. Des Weiteren stellt Java RMI die Schnittstelle über den Austausch von Spieldaten da. Es werden neue Daten vom Server an den jeweils anderen Client geschickt und analog Eingaben der jeweilgen Clients an den Server übermittelt. 
+Es gibt Server und Client. Der User gibt Daten wie z. B. den Spielernamen an den Client weiter. Der Client steht über
+eine Java RMI Schnittstelle mit dem Server in Verbindung. Über Java RMI erhält der Client Daten über die Spielhistorie
+durch die Datenbank. Des Weiteren stellt Java RMI die Schnittstelle über den Austausch von Spieldaten da. Es werden neue
+Daten vom Server an den jeweils anderen Client geschickt und analog Eingaben der jeweilgen Clients an den Server
+übermittelt.
 
 ###### Verteilungsdiagramm
 
@@ -93,7 +101,8 @@ Spielhistorie bearbeitet und manuell User angelegt werden.
 # !!!!! Kleine übersicht bauen
 
 ###### Klassendiagramme
-#!!! Muss geändert werden
+
+# !!! Muss geändert werden
 
 ![alt text](https://i.imgur.com/1SWntWC.png)
 
@@ -106,6 +115,15 @@ Spielhistorie bearbeitet und manuell User angelegt werden.
 ###### Aktivitätsdiagramm
 
 ![alt text](https://i.imgur.com/GZvQMQs.png)
+
+Unser Projekt durchläuft eine simple Routine. Am Anfang muss man sich einloggen, um Zugriff auf das Programm zu
+erhalten. Dieser Vorgang wird so lange wiederholt, bis die richtigen Anmeldedaten eingegeben wurden. Die eingegebenen
+Login-Daten werden mit den Einträgen in der Datenbank verglichen. Nach der Anmeldung geht es weiter zum Spielmenü, hier
+kann man zwischen Scoreboard, Spiel beitreten/erstellen wählen. Beim Scoreboard werden einfach die Einträge aus der
+Datenbank geladen und angezeigt. Beim Spiel beitritt, muss ein Code eingegeben werden, um einem bereits vorhandenen
+Spiel beizutreten. Beim Spiel erstellen wird ein solches Spiel erstellt und ein Code generiert. Wenn zwei Spieler in
+einem Spiel sind, wird es gestartet. Dann werden so lange X/O Einträge gesetzt, bis ein Gewinner/Unentschieden fest
+steht. Dieses Ergebnis wird an die Datenbank weitergegeben, um das Scoreboard zu erweitern.
 
 ###### Sequenzdiagramm
 
