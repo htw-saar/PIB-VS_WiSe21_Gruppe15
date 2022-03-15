@@ -12,9 +12,9 @@ import java.util.List;
  * Dao Klasse die Methoden enthält, um Datenbank Änderungen zu vereinfachen
  */
 public class UserDao {
-    Transaction transaction = null;
-    SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
-    Session session;
+    private Transaction transaction = null;
+    private static final SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+    private Session session;
 
     /**
      * Methode um einen neuen Nutzer zu speichern
