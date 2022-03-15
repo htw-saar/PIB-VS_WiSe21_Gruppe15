@@ -22,7 +22,7 @@ public class TicTacToeTest {
 
 
     //}
-   //public void enumtests(){
+   //public void enumtest(){
        // assertTrue(true);
     //}
 
