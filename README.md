@@ -101,6 +101,7 @@ Spielhistorie bearbeitet und manuell User angelegt werden.
 # !!!!! Kleine übersicht bauen
 
 ###### Klassendiagramme
+### vorläufig, Tests noch nicht fertig
 
 [![UMLClient.png](https://i.postimg.cc/vmwRvG9r/UMLClient.png)](https://postimg.cc/jDckx0M2)
 
