@@ -69,6 +69,9 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         return true;
     }
 
+    /**
+     * 
+     */
     public void start_Server_RMI() {
         try {
             Server_RMI obj = new Server_RMI(databaseService);
@@ -82,7 +85,13 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
-
+    /**
+     * Eine Methode zum anmelden des Users 
+     * 
+     * @param name Name des Nutzers
+     * @param password Passwort des Nutzers
+     * @return true wenn der login erfolgreich war
+     */
     public Boolean sendLoginData(String name, String password) {
             User user = databaseService.getUserData(name);
             if (user != null) {
@@ -91,6 +100,11 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             return false;
     }
 
+    /**
+     * Gibt das Scoreboard zurueck
+     * 
+     * @return Das Scoreboard als stringlist 
+     */
     public List<String> scoreboardRequest() {
             String format = " %2s %12s %2s %6s %2s %6s %2s %6s %2s";
             List<String> stringList = new ArrayList<>();
@@ -101,7 +115,12 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             return stringList;
     }
 
-
+    /**
+     * Die Scoreboarddaten fuer den einzelnen Benutzer
+     * 
+     * @param name Der Name des Nutzers desen Daten erfasst werden sollen
+     * @return Die Daten des Nutzers als String
+     */
     public String scoreboardRequestForUser(String name) {
             User user = databaseService.getUserData(name);
             if (user != null) {
@@ -111,7 +130,12 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             }
     }
 
-
+    /**
+     * Erzeugt ein neues Spiel mit dem Benutzer als Spieler 1
+     * 
+     * @param username Der Nutzer der der Besitzer des neuen Spieles werden soll
+     * @return true wenn das Spiel erfolgreich erstellt wurde
+     */
     public Boolean createGame(String username) {
             TicTacToe game;
             game = new TicTacToe(username);
@@ -119,6 +143,12 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             return true;
     }
 
+    /**
+     * Gibt das aktuelle Gameboard des Benutzers zurueck
+     * 
+     * @param username Der Name des Spielers dessen Gameboard geladen werden soll
+     * @return Das aktuelle Gameboard des Benutzers als String Array
+     */
     public String[] returnGameboard(String username) {
         String[] gameboard;
         int gameId = playerInWhichGame(games, username);
