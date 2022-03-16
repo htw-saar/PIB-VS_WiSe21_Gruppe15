@@ -75,6 +75,10 @@ public class TicTacToeTest {
 
         assertEquals(comparedJoinCode, 1);
     }
+    @Test
+    public void noPlayersinGame() {
+        assertNotNull(serverLogic.getPlayers());
+    }
 
 
 }
