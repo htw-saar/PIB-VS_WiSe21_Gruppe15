@@ -8,27 +8,29 @@ import com.htwsaar.server.Game.TicTacToe;
 import org.junit.Test;
 
 public class TicTacToeTest {
+    TicTacToe serverLogic = new TicTacToe("testuser");
 
     @Test
-    public void shouldAnswerWithTrue()
-    {
-        assertTrue( true );
+    public void shouldAnswerWithTrue() {
+        assertTrue(true);
     }
 
     //@Test
-   // public void StringTest(){
-        //var testobj = new TicTacToe("King");
-       // assertEquals("King",testobj.getActivePlayer());
+    //TicTacToe
 
-
-    //}
-   //public void enumtest(){
-       // assertTrue(true);
-    //}
-
-
-
+    @Test
+    public void serverGameInitTest() {
+        assertEquals("testuser", serverLogic.getActivePlayer());
     }
+
+
+    //}
+    //public void enumtest(){
+    // assertTrue(true);
+    //}
+
+
+}
 
 
 
