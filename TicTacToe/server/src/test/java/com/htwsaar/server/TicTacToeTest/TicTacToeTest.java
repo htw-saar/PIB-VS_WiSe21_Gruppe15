@@ -1,11 +1,10 @@
 package com.htwsaar.server.TicTacToeTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 
 import com.htwsaar.server.Game.TicTacToe;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class TicTacToeTest {
     TicTacToe serverLogic = new TicTacToe("testuser");
@@ -21,6 +20,11 @@ public class TicTacToeTest {
     @Test
     public void serverGameInitTest() {
         assertEquals("testuser", serverLogic.getActivePlayer());
+    }
+
+    @Test
+    public void serverGameInitTestfalse(){
+        assertNotEquals("Toni", serverLogic.getActivePlayer());
     }
 
 
