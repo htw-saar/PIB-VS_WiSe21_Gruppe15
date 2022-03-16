@@ -22,20 +22,43 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     private final ArrayList<TicTacToe> finishedGames = new ArrayList<>();
     private final ArrayList<TicTacToe> waitingGames = new ArrayList<>();
 
-
+    /**
+     * Konstruktor fuer die Klasse Server_RMI
+     * 
+     * @param databaseService Das Objekt fuer die Datenbankanbindung
+     */
     public Server_RMI(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 
+    /**
+     * Eine Methode zum erstellen eines neuen Users in der Datenbank
+     * 
+     * @param name Name des neuen Users
+     * @param password Passwort des neuen Users
+     * @return true wenn der User erfolgreich erstellt wurde
+     */
     public Boolean createLoginData(String name, String password) {
             databaseService.addUser(name, password);
             return true;
     }
 
+    /**
+     * Ueberprueft ob der uebergebene Name zu einem gueltigen login gehoert
+     * 
+     * @param name Der Name der auf seine gueltigkeit ueberprueft werden soll
+     * @return true wenn der Name zu einem Nutzer gehoert
+     */
     public Boolean userLoginExists(String name) {
         return databaseService.getUserData(name) != null;
     }
 
+    /**
+     * Ueberprueft ob das Spiel des Users schon gestartet ist oder noch ein waiting Games ist
+     * 
+     * @param username Der Name desen Spielstatus ueberprueft werden soll
+     * @return false wenn das noch ein waiting Game ist und true wenn es gestartet ist
+     */
     public Boolean checkGameStart(String username) {
         User user = databaseService.getUserData(username);
         for (TicTacToe game : waitingGames) {
