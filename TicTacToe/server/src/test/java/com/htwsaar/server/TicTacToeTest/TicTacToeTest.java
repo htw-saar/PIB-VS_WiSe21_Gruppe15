@@ -2,8 +2,6 @@ package com.htwsaar.server.TicTacToeTest;
 
 
 import com.htwsaar.server.Game.TicTacToe;
-import com.htwsaar.server.Hibernate.dao.UserDao;
-import com.htwsaar.server.Hibernate.entity.User;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -44,11 +42,6 @@ public class TicTacToeTest {
     }
 
     @Test
-    public void noJoinCodeTest() {
-        assertNotNull(serverLogic.getJoinCode());
-    }
-
-    @Test
     public void setFieldTest() {
         serverLogic.setField(2);
         var gameboard = serverLogic.getGameboard();
@@ -76,11 +69,9 @@ public class TicTacToeTest {
         assertEquals(comparedJoinCode, 1);
     }
     @Test
-    public void noPlayersinGame() {
+    public void arePlayersInGameTest() {
         assertNotNull(serverLogic.getPlayers());
     }
-
-
 }
 
 
