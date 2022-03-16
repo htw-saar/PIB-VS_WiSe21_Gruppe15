@@ -27,11 +27,18 @@ public class TicTacToeTest {
         assertNotEquals("Toni", serverLogic.getActivePlayer());
     }
 
+   // @Test
+    //public void getGameStatusGameFalse(){
+       // assertNotEquals(serverLogic.getGameStatus(), TicTacToe.Winner.NONE);
 
     //}
-    //public void enumtest(){
-    // assertTrue(true);
-    //}
+
+    @Test
+    public void EmptyGameBoard(){
+        assertNotNull(serverLogic.getGameboard());
+    }
+
+
 
 
 }
