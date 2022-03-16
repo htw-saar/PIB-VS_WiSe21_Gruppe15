@@ -14,8 +14,17 @@ public class TicTacToeTest {
         assertTrue(true);
     }
 
-    //@Test
-    //TicTacToe
+    @Test
+    public void getGameStatusTest() {
+        assertEquals(serverLogic.getGameStatus(), TicTacToe.Winner.NONE);
+    }
+
+    @Test
+    public void setGetActivePlayerTest() {
+        serverLogic.setActivePlayer("nikolai");
+        assertEquals("nikolai", serverLogic.getActivePlayer());
+    }
+
 
     @Test
     public void serverGameInitTest() {
@@ -27,11 +36,7 @@ public class TicTacToeTest {
         assertNotEquals("Toni", serverLogic.getActivePlayer());
     }
 
-   // @Test
-    //public void getGameStatusGameFalse(){
-       // assertNotEquals(serverLogic.getGameStatus(), TicTacToe.Winner.NONE);
 
-    //}
 
     @Test
     public void EmptyGameBoard(){
