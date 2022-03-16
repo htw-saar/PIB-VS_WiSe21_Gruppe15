@@ -62,6 +62,18 @@ public class TicTacToeTest {
     }
 
     @Test
+    public void checkWinConditionTestFalse() {
+        serverLogic.setField(3);
+        serverLogic.setField(1);
+        serverLogic.setField(5);
+
+        var gameboard = serverLogic.getGameboard();
+
+        serverLogic.checkWinCondition(TicTacToe.Winner.NONE);
+        assertEquals(serverLogic.getGameStatus(),serverLogic.checkWinCondition(TicTacToe.Winner.NONE));
+    }
+
+    @Test
     public void compareJoinCodeTest(){
         var joinCode = serverLogic.getJoinCode();
         var comparedJoinCode = serverLogic.compareJoinCode(joinCode);
