@@ -55,10 +55,8 @@ public class TicTacToeTest {
         serverLogic.setField(4);
         serverLogic.setField(5);
 
-        var gameboard = serverLogic.getGameboard();
-
         serverLogic.checkWinCondition(TicTacToe.Winner.Player1);
-        assertEquals(serverLogic.getGameStatus(),serverLogic.checkWinCondition(TicTacToe.Winner.Player1));
+        assertEquals(serverLogic.getGameStatus(), serverLogic.checkWinCondition(TicTacToe.Winner.Player1));
     }
 
     @Test
@@ -67,23 +65,40 @@ public class TicTacToeTest {
         serverLogic.setField(1);
         serverLogic.setField(5);
 
-        var gameboard = serverLogic.getGameboard();
-
         serverLogic.checkWinCondition(TicTacToe.Winner.NONE);
-        assertEquals(serverLogic.getGameStatus(),serverLogic.checkWinCondition(TicTacToe.Winner.NONE));
+        assertEquals(serverLogic.getGameStatus(), serverLogic.checkWinCondition(TicTacToe.Winner.NONE));
     }
 
     @Test
-    public void compareJoinCodeTest(){
+    public void compareJoinCodeTest() {
         var joinCode = serverLogic.getJoinCode();
         var comparedJoinCode = serverLogic.compareJoinCode(joinCode);
 
         assertEquals(comparedJoinCode, 1);
     }
+
     @Test
     public void arePlayersInGameTest() {
         assertNotNull(serverLogic.getPlayers());
     }
+
+    /*@Test
+    public void isGameboardFullTest() {
+        TicTacToe serverLogic2 = new TicTacToe("testuser2");
+        serverLogic.setField(0);
+        serverLogic2.setField(1);
+        serverLogic.setField(2);
+        serverLogic2.setField(3);
+        serverLogic.setField(4);
+        serverLogic2.setField(5);
+        serverLogic2.setField(6);
+        serverLogic.setField(7);
+        serverLogic2.setField(8);
+        var gameboard = serverLogic.getGameboard();
+
+        assertEquals(serverLogic.checkWinCondition(TicTacToe.Winner.Player1), TicTacToe.Winner.UNSETTELD);
+    }*/
+
 }
 
 
