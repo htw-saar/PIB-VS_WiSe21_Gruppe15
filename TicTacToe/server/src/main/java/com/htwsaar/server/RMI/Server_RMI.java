@@ -161,6 +161,12 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         return gameboard;
     }
 
+    /**
+     * Gibt die User ID des Benutzers zurueck
+     * 
+     * @param username Der Benutzer dessen Id zurueckgegeben werden soll
+     * @return Die User ID des Benutzers
+     */
     public int getUserId(String username) {
         int userId;
         User user = databaseService.getUserData(username);
@@ -168,6 +174,13 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         return userId;
     }
 
+    /**
+     * Eine Methode die einen Spieler einem gewuenschten Spiel hinzufuegt
+     * 
+     * @param username Der User der dem Spiel beitreten soll
+     * @param joinCode Der join Code des Spieles
+     * @return true wenn der Spieler dem Spiel hinzugefuegt wurde
+     */
     public Boolean joinGame(String username, int joinCode) {
             for (int i = 0; i < waitingGames.size(); i++) {
                 if (waitingGames.get(i).compareJoinCode(joinCode) == 1) {
@@ -181,6 +194,11 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             return false;
     }
 
+    /**
+     * Eine Methode die den Spieler aus einem fertigen Spiel entfernt
+     * 
+     * @param username Der Spieler der entfernt werden soll
+     */
     private void deleteOldGames(String username){
         int gameID = playerInWhichGame(finishedGames, username);
         if (gameID >= 0){
@@ -188,6 +206,13 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
+    /**
+     * Die Methode setField setzt das Feld an der gewuenschten Position mit dem Symbol des Benutzers
+     * 
+     * @param username Der Benutzer der das Feld setzten moechte
+     * @param pos Die Position des zu setzenden Feldes
+     * @return Das Enum Winner mit dem aktuellen Spielestatus
+    */
     public TicTacToe.Winner setField(String username, int pos) {
             int gameNumber;
             String[] players;
@@ -203,6 +228,14 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             return TicTacToe.Winner.NONE;
     }
 
+    /**
+     * Die Methode ueberprueft ob das Spiel zu ende ist und verteilt die 
+     * Wins und Loses an die jeweiligen Spieler
+     * 
+     * @param gameId Die ID des Spieles
+     * @param players Die beiden Spieler 
+     * @param gameState Der Zustand des Spieles
+     */
     private void checkGameEnd(int gameId, String[] players, TicTacToe.Winner gameState){
         if (!gameState.equals(TicTacToe.Winner.NONE)) {
             if (!gameState.equals(TicTacToe.Winner.FIELDSET)){
@@ -222,6 +255,14 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
+    /**
+     * Schaut nach an in welchem Spiel der gesuchte Benutzer sich befindet 
+     * und gibt den dazugehoerigen index zurueck
+     * 
+     * @param list Die zu durchsuchende Liste
+     * @param username Der zu suchende Benutzer
+     * @return Der Index an dem sich der Benutzer befindet oder -1 wenn der Nutzer nicht gefunden wurde
+     */
     private int playerInWhichGame(ArrayList<TicTacToe> list, String username) {
         String[] playerNames;
         for (int i = 0; i < list.size(); i++) {
@@ -233,6 +274,12 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         return -1;
     }
 
+    /** 
+     * Eine Methode um herauszufinden wer aktuell der Aktive Spieler im Spiel ist
+     * 
+     * @param username Der Benutzer desen Spiel ueberprueft werden soll
+     * @return Der aktive Spieler als String
+     */
     public String getActivePlayer(String username) {
         int gameID = playerInWhichGame(games, username);
         if (gameID >= 0){
@@ -243,6 +290,12 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         }
     }
 
+    /**
+     * Eine Methode die den aktuellen Status des Spieles zurueck gibt
+     * 
+     * @param username Der Benutzer desen Spiel ueberprueft werden soll
+     * @return Das Enum Winner mit dem aktuellen Status des Spieles
+     */
     public TicTacToe.Winner getGameStatus(String username){
         int gameID = playerInWhichGame(games, username);
         TicTacToe.Winner status;
