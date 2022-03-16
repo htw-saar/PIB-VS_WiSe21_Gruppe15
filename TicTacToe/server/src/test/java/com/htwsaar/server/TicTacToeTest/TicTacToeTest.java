@@ -38,6 +38,11 @@ public class TicTacToeTest {
         assertNotNull(serverLogic.getGameboard());
     }
 
+    @Test
+    public void noJoinCode(){
+        assertNotNull(serverLogic.getJoinCode());
+    }
+
 
 
 
