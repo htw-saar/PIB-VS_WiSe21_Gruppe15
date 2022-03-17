@@ -101,15 +101,12 @@ Spielhistorie bearbeitet und manuell User angelegt werden.
 # !!!!! Kleine übersicht bauen
 
 ###### Klassendiagramme
+
 ### vorläufig, Tests noch nicht fertig
 
 [![UMLClient.png](https://i.postimg.cc/vmwRvG9r/UMLClient.png)](https://postimg.cc/jDckx0M2)
 
 [![UMLServer.png](https://i.postimg.cc/2ygmRhqJ/UMLServer.png)](https://postimg.cc/vx7C51tL)
-
-
-
-
 
 ###### API
 
@@ -134,7 +131,12 @@ steht. Dieses Ergebnis wird an die Datenbank weitergegeben, um das Scoreboard zu
 
 ![alt text](https://i.imgur.com/dm6JNR5.png)
 
-Der Spieler startet die Anwendung und hat dann die Möglichkeit sich einzuloggen. Dies geschieht durch eine Anfrage an den Server, welcher dann über die Datenbank überprüft ob der User existiert. Nach erfolgreichem einloggen hat der Spieler die Möglichkeit ein Spiel zu erstellen, woraufhin eine eindeutige Game ID erzeugt wird. Möchte der Spieler einem Spiel beitreten so geschieht dies über joinGame über die eindeutige Game ID. Die Spieler spielen solange gegeneinander bis es zu einem Ergebnis kommt. Sobald dieses vorhanden ist, wird das Ergebnis als Spielhistorie in die Datenbank geschrieben.
+Der Spieler startet die Anwendung und hat dann die Möglichkeit sich einzuloggen. Dies geschieht durch eine Anfrage an
+den Server, welcher dann über die Datenbank überprüft ob der User existiert. Nach erfolgreichem einloggen hat der
+Spieler die Möglichkeit ein Spiel zu erstellen, woraufhin eine eindeutige Game ID erzeugt wird. Möchte der Spieler einem
+Spiel beitreten so geschieht dies über joinGame über die eindeutige Game ID. Die Spieler spielen solange gegeneinander
+bis es zu einem Ergebnis kommt. Sobald dieses vorhanden ist, wird das Ergebnis als Spielhistorie in die Datenbank
+geschrieben.
 
 ## Getting Started
 
