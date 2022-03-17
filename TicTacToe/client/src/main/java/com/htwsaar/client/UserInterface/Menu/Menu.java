@@ -4,6 +4,7 @@ import com.htwsaar.client.UserInterface.TicTacToe.GameLogic;
 import com.htwsaar.client.RMI.Client_RMI;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.util.Scanner;
 
 public class Menu {
@@ -17,12 +18,14 @@ public class Menu {
     private final int SPIEL_ERSTELLEN = 1;
     private final int SPIEL_BEITRETEN = 2;
     private final int BESTENLISTE = 3;
+    private final int SPIEL_REMATCH = 4;
     private final int LOGOUT = 9;
     private int funktion = -1;
     private final Client_RMI client_rmi;
     private final Scanner input = new Scanner(System.in);
     private String username;
     private GameLogic gameLogic;
+    private Boolean rematchOption = false;
 
     public Menu(Client_RMI client_rmi) {
         this.client_rmi = client_rmi;
@@ -46,7 +49,7 @@ public class Menu {
         System.out.println(spacer);
         System.out.printf((format) + "%n", "|", "Nummer", "|", "Funktion", "|");
         System.out.println(spacer);
-        if (isAuthenticated){
+        if (isAuthenticated) {
             printInGame(format);
         } else {
             printLogin(format);
@@ -57,21 +60,24 @@ public class Menu {
         return intEinlesen();
     }
 
-    private void printInGame(String format){
+    private void printInGame(String format) {
         System.out.printf((format) + "%n", "|", SPIEL_ERSTELLEN, "|", "Spiel erstellen", "|");
         System.out.printf((format) + "%n", "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|");
         System.out.printf((format) + "%n", "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|");
+        if (rematchOption) {
+            System.out.printf((format) + "%n", "|", SPIEL_REMATCH, "|", "Letztes Spiel erneut spielen", "|");
+        }
         System.out.printf((format) + "%n", "|", LOGOUT, "|", "Ausloggen", "|");
     }
 
-    private void printLogin(String format){
+    private void printLogin(String format) {
         System.out.printf((format) + "%n", "|", LOGIN, "|", "Einloggen", "|");
         System.out.printf((format) + "%n", "|", SIGNUP, "|", "Registrieren", "|");
         System.out.printf((format) + "%n", "|", ENDE, "|", "Beenden", "|");
     }
 
-    private void ausfuehrenFunktion(int funktion){
-        if (isAuthenticated){
+    private void ausfuehrenFunktion(int funktion) {
+        if (isAuthenticated) {
             gameFunctions(funktion);
         } else {
             loginFunctions(funktion);
@@ -83,13 +89,14 @@ public class Menu {
             case SPIEL_ERSTELLEN -> createGame();
             case SPIEL_BEITRETEN -> joinGame();
             case BESTENLISTE -> showScoreboard();
+            case SPIEL_REMATCH -> rematchGame();
             case LOGOUT -> logout();
             case ENDE -> System.exit(0);
             default -> System.out.println("Fehlerhafte Auswahl einer Funktion!");
         }
     }
 
-    private void loginFunctions(int funktion){
+    private void loginFunctions(int funktion) {
         input.nextLine();
         switch (funktion) {
             case LOGIN -> readLoginData();
@@ -99,33 +106,42 @@ public class Menu {
         }
     }
 
-    private void createGame(){
+    private void createGame() {
+        rematchOption = false;
         gameLogic = new GameLogic(client_rmi, username);
         System.out.println("Spiel erstellt ... \n ... Join Code: " + client_rmi.getUserId(username));
         gameLogic.createGame();
+        rematchOption = true;
     }
 
-    private void joinGame(){
+    private void joinGame() {
+        rematchOption = false;
         gameLogic = new GameLogic(client_rmi, username);
         System.out.println("Join Code eingeben:");
         int joinCodeEntry = input.nextInt();
         gameLogic.joinGame(joinCodeEntry);
+        rematchOption = true;
     }
 
-    private void showScoreboard(){
+    private void showScoreboard() {
         System.out.println("Bestenliste:");
         client_rmi.ShowScoreBoardAll();
     }
 
+    private void rematchGame() {
+        gameLogic = new GameLogic(client_rmi, username);
+        System.out.println("Letztes Spiel wird erneut gespielt ...");
+        gameLogic.rematchGame();
+    }
 
-    private void readLoginData(){
+    private void readLoginData() {
         username = null;
         int versuche = 0;
         String pw;
         Boolean log = false;
         System.out.println("Benutzername: ");
         username = input.nextLine();
-        while(!log) {
+        while (!log) {
             System.out.println("Passwort: ");
             pw = input.nextLine();
             log = login(username, pw);
@@ -169,7 +185,7 @@ public class Menu {
         setAuthenticated(false);
     }
 
-    private void logout(){
+    private void logout() {
         setAuthenticated(false);
         System.out.println("Benutzer wird abgemeldet.");
     }
