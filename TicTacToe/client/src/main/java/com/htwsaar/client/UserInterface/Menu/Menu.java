@@ -139,7 +139,7 @@ public class Menu {
         String pw;
         Boolean log = false;
         System.out.println("Benutzername: ");
-        username = hashing256(input.nextLine());
+        username = input.nextLine();
         while (!log) {
             System.out.println("Passwort: ");
             pw = hashing256(input.nextLine());
@@ -167,7 +167,7 @@ public class Menu {
         String pw;
         boolean erg;
         System.out.println("Benutzername: ");
-        username = hashing256(input.nextLine());
+        username = input.nextLine();
         erg = client_rmi.userLoginExists(username);
         if (erg) {
             logger.warn("Benutzername bereits vergeben! \nBitte versuchen Sie es erneut.");
