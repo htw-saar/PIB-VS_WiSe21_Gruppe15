@@ -22,15 +22,15 @@ public class Client_RMI {
     private ServerClient_Connect_Interface clientStub;
     private String loggedInUser;
 
-    public Client_RMI(){
+    public Client_RMI() {
         init_RMI();
         logger.debug("Verbindung zum Server wurde erfolgreich hergestellt!");
     }
 
-    private void init_RMI(){
-        while(clientStub == null){
+    private void init_RMI() {
+        while (clientStub == null) {
             clientStub = connectToServer();
-            if (clientStub == null){
+            if (clientStub == null) {
                 System.out.println("Verbindung zum Server fehlgeschlagen!");
                 System.out.println("Nächster Versuch startet gleich...");
                 waitOn(2);
@@ -72,6 +72,15 @@ public class Client_RMI {
         } catch (Exception e) {
             logger.error("Client exception: " + e);
             return -1;
+        }
+    }
+
+    public Boolean rematchGame(String username) {
+        try {
+            return clientStub.rematchGame(username);
+        } catch (Exception e) {
+            logger.error("Client exception: " + e);
+            return false;
         }
     }
 
@@ -166,9 +175,9 @@ public class Client_RMI {
         return testLoginData(username, password);
     }
 
-    public Boolean checkGameStart(String username) {
+    public Boolean checkGameStart(String username, String listTyp) {
         try {
-            return clientStub.checkGameStart(username);
+            return clientStub.checkGameStart(username, listTyp);
         } catch (RemoteException e) {
             logger.error("Client exception: " + e);
             return null;
@@ -186,7 +195,7 @@ public class Client_RMI {
     }
 
     public TicTacToe.Winner getGameStatus(String username) {
-        try{
+        try {
             return clientStub.getGameStatus(username);
         } catch (RemoteException e) {
             logger.error("Client exception: " + e);
@@ -194,7 +203,7 @@ public class Client_RMI {
         }
     }
 
-    private void waitOn(int sec){
+    private void waitOn(int sec) {
         try {
             TimeUnit.SECONDS.sleep(sec);
         } catch (InterruptedException e) {

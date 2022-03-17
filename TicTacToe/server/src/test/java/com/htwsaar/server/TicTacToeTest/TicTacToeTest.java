@@ -2,12 +2,14 @@ package com.htwsaar.server.TicTacToeTest;
 
 
 import com.htwsaar.server.Game.TicTacToe;
+import com.htwsaar.server.Services.DatabaseService;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class TicTacToeTest {
-    TicTacToe serverLogic = new TicTacToe("testuser");
+    DatabaseService databaseService = new DatabaseService();
+    TicTacToe serverLogic = new TicTacToe("testuser", databaseService);
 
     @Test
     public void shouldAnswerWithTrueTest() {

@@ -10,6 +10,8 @@ public class GameLogic {
     private final Scanner input = new Scanner(System.in);
     private final Client_RMI client_rmi;
     private final String username;
+    private final String waitingList = "Wait";
+    private final String rematchList = "Rematch";
 
     public GameLogic(Client_RMI client_rmi, String username) {
         this.client_rmi = client_rmi;
@@ -22,8 +24,8 @@ public class GameLogic {
      */
     public void createGame() {
         client_rmi.createGame(client_rmi.getLoggedInUser());
-        System.out.println("Server waits for Player 2");
-        while (!client_rmi.checkGameStart(username)) {
+        System.out.println("... Warte auf Spieler 2 ...");
+        while (!client_rmi.checkGameStart(username, waitingList)) {
             waitForInteraction();
         }
         playGame();
@@ -38,6 +40,15 @@ public class GameLogic {
         }
     }
 
+    public void rematchGame() {
+        client_rmi.rematchGame(username);
+        System.out.println("... Warte auf Spieler 2 ...");
+        while (!client_rmi.checkGameStart(username, rematchList)) {
+            waitForInteraction();
+        }
+        playGame();
+    }
+
     private void playGame() {
         TicTacToe.Winner winBreak = TicTacToe.Winner.NONE;
         String[] serverGameboard;
@@ -45,7 +56,7 @@ public class GameLogic {
             winBreak = waitOnPlayer();
             if (winBreak.equals(TicTacToe.Winner.Player1) ||
                     winBreak.equals(TicTacToe.Winner.Player2) ||
-                    winBreak.equals(TicTacToe.Winner.UNSETTELD)){
+                    winBreak.equals(TicTacToe.Winner.UNSETTELD)) {
                 break;
             }
             serverGameboard = client_rmi.returnGameboard(username);
@@ -56,7 +67,7 @@ public class GameLogic {
             serverGameboard = client_rmi.returnGameboard(username);
             printGameBoard(serverGameboard);
         }
-        if (winBreak != TicTacToe.Winner.UNSETTELD){
+        if (winBreak != TicTacToe.Winner.UNSETTELD) {
             System.out.println("Spieler " + winBreak.label + " hat gewonnen.");
         } else {
             System.out.println("Das Spiel ist Unentschieden.");
@@ -64,7 +75,7 @@ public class GameLogic {
 
     }
 
-    private TicTacToe.Winner setField(int field){
+    private TicTacToe.Winner setField(int field) {
         TicTacToe.Winner winBreak;
         winBreak = client_rmi.setField(username, field - 1);
         while (winBreak.equals(TicTacToe.Winner.FIELDSET)) {
@@ -78,14 +89,14 @@ public class GameLogic {
 
     private TicTacToe.Winner waitOnPlayer() {
         System.out.println("Warte auf anderen Spieler");
-        while(!client_rmi.getActivePlayer(username).equals(username)) {
+        while (!client_rmi.getActivePlayer(username).equals(username)) {
             waitForInteraction();
         }
 
         return checkWinner();
     }
 
-    private TicTacToe.Winner checkWinner(){
+    private TicTacToe.Winner checkWinner() {
         return client_rmi.getGameStatus(username);
     }
 
@@ -98,8 +109,8 @@ public class GameLogic {
         String format = " %2s %3s %2s %3s %2s %3s %2s";
         String spacer = "  +------+------+------+";
         System.out.println(spacer);
-        for (int i = 0; i < gameBoard.length; i+=3) {
-            System.out.printf((format) + "%n", "|", gameBoard[i], "|", gameBoard[i+1], "|",  gameBoard[i+2], "|");
+        for (int i = 0; i < gameBoard.length; i += 3) {
+            System.out.printf((format) + "%n", "|", gameBoard[i], "|", gameBoard[i + 1], "|", gameBoard[i + 2], "|");
             System.out.println(spacer);
         }
     }
@@ -125,7 +136,7 @@ public class GameLogic {
         }
     }
 
-    private void waitForInteraction(){
+    private void waitForInteraction() {
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
