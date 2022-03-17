@@ -46,7 +46,7 @@ public class TicTacToeTest {
         serverLogic.setField(2);
         var gameboard = serverLogic.getGameboard();
 
-        assertNotNull(gameboard[2]);
+        assertEquals(gameboard[2],"X");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class TicTacToeTest {
         serverLogic.setField(5);
 
         serverLogic.checkWinCondition(TicTacToe.Winner.Player1);
-        assertEquals(serverLogic.getGameStatus(), serverLogic.checkWinCondition(TicTacToe.Winner.Player1));
+        assertEquals("testetesttest",serverLogic.getGameStatus(), serverLogic.checkWinCondition(TicTacToe.Winner.Player1));
     }
 
     @Test
