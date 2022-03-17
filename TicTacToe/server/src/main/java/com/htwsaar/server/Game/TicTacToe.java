@@ -1,7 +1,8 @@
 package com.htwsaar.server.Game;
 
-import com.htwsaar.server.Hibernate.dao.UserDao;
 import com.htwsaar.server.Hibernate.entity.User;
+import com.htwsaar.server.Services.DatabaseService;
+
 import java.util.Objects;
 
 /**
@@ -26,7 +27,11 @@ public class TicTacToe {
         }
     }
 
+    private DatabaseService databaseService;
     private String x;
+    private Boolean xRematch = false;
+    private Boolean oRematch = false;
+    private int readyPlayers = 0;
     private final String[] gameboard = new String[9];
     private final int[][] winConditions;
     private final String[] players = new String[2];
@@ -38,7 +43,8 @@ public class TicTacToe {
      * Konstruktor von TicTacToe
      * Erstellt die Win Konditionen und initialisiert das Spielbrett
      */
-    public TicTacToe(String username) {
+    public TicTacToe(String username, DatabaseService databaseService) {
+        this.databaseService = databaseService;
         setGameStatus(Winner.NONE);
         winConditions = new int[][]{
                 {0, 1, 2},
@@ -56,6 +62,22 @@ public class TicTacToe {
 
     public int getJoinCode() {
         return joinCode;
+    }
+
+    public void setRematch(String username) {
+        if (x.equals(username)) {
+            xRematch = true;
+        } else {
+            oRematch = true;
+        }
+    }
+
+    public Boolean isRematchReady() {
+        if (xRematch && oRematch) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -98,15 +120,15 @@ public class TicTacToe {
 
     /**
      * Gibt Active Player zurueck
-     *
      */
     public String getActivePlayer() {
         return activePlayer;
     }
+
     /**
      * Setzt einen Spielermarker an Position pos
      *
-     * @param pos    die Position wo der Marker gesetzt wird
+     * @param pos die Position wo der Marker gesetzt wird
      */
     public Winner setField(int pos) {
         if (gameboard[pos].equals(Winner.Player1.label) || gameboard[pos].equals(Winner.Player2.label)) {
@@ -180,8 +202,7 @@ public class TicTacToe {
      * Die Methode createJoinCode erstellt einen JoinCode aus der UserID
      */
     private void createJoinCode(String username) {
-        UserDao userDao = new UserDao();
-        User user = userDao.getUser(username);
+        User user = databaseService.getUserData(username);
         if (user != null) {
             joinCode = user.getUserId();
         }
@@ -201,24 +222,24 @@ public class TicTacToe {
         }
     }
 
-    public Winner getGameStatus(){
+    public Winner getGameStatus() {
         return gameStatus;
     }
 
-    public void setGameStatus(Winner gameStatus){
+    public void setGameStatus(Winner gameStatus) {
         this.gameStatus = gameStatus;
     }
 
-    public void switchActivePlayer(){
-        if (activePlayer.equals(players[0])){
+    public void switchActivePlayer() {
+        if (activePlayer.equals(players[0])) {
             setActivePlayer(players[1]);
         } else {
             setActivePlayer(players[0]);
         }
     }
 
-    private Winner getPlayerSymbol(){
-        if (x.equals(activePlayer)){
+    private Winner getPlayerSymbol() {
+        if (x.equals(activePlayer)) {
             return Winner.Player1;
         } else {
             return Winner.Player2;
