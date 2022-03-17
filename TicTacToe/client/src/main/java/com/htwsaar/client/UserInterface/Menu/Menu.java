@@ -21,9 +21,9 @@ public class Menu {
     private final int BESTENLISTE = 3;
     private final int SPIEL_REMATCH = 4;
     private final int LOGOUT = 9;
-    private int funktion = -1;
     private final Client_RMI client_rmi;
     private final Scanner input = new Scanner(System.in);
+    private int funktion = -1;
     private String username;
     private GameLogic gameLogic;
     private Boolean rematchOption = false;
@@ -55,9 +55,7 @@ public class Menu {
         } else {
             printLogin(format);
         }
-
         System.out.println(spacer);
-
         return intEinlesen();
     }
 
@@ -66,7 +64,7 @@ public class Menu {
         System.out.printf((format) + "%n", "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|");
         System.out.printf((format) + "%n", "|", BESTENLISTE, "|", "Bestenliste anzeigen", "|");
         if (rematchOption) {
-            System.out.printf((format) + "%n", "|", SPIEL_REMATCH, "|", "Letztes Spiel erneut spielen", "|");
+            System.out.printf((format) + "%n", "|", SPIEL_REMATCH, "|", "Erneut spielen", "|");
         }
         System.out.printf((format) + "%n", "|", LOGOUT, "|", "Ausloggen", "|");
     }

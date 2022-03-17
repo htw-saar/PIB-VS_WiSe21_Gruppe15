@@ -64,11 +64,6 @@ public class Server_RMI implements ServerClient_Connect_Interface {
      * @return true wenn es gestartet ist und nicht mehr in der gesuchten Gameslist
      */
     public Boolean checkGameStart(String username, String listTyp) {
-        //User user = databaseService.getUserData(username);
-        //for (TicTacToe game : waitingGames) {
-        //    if (user.getUserId() == game.getJoinCode()) {
-        //        return false;
-        //    }
         int gameNumber = -1;
         switch (listTyp) {
             case "Wait":
@@ -117,7 +112,9 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     public Boolean sendLoginData(String name, String password) {
         User user = databaseService.getUserData(name);
         if (user != null) {
-            return password.equals(user.getPassword());
+            if (name.equals(user.getUsername())){
+                return password.equals(user.getPassword());
+            }
         }
         return false;
     }

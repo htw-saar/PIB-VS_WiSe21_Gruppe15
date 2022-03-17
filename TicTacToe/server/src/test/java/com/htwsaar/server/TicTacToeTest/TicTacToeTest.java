@@ -12,11 +12,6 @@ public class TicTacToeTest {
     TicTacToe serverLogic = new TicTacToe("testuser", databaseService);
 
     @Test
-    public void shouldAnswerWithTrueTest() {
-        assertTrue(true);
-    }
-
-    @Test
     public void getGameStatusTest() {
         assertEquals(serverLogic.getGameStatus(), TicTacToe.Winner.NONE);
     }
