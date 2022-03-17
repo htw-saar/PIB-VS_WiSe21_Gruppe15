@@ -28,10 +28,18 @@ public class Menu {
     private GameLogic gameLogic;
     private Boolean rematchOption = false;
 
+    /**
+     * Konstruktor von Menu
+     *
+     * @param client_rmi rmi des Clienten
+     */
     public Menu(Client_RMI client_rmi) {
         this.client_rmi = client_rmi;
     }
 
+    /**
+     * Startet das Auswahlmenue, laeuft solange nicht die Auswahl ENDE aufgerufen wird
+     */
     public void startMenu() {
         while (funktion != ENDE) {
             try {
@@ -44,6 +52,11 @@ public class Menu {
         }
     }
 
+    /**
+     * Legt das Format des Auswahlmenues fest und gibt die ausgewaehlte Funktion zurueck
+     *
+     * @return int Die Nummer der ausgewaehlten Funktion
+     */
     private int einlesenFunktion() {
         String format = " %2s %6s %2s %22s %2s";
         String spacer = "  +---------+-------------------------+";
@@ -59,6 +72,11 @@ public class Menu {
         return intEinlesen();
     }
 
+    /**
+     * Gibt das Auswahlmenue nach dem Login aus
+     *
+     * @param format Format des Auswahlmenues
+     */
     private void printInGame(String format) {
         System.out.printf((format) + "%n", "|", SPIEL_ERSTELLEN, "|", "Spiel erstellen", "|");
         System.out.printf((format) + "%n", "|", SPIEL_BEITRETEN, "|", "Spiel beitreten", "|");
@@ -69,12 +87,22 @@ public class Menu {
         System.out.printf((format) + "%n", "|", LOGOUT, "|", "Ausloggen", "|");
     }
 
+    /**
+     * Gibt das Auswahlmenue vor dem Login aus
+     *
+     * @param format Format des Auswahlmenues
+     */
     private void printLogin(String format) {
         System.out.printf((format) + "%n", "|", LOGIN, "|", "Einloggen", "|");
         System.out.printf((format) + "%n", "|", SIGNUP, "|", "Registrieren", "|");
         System.out.printf((format) + "%n", "|", ENDE, "|", "Beenden", "|");
     }
 
+    /**
+     * Weiterleitung von Print der Funktion zu den Funktionen selbst
+     *
+     * @param funktion Die Nummer der ausgewaehlten Funktion
+     */
     private void ausfuehrenFunktion(int funktion) {
         if (isAuthenticated) {
             gameFunctions(funktion);
@@ -83,6 +111,11 @@ public class Menu {
         }
     }
 
+    /**
+     * Startet die Funktion die nach dem Login ausgewaehlt wurde
+     *
+     * @param funktion Die Nummer der ausgewaehlten Funktion
+     */
     private void gameFunctions(int funktion) {
         switch (funktion) {
             case SPIEL_ERSTELLEN -> createGame();
@@ -95,6 +128,11 @@ public class Menu {
         }
     }
 
+    /**
+     * Startet die Funktion die vor dem Login ausgewaehlt wurde
+     *
+     * @param funktion Die Nummer der ausgewaehlten Funktion
+     */
     private void loginFunctions(int funktion) {
         input.nextLine();
         switch (funktion) {
@@ -105,6 +143,9 @@ public class Menu {
         }
     }
 
+    /**
+     * Erstellt ein Spiel über RMI
+     */
     private void createGame() {
         rematchOption = false;
         gameLogic = new GameLogic(client_rmi, username);
@@ -113,6 +154,9 @@ public class Menu {
         rematchOption = true;
     }
 
+    /**
+     * Beitritt eines Spiels über einen Joincode
+     */
     private void joinGame() {
         rematchOption = false;
         gameLogic = new GameLogic(client_rmi, username);
@@ -122,17 +166,26 @@ public class Menu {
         rematchOption = true;
     }
 
+    /**
+     * Zeigt das Scoreboard an
+     */
     private void showScoreboard() {
         System.out.println("Bestenliste:");
         client_rmi.ShowScoreBoardAll();
     }
 
+    /**
+     * Startet ein Rueckmatch des letzten Spiels
+     */
     private void rematchGame() {
         gameLogic = new GameLogic(client_rmi, username);
         System.out.println("Letztes Spiel wird erneut gespielt ...");
         gameLogic.rematchGame();
     }
 
+    /**
+     * Liest die Logindaten ein und sendet sie an den Server
+     */
     private void readLoginData() {
         username = null;
         int versuche = 0;
@@ -157,11 +210,20 @@ public class Menu {
         }
     }
 
-    //Alpha methode (User kann noch nicht angelegt werden)
+    /**
+     * Sendet die Logindaten über RMI an den Clienten
+     *
+     * @param username Username des Nutzers
+     * @param password Passwort des Nutzers
+     * @return Gibt zurueck, ob der Login erfolgreich war
+     */
     private Boolean login(String username, String password) {
         return client_rmi.login(username, password);
     }
 
+    /**
+     * Funktion zum Registrieren des Benutzers, sendet die Daten ueber RMI an den Server
+     */
     private void signup() {
         String username;
         String pw;
@@ -183,6 +245,9 @@ public class Menu {
         setAuthenticated(false);
     }
 
+    /**
+     * Funktion zum Abmelden des Benutzers
+     */
     private void logout() {
         setAuthenticated(false);
         System.out.println("Benutzer wird abgemeldet.");
@@ -202,6 +267,12 @@ public class Menu {
         isAuthenticated = authenticated;
     }
 
+    /**
+     * Methode um einen Text zu hashen
+     *
+     * @param text Text der gehasht wird
+     * @return Der gehashte Text
+     */
     private String hashing256(String text){
        return DigestUtils.sha256Hex(text);
     }
