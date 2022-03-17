@@ -92,7 +92,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     }
 
     /**
-     *
+     * Startet den Serverseitigen RMI Stub
      */
     public void start_Server_RMI() {
         try {
@@ -165,6 +165,12 @@ public class Server_RMI implements ServerClient_Connect_Interface {
         return true;
     }
 
+    /**
+     * Löscht ein beendetes Spiel aus finishedGames und fügt es rematchGames hinzu
+     *
+     * @param username Der Nutzer der ein Rematch starten will
+     * @return true wenn das rematch der Rematch liste hinzugefuegt wurde
+     */
     public Boolean rematchGame(String username) {
         int gameNumber = playerInWhichGame(finishedGames, username);
         if (gameNumber != -1) {
