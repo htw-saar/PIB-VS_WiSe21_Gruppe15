@@ -74,6 +74,8 @@ public class TicTacToe {
 
     public Boolean isRematchReady() {
         if (xRematch && oRematch) {
+            setGameStatus(Winner.NONE);
+            initGameboard();
             return true;
         } else {
             return false;
