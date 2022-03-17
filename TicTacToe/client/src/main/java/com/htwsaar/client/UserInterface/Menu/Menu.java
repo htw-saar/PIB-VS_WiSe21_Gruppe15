@@ -2,6 +2,7 @@ package com.htwsaar.client.UserInterface.Menu;
 
 import com.htwsaar.client.UserInterface.TicTacToe.GameLogic;
 import com.htwsaar.client.RMI.Client_RMI;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -140,10 +141,10 @@ public class Menu {
         String pw;
         Boolean log = false;
         System.out.println("Benutzername: ");
-        username = input.nextLine();
+        username = hashing256(input.nextLine());
         while (!log) {
             System.out.println("Passwort: ");
-            pw = input.nextLine();
+            pw = hashing256(input.nextLine());
             log = login(username, pw);
             if (log && versuche < 3) {
                 System.out.println("Login war erfolgreich!");
@@ -168,15 +169,14 @@ public class Menu {
         String pw;
         boolean erg;
         System.out.println("Benutzername: ");
-        username = input.nextLine();
+        username = hashing256(input.nextLine());
         erg = client_rmi.userLoginExists(username);
         if (erg) {
             logger.warn("Benutzername bereits vergeben! \nBitte versuchen Sie es erneut.");
-            // TODO Bessere Fehlerbehandlung im Falle eines vergebenen Benutzernames
             signup();
         } else {
             System.out.println("Passwort: ");
-            pw = input.nextLine();
+            pw = hashing256(input.nextLine());
             erg = client_rmi.createLoginData(username, pw);
             if (!erg) {
                 logger.error("Login fehlgeschlagen!\nVersuchen Sie es erneut.");
@@ -202,5 +202,9 @@ public class Menu {
 
     public void setAuthenticated(boolean authenticated) {
         isAuthenticated = authenticated;
+    }
+
+    private String hashing256(String text){
+       return DigestUtils.sha256Hex(text);
     }
 }
