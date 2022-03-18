@@ -20,7 +20,7 @@ public class GameLogic {
 
 
     /**
-     * Eine Methode für die locale Ausführung des Spiels WIP/umstellung auf Onlinefunktionalität
+     * Methode um Spiel zu erstellen und Spiel zu Spielen für den ersten Spieler
      */
     public void createGame() {
         client_rmi.createGame(client_rmi.getLoggedInUser());
@@ -31,6 +31,11 @@ public class GameLogic {
         playGame();
     }
 
+    /**
+     * Methode um Spiel beizutreten für Spieler 2, spielt auch über diese Methode
+     *
+     * @param GameID
+     */
     public void joinGame(int GameID) {
         if (client_rmi.joinGame(GameID, username)) {
             System.out.println("Spiel erfolgreich beigetreten!");
@@ -39,6 +44,10 @@ public class GameLogic {
             System.out.println("Spiel nicht erfolgreich beigetreten!");
         }
     }
+
+    /**
+     * Methode für ein Rematch zwischen den Spielern
+     */
 
     public void rematchGame() {
         client_rmi.rematchGame(username);
@@ -49,6 +58,9 @@ public class GameLogic {
         playGame();
     }
 
+    /**
+     * Implementierung playGame Methode, überprüft Win Conditions und spielt dementsprechend weiter
+     */
     private void playGame() {
         TicTacToe.Winner winBreak = TicTacToe.Winner.NONE;
         String[] serverGameboard;
@@ -75,6 +87,12 @@ public class GameLogic {
 
     }
 
+    /**
+     * Methode um Feld auf Game Board zu setzen mit Überprüfung ob Feld bereits gesetzt ist
+     *
+     * @param field
+     * @return Winner Enum
+     */
     private TicTacToe.Winner setField(int field) {
         TicTacToe.Winner winBreak;
         winBreak = client_rmi.setField(username, field - 1);
@@ -86,7 +104,11 @@ public class GameLogic {
         return winBreak;
     }
 
-
+    /**
+     * Methode um auf Spielerzug zu warten
+     *
+     * @return Winner Enum
+     */
     private TicTacToe.Winner waitOnPlayer() {
         System.out.println("Warte auf anderen Spieler");
         while (!client_rmi.getActivePlayer(username).equals(username)) {
@@ -96,6 +118,11 @@ public class GameLogic {
         return checkWinner();
     }
 
+    /**
+     * Methode zu Überprüfung des Gewinners
+     *
+     * @return Winner Enum
+     */
     private TicTacToe.Winner checkWinner() {
         return client_rmi.getGameStatus(username);
     }
@@ -136,6 +163,9 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Sleep Methode um auf Interaktion zu warten
+     */
     private void waitForInteraction() {
         try {
             TimeUnit.SECONDS.sleep(1);
