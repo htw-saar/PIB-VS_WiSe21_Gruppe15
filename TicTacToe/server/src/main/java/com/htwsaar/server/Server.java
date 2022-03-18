@@ -10,6 +10,7 @@ public class Server {
 
   
     private void start(String[] args) {
+        System.setProperty("java.rmi.server.hostname", "simon.selfhost.co");
         DatabaseService databaseService = new DatabaseService();
         Server_RMI server_rmi = new Server_RMI(databaseService);
         server_rmi.start_Server_RMI();
