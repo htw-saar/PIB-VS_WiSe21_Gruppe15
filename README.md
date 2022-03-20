@@ -129,7 +129,7 @@ steht. Dieses Ergebnis wird an die Datenbank weitergegeben, um das Scoreboard zu
 
 ###### Sequenzdiagramm
 
-![alt text](https://i.imgur.com/dm6JNR5.png)
+![alt text](https://i.imgur.com/8OydnJv.png)
 
 Der Spieler startet die Anwendung und hat dann die Möglichkeit sich einzuloggen. Dies geschieht durch eine Anfrage an
 den Server, welcher dann über die Datenbank überprüft ob der User existiert. Nach erfolgreichem einloggen hat der
@@ -165,7 +165,6 @@ _Server_:
 
 #### Installation und Deployment
 
-# !!!! jar dateien erzeugen und erklären wie man sie im Terminal startet oder direkt in der IDE
 Um eine Jar Datei zu erzeugen muss man mittels Maven folgenden Befehl in das Terminal eingeben:
 ```bash
 mvn clean compile assembly:single
