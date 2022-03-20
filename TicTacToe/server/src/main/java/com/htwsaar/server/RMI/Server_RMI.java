@@ -112,7 +112,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     public Boolean sendLoginData(String name, String password) {
         User user = databaseService.getUserData(name);
         if (user != null) {
-            if (name.equals(user.getUsername())){
+            if (name.equals(user.getUsername())) {
                 return password.equals(user.getPassword());
             }
         }
@@ -215,17 +215,17 @@ public class Server_RMI implements ServerClient_Connect_Interface {
      * @param joinCode Der join Code des Spieles
      * @return true wenn der Spieler dem Spiel hinzugefuegt wurde
      */
-    public Boolean joinGame(String username, int joinCode) {
+    public String joinGame(String username, int joinCode) {
         for (int i = 0; i < waitingGames.size(); i++) {
             if (waitingGames.get(i).compareJoinCode(joinCode) == 1) {
                 waitingGames.get(i).setO(username);
                 deleteOldGames(username);
                 games.add(waitingGames.get(i));
                 waitingGames.remove(i);
-                return true;
+                return games.get(i).getPresharedKey();
             }
         }
-        return false;
+        return null;
     }
 
     /**
@@ -247,16 +247,18 @@ public class Server_RMI implements ServerClient_Connect_Interface {
      * @param pos      Die Position des zu setzenden Feldes
      * @return Das Enum Winner mit dem aktuellen Spielestatus
      */
-    public TicTacToe.Winner setField(String username, int pos) {
+    public TicTacToe.Winner setField(String username, int pos, String preSharedKey) {
         int gameNumber;
         String[] players;
         gameNumber = playerInWhichGame(games, username);
         if (gameNumber != -1) {
             TicTacToe game = games.get(gameNumber);
-            players = game.getPlayers();
-            TicTacToe.Winner gameState = games.get(gameNumber).setField(pos);
-            checkGameEnd(gameNumber, players, gameState);
-            return gameState;
+            if (preSharedKey.equals(game.getPresharedKey())) {
+                players = game.getPlayers();
+                TicTacToe.Winner gameState = games.get(gameNumber).setField(pos);
+                checkGameEnd(gameNumber, players, gameState);
+                return gameState;
+            }
         }
         logger.error(("SetField: Kein Spiel gefunden"));
         return TicTacToe.Winner.NONE;

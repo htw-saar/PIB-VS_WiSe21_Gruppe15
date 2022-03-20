@@ -102,18 +102,18 @@ public class Client_RMI {
         }
     }
 
-    public Boolean joinGame(int joinCode, String username) {
+    public String joinGame(int joinCode, String username) {
         try {
             return clientStub.joinGame(username, joinCode);
         } catch (Exception e) {
             logger.error("Client exception: " + e);
-            return false;
+            return null;
         }
     }
 
-    public TicTacToe.Winner setField(String username, int pos) {
+    public TicTacToe.Winner setField(String username, int pos, String preSharedKey) {
         try {
-            return clientStub.setField(username, pos);
+            return clientStub.setField(username, pos, preSharedKey);
         } catch (Exception e) {
             logger.error("Client exception: " + e);
             return TicTacToe.Winner.NONE;

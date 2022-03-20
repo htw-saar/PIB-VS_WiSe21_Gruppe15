@@ -273,7 +273,7 @@ public class Menu {
      * @param text Text der gehasht wird
      * @return Der gehashte Text
      */
-    private String hashing256(String text){
-       return DigestUtils.sha256Hex(text);
+    private String hashing256(String text) {
+        return DigestUtils.sha256Hex(text);
     }
 }

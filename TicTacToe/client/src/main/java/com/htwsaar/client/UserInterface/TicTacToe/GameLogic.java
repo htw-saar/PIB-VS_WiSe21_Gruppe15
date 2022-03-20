@@ -39,7 +39,8 @@ public class GameLogic {
      * @param GameID
      */
     public void joinGame(int GameID) {
-        if (client_rmi.joinGame(GameID, username)) {
+        presharedKey = client_rmi.joinGame(GameID, username);
+        if (presharedKey != null) {
             System.out.println("Spiel erfolgreich beigetreten!");
             playGame();
         } else {
@@ -97,11 +98,11 @@ public class GameLogic {
      */
     private TicTacToe.Winner setField(int field) {
         TicTacToe.Winner winBreak;
-        winBreak = client_rmi.setField(username, field - 1);
+        winBreak = client_rmi.setField(username, field - 1, presharedKey);
         while (winBreak.equals(TicTacToe.Winner.FIELDSET)) {
             System.out.println("Das Feld ist bereits gesetzt, bitte anderes Feld wählen: ");
             field = intEinlesen();
-            winBreak = client_rmi.setField(username, field - 1);
+            winBreak = client_rmi.setField(username, field - 1, presharedKey);
         }
         return winBreak;
     }
