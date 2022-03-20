@@ -105,9 +105,9 @@ Spielhistorie bearbeitet und manuell User angelegt werden.
 
 ### vorläufig, Tests noch nicht fertig
 
-[![UMLClient.png](https://i.postimg.cc/vmwRvG9r/UMLClient.png)](https://postimg.cc/jDckx0M2)
+[![client.png](https://i.postimg.cc/Hs0Qq7Ry/client.png)](https://postimg.cc/hfjzxhSD)
 
-[![UMLServer.png](https://i.postimg.cc/2ygmRhqJ/UMLServer.png)](https://postimg.cc/vx7C51tL)
+[![server.png](https://i.postimg.cc/JhSDD1S8/server.png)](https://postimg.cc/LqB6GMHQ)
 
 ###### API
 
