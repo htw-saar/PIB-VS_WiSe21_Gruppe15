@@ -166,7 +166,15 @@ _Server_:
 #### Installation und Deployment
 
 # !!!! jar dateien erzeugen und erklären wie man sie im Terminal startet oder direkt in der IDE
+Um eine Jar Datei zu erzeugen muss man mittels Maven folgenden Befehl in das Terminal eingeben:
+```bash
+mvn clean compile assembly:single
+```
+Danach ist im Target-Ordner eine Jar-Datei, welche mit folgendem Befehl gestartet werden kann:
 
+```bash
+java -jar target/server-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
 ## Built With
 
 * Git (GitHub) zur Versionskontrolle
