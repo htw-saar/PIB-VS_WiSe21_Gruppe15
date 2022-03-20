@@ -84,11 +84,12 @@ public class Client_RMI {
         }
     }
 
-    public void createGame(String username) {
+    public String createGame(String username) {
         try {
-            clientStub.createGame(username);
+            return clientStub.createGame(username);
         } catch (Exception e) {
             logger.error("Client exception: " + e);
+            return null;
         }
     }
 

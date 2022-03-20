@@ -153,13 +153,13 @@ public class Server_RMI implements ServerClient_Connect_Interface {
      * Erzeugt ein neues Spiel mit dem Benutzer als Spieler 1
      *
      * @param username Der Nutzer der der Besitzer des neuen Spieles werden soll
-     * @return true wenn das Spiel erfolgreich erstellt wurde
+     * @return Gibt den Preshared Key zurueck
      */
-    public Boolean createGame(String username) {
+    public String createGame(String username) {
         TicTacToe game;
         game = new TicTacToe(username, databaseService);
         waitingGames.add(game);
-        return true;
+        return game.getPresharedKey();
     }
 
     /**

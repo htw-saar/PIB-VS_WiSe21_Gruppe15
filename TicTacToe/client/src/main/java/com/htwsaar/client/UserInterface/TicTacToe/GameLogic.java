@@ -13,6 +13,8 @@ public class GameLogic {
     private final String waitingList = "Wait";
     private final String rematchList = "Rematch";
 
+    private String presharedKey;
+
     public GameLogic(Client_RMI client_rmi, String username) {
         this.client_rmi = client_rmi;
         this.username = username;
@@ -23,7 +25,7 @@ public class GameLogic {
      * Methode um Spiel zu erstellen und Spiel zu Spielen für den ersten Spieler
      */
     public void createGame() {
-        client_rmi.createGame(client_rmi.getLoggedInUser());
+        presharedKey = client_rmi.createGame(client_rmi.getLoggedInUser());
         System.out.println("... Warte auf Spieler 2 ...");
         while (!client_rmi.checkGameStart(username, waitingList)) {
             waitForInteraction();
@@ -172,6 +174,10 @@ public class GameLogic {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getPresharedKey() {
+        return presharedKey;
     }
 }
 

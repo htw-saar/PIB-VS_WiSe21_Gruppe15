@@ -2,8 +2,10 @@ package com.htwsaar.server.Game;
 
 import com.htwsaar.server.Hibernate.entity.User;
 import com.htwsaar.server.Services.DatabaseService;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * Die TicTacToe Klasse enthält die gesamte Spiellogic die auf dem Server ausgeführt wird.
@@ -38,6 +40,8 @@ public class TicTacToe {
     private int joinCode;
     private String activePlayer;
     private Winner gameStatus;
+    private String presharedKey;
+    private int presharedKeyRange = 10000;
 
     /**
      * Konstruktor von TicTacToe
@@ -45,6 +49,7 @@ public class TicTacToe {
      */
     public TicTacToe(String username, DatabaseService databaseService) {
         this.databaseService = databaseService;
+        setPresharedKey();
         setGameStatus(Winner.NONE);
         winConditions = new int[][]{
                 {0, 1, 2},
@@ -58,6 +63,16 @@ public class TicTacToe {
         initGameboard();
         setX(username);
         createJoinCode(username);
+    }
+
+    private void setPresharedKey() {
+        Random rand = new Random();
+        int key = rand.nextInt(presharedKeyRange);
+        presharedKey = DigestUtils.sha256Hex(String.valueOf(key));
+    }
+
+    public String getPresharedKey() {
+        return presharedKey;
     }
 
     public int getJoinCode() {
