@@ -54,12 +54,13 @@ Abgeleitet aus den Use Cases und gemeinsamen Teamsitzungen ergeben sich folgende
 
 #### Lösungsstrategie
 
-# !!! weitere Infos hier
-
 Es handelt sich bei unserer Implementierung um einen Thin Client, weshalb man offline nicht spielen kann. Wir haben uns
 für dieses Design entschieden, da es uns die Implementierung des Codes einfacher macht, indem wir als Übergabeparameter
 Client RMI Objekte übergeben. Der Code wird dadurch kompakter und ordentlicher. So werden auch lokal weniger Resourcen,
-Speicher und Rechnerleistung verbraucht. Dementsprechend speichern wir unsere Daten auf dem Server.
+Speicher und Rechnerleistung verbraucht. Dementsprechend speichern wir unsere Daten auf dem Server. Des Weiteren
+benutzen wir ein Request-Reply Pattern da wir live spielen und eine unmittelbare Antwort vom Server erwarten sobald der
+Gegenspieler seinen Zug getätigt hat. Außerdem benutzen wir ein stateful Server-Design da wir eine Spielhistorie führen
+und sich diese nach jedem Spiel verändert.
 
 _Interface:_ <br>
 Wir haben uns für ein Command Line Interface entschieden, da dieses schnell und einfach gebaut werden kann. Eine solche
@@ -166,14 +167,17 @@ _Server_:
 #### Installation und Deployment
 
 Um eine Jar Datei zu erzeugen muss man mittels Maven folgenden Befehl in das Terminal eingeben:
+
 ```bash
 mvn clean compile assembly:single
 ```
+
 Danach ist im Target-Ordner eine Jar-Datei, welche mit folgendem Befehl gestartet werden kann:
 
 ```bash
 java -jar target/server-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
+
 ## Built With
 
 * Git (GitHub) zur Versionskontrolle
