@@ -96,6 +96,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
             LocateRegistry.createRegistry(PORT);
             Registry registry = LocateRegistry.getRegistry(PORT);
             registry.rebind(REGISTRY, stub);
+            logger.error(registry);
             System.err.println("Server ready");
         } catch (Exception e) {
             logger.error("Server exception: " + e);
@@ -320,12 +321,14 @@ public class Server_RMI implements ServerClient_Connect_Interface {
      */
     public String getActivePlayer(String username) {
         int gameID = playerInWhichGame(games, username);
+        String activePlayer;
         if (gameID >= 0) {
-            return games.get(gameID).getActivePlayer();
+            activePlayer = games.get(gameID).getActivePlayer();
         } else {
             gameID = playerInWhichGame(finishedGames, username);
-            return finishedGames.get(gameID).getActivePlayer();
+            activePlayer = finishedGames.get(gameID).getActivePlayer();
         }
+        return activePlayer;
     }
 
     /**
