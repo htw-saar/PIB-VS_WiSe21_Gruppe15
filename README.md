@@ -75,14 +75,13 @@ Nachteil wird aber durch die Minimierung an Fehlerquellen ausgeglichen und es ve
 Zukunft eine andere bessere Methode einzubinden. Falls man merken sollte, dass ein Server nicht mit den Anfragen
 zurechtkommt oder man ein besseres Benutzererlebnis erreichen möchte.
 
+Implementierung im Projekt:
 
-Implementierung  im Projekt:
 1. Der Server erstellt ein Remote Object mit eindeutigem RMI-Registry Namen.
 2. Der Client sucht im RMI-Registry diesen Namen.
-3. Der Client ruft eine Methode auf der Objektreferenz auf.
-   Da Server und Client sich ein Interface teilen, ist es sichergestellt, dass diese Funktionen bei beiden Seiten vorhanden ist.
+3. Der Client ruft eine Methode auf der Objektreferenz auf. Da Server und Client sich ein Interface teilen, ist es
+   sichergestellt, dass diese Funktionen bei beiden Seiten vorhanden ist.
 4. Der Server führt die Methode auf dem Remote Object aus.
-
 
 _Datenbank:_ <br>
 Als Datenbank haben wir uns MySQL ausgesucht. Durch das Hibernate Framework konnten wir eine solche Datenbank schnell
@@ -118,8 +117,6 @@ Das Paketdiagramm zeigt unsere Ordnerstruktur und wie die Kommunikation intern a
 beschreibt die Startfiles. Von diesen Java-Dateien wird alles Weitere initialisiert.
 
 ###### Klassendiagramme
-
-### vorläufig, Tests noch nicht fertig
 
 [![client.png](https://i.postimg.cc/Hs0Qq7Ry/client.png)](https://postimg.cc/hfjzxhSD)
 
