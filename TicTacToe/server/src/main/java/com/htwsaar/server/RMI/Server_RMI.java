@@ -216,13 +216,15 @@ public class Server_RMI implements ServerClient_Connect_Interface {
      * @return true wenn der Spieler dem Spiel hinzugefuegt wurde
      */
     public String joinGame(String username, int joinCode) {
+        String sharedKey;
         for (int i = 0; i < waitingGames.size(); i++) {
             if (waitingGames.get(i).compareJoinCode(joinCode) == 1) {
                 waitingGames.get(i).setO(username);
                 deleteOldGames(username);
                 games.add(waitingGames.get(i));
+                sharedKey = waitingGames.get(i).getPresharedKey();
                 waitingGames.remove(i);
-                return games.get(i).getPresharedKey();
+                return sharedKey;
             }
         }
         return null;
