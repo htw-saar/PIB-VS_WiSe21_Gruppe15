@@ -15,6 +15,12 @@ public class GameLogic {
 
     private String presharedKey;
 
+    /**
+     * Konstruktor der GameLogic Klasse
+     *
+     * @param client_rmi uebergebenes client_rmi object
+     * @param username name des users
+     */
     public GameLogic(Client_RMI client_rmi, String username) {
         this.client_rmi = client_rmi;
         this.username = username;
@@ -36,7 +42,7 @@ public class GameLogic {
     /**
      * Methode um Spiel beizutreten für Spieler 2, spielt auch über diese Methode
      *
-     * @param GameID
+     * @param GameID Spielecode der zum beitreten benoetigt wird
      */
     public void joinGame(int GameID) {
         presharedKey = client_rmi.joinGame(GameID, username);
@@ -91,9 +97,9 @@ public class GameLogic {
     }
 
     /**
-     * Methode um Feld auf Game Board zu setzen mit Überprüfung ob Feld bereits gesetzt ist
+     * Methode um ein Feld auf dem Game Board zu setzen und der Überprüfung ob ein Feld bereits gesetzt ist
      *
-     * @param field
+     * @param field Feld das gesetzt werden soll
      * @return Winner Enum
      */
     private TicTacToe.Winner setField(int field) {

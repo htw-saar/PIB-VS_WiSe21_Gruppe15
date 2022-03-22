@@ -22,6 +22,9 @@ public class Client_RMI {
     private ServerClient_Connect_Interface clientStub;
     private String loggedInUser;
 
+    /**
+     * Konstruktor der Client_RMI Klasse
+     */
     public Client_RMI() {
         init_RMI();
         logger.debug("Verbindung zum Server wurde erfolgreich hergestellt!");

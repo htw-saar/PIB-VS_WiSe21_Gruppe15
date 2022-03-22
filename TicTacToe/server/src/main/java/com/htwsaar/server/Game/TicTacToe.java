@@ -79,6 +79,11 @@ public class TicTacToe {
         return joinCode;
     }
 
+    /**
+     * Setzt den Benutzer bereit fuer das Rematch
+     *
+     * @param username Der Benutzer der bereit fuer das Rematch ist
+     */
     public void setRematch(String username) {
         if (x.equals(username)) {
             xRematch = true;
@@ -87,6 +92,11 @@ public class TicTacToe {
         }
     }
 
+    /**
+     * Uberprueft ob beide Spieler fuer ein Rematch ready sind
+     *
+     * @return true wenn das Rematch stattfindet sonst false
+     */
     public Boolean isRematchReady() {
         if (xRematch && oRematch) {
             setGameStatus(Winner.NONE);
@@ -161,8 +171,6 @@ public class TicTacToe {
 
     /**
      * Initialisiert das Spielbrett
-     *
-     * @return String[] Gibt ein Array zurück mit den Zahlen des Spielfeldes(das Spielbrett)
      */
     private void initGameboard() {
         for (int i = 0; i < gameboard.length; i++) {
@@ -247,6 +255,9 @@ public class TicTacToe {
         this.gameStatus = gameStatus;
     }
 
+    /**
+     * Tauscht den aktiven Spieler
+     */
     public void switchActivePlayer() {
         if (activePlayer.equals(players[0])) {
             setActivePlayer(players[1]);
@@ -255,6 +266,11 @@ public class TicTacToe {
         }
     }
 
+    /**
+     * Findet das passende Symbol zu dem gerade aktiven Spieler
+     *
+     * @return Enum mit dem passenden Symbol des aktiven Spielers
+     */
     private Winner getPlayerSymbol() {
         if (x.equals(activePlayer)) {
             return Winner.Player1;
