@@ -1,12 +1,11 @@
 package com.htwsaar.server.Game;
 
-import com.htwsaar.server.Hibernate.dao.UserDao;
 import com.htwsaar.server.Hibernate.entity.User;
+import com.htwsaar.server.Services.DatabaseService;
+import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * Die TicTacToe Klasse enthält die gesamte Spiellogic die auf dem Server ausgeführt wird.
@@ -30,19 +29,28 @@ public class TicTacToe {
         }
     }
 
+    private DatabaseService databaseService;
     private String x;
-    private String o;
-    private String[] gameboard = new String[9];
+    private Boolean xRematch = false;
+    private Boolean oRematch = false;
+    private int readyPlayers = 0;
+    private final String[] gameboard = new String[9];
     private final int[][] winConditions;
-    private String[] players = new String[2];
+    private final String[] players = new String[2];
     private int joinCode;
     private String activePlayer;
+    private Winner gameStatus;
+    private String presharedKey;
+    private int presharedKeyRange = 10000;
 
     /**
      * Konstruktor von TicTacToe
      * Erstellt die Win Konditionen und initialisiert das Spielbrett
      */
-    public TicTacToe(String username) {
+    public TicTacToe(String username, DatabaseService databaseService) {
+        this.databaseService = databaseService;
+        setPresharedKey();
+        setGameStatus(Winner.NONE);
         winConditions = new int[][]{
                 {0, 1, 2},
                 {3, 4, 5},
@@ -57,8 +65,46 @@ public class TicTacToe {
         createJoinCode(username);
     }
 
+    private void setPresharedKey() {
+        Random rand = new Random();
+        int key = rand.nextInt(presharedKeyRange);
+        presharedKey = DigestUtils.sha256Hex(String.valueOf(key));
+    }
+
+    public String getPresharedKey() {
+        return presharedKey;
+    }
+
     public int getJoinCode() {
         return joinCode;
+    }
+
+    /**
+     * Setzt den Benutzer bereit fuer das Rematch
+     *
+     * @param username Der Benutzer der bereit fuer das Rematch ist
+     */
+    public void setRematch(String username) {
+        if (x.equals(username)) {
+            xRematch = true;
+        } else {
+            oRematch = true;
+        }
+    }
+
+    /**
+     * Uberprueft ob beide Spieler fuer ein Rematch ready sind
+     *
+     * @return true wenn das Rematch stattfindet sonst false
+     */
+    public Boolean isRematchReady() {
+        if (xRematch && oRematch) {
+            setGameStatus(Winner.NONE);
+            initGameboard();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -87,7 +133,6 @@ public class TicTacToe {
      * @param name enthält den Username
      */
     public void setO(String name) {
-        o = name;
         players[1] = name;
     }
 
@@ -102,41 +147,40 @@ public class TicTacToe {
 
     /**
      * Gibt Active Player zurueck
-     *
      */
     public String getActivePlayer() {
         return activePlayer;
     }
+
     /**
      * Setzt einen Spielermarker an Position pos
      *
-     * @param player der Spieler X oder O
-     * @param pos    die Position wo der Marker gesetzt wird
+     * @param pos die Position wo der Marker gesetzt wird
      */
-    public Winner setField(Winner player, int pos) {
+    public Winner setField(int pos) {
         if (gameboard[pos].equals(Winner.Player1.label) || gameboard[pos].equals(Winner.Player2.label)) {
             return Winner.FIELDSET;
         }
 
+        Winner player = getPlayerSymbol();
         gameboard[pos] = player.label;
-        return checkWinCondition(player);
+        Winner winner = checkWinCondition(player);
+        setGameStatus(winner);
+        return winner;
     }
 
     /**
      * Initialisiert das Spielbrett
-     *
-     * @return String[] Gibt ein Array zurück mit den Zahlen des Spielfeldes(das Spielbrett)
      */
-    private String[] initGameboard() {
+    private void initGameboard() {
         for (int i = 0; i < gameboard.length; i++) {
             int field = i + 1;
             this.gameboard[i] = field + "";
         }
-        return this.gameboard;
     }
 
-    public String[] outputGameboard() {
-        return this.gameboard;
+    public String[] getGameboard() {
+        return gameboard;
     }
 
 
@@ -183,8 +227,7 @@ public class TicTacToe {
      * Die Methode createJoinCode erstellt einen JoinCode aus der UserID
      */
     private void createJoinCode(String username) {
-        UserDao userDao = new UserDao();
-        User user = userDao.getUser(username);
+        User user = databaseService.getUserData(username);
         if (user != null) {
             joinCode = user.getUserId();
         }
@@ -204,10 +247,35 @@ public class TicTacToe {
         }
     }
 
-    public int whichPlayer(String username) {
-        if (x.equals(username)) {
-            return 1;
+    public Winner getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(Winner gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    /**
+     * Tauscht den aktiven Spieler
+     */
+    public void switchActivePlayer() {
+        if (activePlayer.equals(players[0])) {
+            setActivePlayer(players[1]);
+        } else {
+            setActivePlayer(players[0]);
         }
-        return 0;
+    }
+
+    /**
+     * Findet das passende Symbol zu dem gerade aktiven Spieler
+     *
+     * @return Enum mit dem passenden Symbol des aktiven Spielers
+     */
+    private Winner getPlayerSymbol() {
+        if (x.equals(activePlayer)) {
+            return Winner.Player1;
+        } else {
+            return Winner.Player2;
+        }
     }
 }

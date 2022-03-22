@@ -3,6 +3,7 @@ package com.htwsaar.server.Hibernate.dao;
 import com.htwsaar.server.Hibernate.entity.User;
 import com.htwsaar.server.Hibernate.utils.HibernateUtils;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.util.List;
@@ -11,7 +12,9 @@ import java.util.List;
  * Dao Klasse die Methoden enthält, um Datenbank Änderungen zu vereinfachen
  */
 public class UserDao {
-    Transaction transaction = null;
+    private Transaction transaction = null;
+    private static final SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+    private Session session;
 
     /**
      * Methode um einen neuen Nutzer zu speichern
@@ -19,7 +22,9 @@ public class UserDao {
      * @param user Ein Nutzer, der in die Datenbank gespeichert werden soll
      */
     public void saveUser(User user) {
-        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+//        try (session = HibernateUtils.getSessionFactory().openSession()){  //TODO testen ob das alles passt, finally muss sonst auch weg
+        try {
+            session = sessionFactory.openSession();
             transaction = session.beginTransaction();
             session.save(user);
             transaction.commit();
@@ -28,6 +33,10 @@ public class UserDao {
                 transaction.rollback();
             }
             e.printStackTrace();
+        } finally {
+            if (session.isOpen()) {
+                session.close();
+            }
         }
     }
 
@@ -37,7 +46,8 @@ public class UserDao {
      * @param user Ein Nutzer, der bereits in der Datenbank ist und geupdated werden soll
      */
     public void updateUser(User user) {
-        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+        try {
+            session = sessionFactory.openSession();
             transaction = session.beginTransaction();
             session.update(user);
             transaction.commit();
@@ -46,6 +56,10 @@ public class UserDao {
                 transaction.rollback();
             }
             e.printStackTrace();
+        } finally {
+            if (session.isOpen()) {
+                session.close();
+            }
         }
     }
 
@@ -56,15 +70,16 @@ public class UserDao {
      * @return User bei einem gefundenen User, falls kein User gefunden wurde, wird null zurückgegeben
      */
     public User getUser(String username) {
-        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
-//            Query query = session.createQuery("SELECT u FROM User u WHERE u.username=:name");
-//            query.setParameter("name", username);
-//            List<User> resultList = query.getResultList();
-//            return resultList.get(0);
+        try  {
+            session = sessionFactory.openSession();
             return (User) session.createQuery("SELECT u FROM User u WHERE u.username=:name").setParameter("name", username).getResultList().get(0);
         } catch (Exception e){
             e.printStackTrace();
             return null;
+        } finally {
+            if (session.isOpen()) {
+                session.close();
+            }
         }
     }
 
@@ -74,8 +89,13 @@ public class UserDao {
      * @return List<User> gibt alle User in der Datenbank als Liste aus
      */
     public List<User> getScoreboard() {
-        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
+        try {
+            session = sessionFactory.openSession();
             return session.createQuery("From User ORDER BY score DESC, wins DESC", User.class).list();
+        } finally {
+            if (session.isOpen()) {
+                session.close();
+            }
         }
     }
 }

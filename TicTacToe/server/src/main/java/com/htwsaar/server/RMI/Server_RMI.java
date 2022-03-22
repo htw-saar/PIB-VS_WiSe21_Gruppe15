@@ -1,217 +1,348 @@
 package com.htwsaar.server.RMI;
 
 import com.htwsaar.server.Game.TicTacToe;
-import com.htwsaar.server.Hibernate.dao.UserDao;
-import com.htwsaar.server.Hibernate.entity.User;
-
 
 import java.rmi.registry.Registry;
 import java.rmi.registry.LocateRegistry;
-import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.htwsaar.server.Hibernate.entity.User;
+import com.htwsaar.server.Services.DatabaseService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Server_RMI implements ServerClient_Connect_Interface {
 
-    private ArrayList<TicTacToe> games = new ArrayList<>();
-    private ArrayList<TicTacToe> waitingGames = new ArrayList<>();
     private static final Logger logger = LogManager.getLogger(Server_RMI.class);
-    UserDao userDao = new UserDao();
+    private static final int PORT = 42424;
+    private static final String REGISTRY = "GAME";
+    private final DatabaseService databaseService;
 
-    public Server_RMI() {
+    private final ArrayList<TicTacToe> games = new ArrayList<>();
+    private final ArrayList<TicTacToe> finishedGames = new ArrayList<>();
+    private final ArrayList<TicTacToe> rematchGames = new ArrayList<>();
+    private final ArrayList<TicTacToe> waitingGames = new ArrayList<>();
+
+    /**
+     * Konstruktor fuer die Klasse Server_RMI
+     *
+     * @param databaseService Das Objekt fuer die Datenbankanbindung
+     */
+    public Server_RMI(DatabaseService databaseService) {
+        this.databaseService = databaseService;
     }
 
+    /**
+     * Eine Methode zum erstellen eines neuen Users in der Datenbank
+     *
+     * @param name     Name des neuen Users
+     * @param password Passwort des neuen Users
+     * @return true wenn der User erfolgreich erstellt wurde
+     */
     public Boolean createLoginData(String name, String password) {
-        try {
-            User user = new User(name, password);
-            userDao.saveUser(user);
-            return true;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return false;
-        }
+        databaseService.addUser(name, password);
+        return true;
     }
 
+    /**
+     * Ueberprueft ob der uebergebene Name zu einem gueltigen login gehoert
+     *
+     * @param name Der Name der auf seine gueltigkeit ueberprueft werden soll
+     * @return true wenn der Name zu einem Nutzer gehoert
+     */
     public Boolean userLoginExists(String name) {
-        try {
-            if(userDao.getUser(name) != null){
-                return true;
-            }
-            return false;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return false;
-        }
+        return databaseService.getUserData(name) != null;
     }
 
-    public Boolean checkGameStart(String username) {
-        UserDao userDao = new UserDao();
-        User user = userDao.getUser(username);
-        for (TicTacToe game : waitingGames) {
-            if (user.getUserId() == game.getJoinCode()) {
-                return false;
-            }
+    /**
+     * Ueberprueft ob das Spiel des Users schon gestartet ist oder noch in der gesuchten Gameslist ist
+     *
+     * @param username Der Name desen Spielstatus ueberprueft werden soll
+     * @param listTyp  Der Name der Liste in der das Game gesucht wird
+     * @return true wenn es gestartet ist und nicht mehr in der gesuchten Gameslist
+     */
+    public Boolean checkGameStart(String username, String listTyp) {
+        int gameNumber = -1;
+        switch (listTyp) {
+            case "Wait":
+                gameNumber = playerInWhichGame(waitingGames, username);
+                break;
+            case "Rematch":
+                gameNumber = playerInWhichGame(rematchGames, username);
+                if (gameNumber != -1) {
+                    rematchGames.get(gameNumber).setRematch(username);
+                    if (rematchGames.get(gameNumber).isRematchReady()) {
+                        games.add(rematchGames.get(gameNumber));
+                        rematchGames.remove(gameNumber);
+                    }
+                }
+                break;
+        }
+        if (gameNumber != -1) {
+            return false;
         }
         return true;
     }
 
+    /**
+     * Startet den Serverseitigen RMI Stub
+     */
     public void start_Server_RMI() {
         try {
-            Server_RMI obj = new Server_RMI();
+            Server_RMI obj = new Server_RMI(databaseService);
             ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(obj, 0);
-            System.out.println(obj.toString());
-            // Bind the remote object's stub in the registry
-            LocateRegistry.createRegistry(42424);
-            Registry registry = LocateRegistry.getRegistry(42424);
-            registry.rebind("Hello", stub);
+            LocateRegistry.createRegistry(PORT);
+            Registry registry = LocateRegistry.getRegistry(PORT);
+            registry.rebind(REGISTRY, stub);
             System.err.println("Server ready");
         } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
+            logger.error("Server exception: " + e);
         }
     }
 
-
+    /**
+     * Eine Methode zum anmelden des Users
+     *
+     * @param name     Name des Nutzers
+     * @param password Passwort des Nutzers
+     * @return true wenn der login erfolgreich war
+     */
     public Boolean sendLoginData(String name, String password) {
-        try {
-            UserDao userDao = new UserDao();
-            User user = userDao.getUser(name);
-            if (user != null) {
-                if (password.equalsIgnoreCase(user.getPassword())) {
-                    return true;
-                }
+        User user = databaseService.getUserData(name);
+        if (user != null) {
+            if (name.equals(user.getUsername())) {
+                return password.equals(user.getPassword());
             }
-            return false;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return false;
         }
+        return false;
     }
 
+    /**
+     * Gibt das Scoreboard zurueck
+     *
+     * @return Das Scoreboard als stringlist
+     */
     public List<String> scoreboardRequest() {
-        try {
-            String format = " %2s %12s %2s %6s %2s %6s %2s %6s %2s";
-            UserDao userDao = new UserDao();
-            List<String> stringList = new ArrayList<>();
-            for (User user : userDao.getScoreboard()) {
-                String print = String.format(format, "|", user.getUsername(), "|", user.getWins(), "|", user.getLoses(), "|", user.getScore(), "|");
-                stringList.add(print);
-            }
-            return stringList;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return null;
+        String format = " %2s %12s %2s %6s %2s %6s %2s %6s %2s";
+        List<String> stringList = new ArrayList<>();
+        for (User user : databaseService.getScoreboard()) {
+            String print = String.format(format, "|", user.getUsername(), "|", user.getWins(), "|", user.getLoses(), "|", user.getScore(), "|");
+            stringList.add(print);
         }
+        return stringList;
     }
 
-
+    /**
+     * Die Scoreboarddaten fuer den einzelnen Benutzer
+     *
+     * @param name Der Name des Nutzers desen Daten erfasst werden sollen
+     * @return Die Daten des Nutzers als String
+     */
     public String scoreboardRequestForUser(String name) {
-        try {
-            UserDao dao = new UserDao();
-            User user = dao.getUser(name);
-            if (user != null) {
-                return user.toString();
-            } else {
-                return null;
-            }
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
+        User user = databaseService.getUserData(name);
+        if (user != null) {
+            return user.toString();
+        } else {
             return null;
         }
     }
 
-
-    public Boolean createGame(String username) {
-        try {
-            TicTacToe game;
-            game = new TicTacToe(username);
-            waitingGames.add(game);
-            return true;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return false;
-        }
+    /**
+     * Erzeugt ein neues Spiel mit dem Benutzer als Spieler 1
+     *
+     * @param username Der Nutzer der der Besitzer des neuen Spieles werden soll
+     * @return Gibt den Preshared Key zurueck
+     */
+    public String createGame(String username) {
+        TicTacToe game;
+        game = new TicTacToe(username, databaseService);
+        waitingGames.add(game);
+        return game.getPresharedKey();
     }
 
+    /**
+     * Löscht ein beendetes Spiel aus finishedGames und fügt es rematchGames hinzu
+     *
+     * @param username Der Nutzer der ein Rematch starten will
+     * @return true wenn das rematch der Rematch liste hinzugefuegt wurde
+     */
+    public Boolean rematchGame(String username) {
+        int gameNumber = playerInWhichGame(finishedGames, username);
+        if (gameNumber != -1) {
+            rematchGames.add(finishedGames.get(gameNumber));
+            finishedGames.remove(gameNumber);
+        }
+        return true;
+    }
+
+    /**
+     * Gibt das aktuelle Gameboard des Benutzers zurueck
+     *
+     * @param username Der Name des Spielers dessen Gameboard geladen werden soll
+     * @return Das aktuelle Gameboard des Benutzers als String Array
+     */
     public String[] returnGameboard(String username) {
         String[] gameboard;
-        int gameId = playerInWhichGame(username);
-        gameboard = games.get(gameId).outputGameboard();
+        int gameId = playerInWhichGame(games, username);
+        if (gameId >= 0) {
+            gameboard = games.get(gameId).getGameboard();
+        } else {
+            gameId = playerInWhichGame(finishedGames, username);
+            gameboard = finishedGames.get(gameId).getGameboard();
+        }
         return gameboard;
     }
 
+    /**
+     * Gibt die User ID des Benutzers zurueck
+     *
+     * @param username Der Benutzer dessen Id zurueckgegeben werden soll
+     * @return Die User ID des Benutzers
+     */
     public int getUserId(String username) {
         int userId;
-        UserDao userDao = new UserDao();
-        User user = userDao.getUser(username);
+        User user = databaseService.getUserData(username);
         userId = user.getUserId();
         return userId;
     }
 
-    public Boolean joinGame(String username, int joinCode) {
-        try {
-            for (int i = 0; i < waitingGames.size(); i++) {
-                if (waitingGames.get(i).compareJoinCode(joinCode) == 1) {
-                    waitingGames.get(i).setO(username);
-                    games.add(waitingGames.get(i));
-                    waitingGames.remove(i);
-                    return true;
-                }
+    /**
+     * Eine Methode die einen Spieler einem gewuenschten Spiel hinzufuegt
+     *
+     * @param username Der User der dem Spiel beitreten soll
+     * @param joinCode Der join Code des Spieles
+     * @return true wenn der Spieler dem Spiel hinzugefuegt wurde
+     */
+    public String joinGame(String username, int joinCode) {
+        for (int i = 0; i < waitingGames.size(); i++) {
+            if (waitingGames.get(i).compareJoinCode(joinCode) == 1) {
+                waitingGames.get(i).setO(username);
+                deleteOldGames(username);
+                games.add(waitingGames.get(i));
+                waitingGames.remove(i);
+                return games.get(i).getPresharedKey();
             }
-            return false;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return false;
+        }
+        return null;
+    }
+
+    /**
+     * Eine Methode die den Spieler aus einem fertigen Spiel entfernt
+     *
+     * @param username Der Spieler der entfernt werden soll
+     */
+    private void deleteOldGames(String username) {
+        int gameID = playerInWhichGame(finishedGames, username);
+        if (gameID >= 0) {
+            finishedGames.remove(gameID);
         }
     }
 
-
-    public TicTacToe.Winner setField(String username, int pos) {
-        try {
-            int gameNumber;
-            TicTacToe.Winner player;
-            gameNumber = playerInWhichGame(username);
-            if (gameNumber != -1) {
-                TicTacToe game = games.get(gameNumber);
-                if (game.whichPlayer(username) == 1) {
-                    player = TicTacToe.Winner.Player1;
-                    game.setActivePlayer(game.getPlayers()[1]);
-                } else {
-                    player = TicTacToe.Winner.Player2;
-                    game.setActivePlayer(game.getPlayers()[0]);
-                }
-                TicTacToe.Winner playState = games.get(gameNumber).setField(player, pos);
-                return playState;
+    /**
+     * Die Methode setField setzt das Feld an der gewuenschten Position mit dem Symbol des Benutzers
+     *
+     * @param username Der Benutzer der das Feld setzten moechte
+     * @param pos      Die Position des zu setzenden Feldes
+     * @return Das Enum Winner mit dem aktuellen Spielestatus
+     */
+    public TicTacToe.Winner setField(String username, int pos, String preSharedKey) {
+        int gameNumber;
+        String[] players;
+        gameNumber = playerInWhichGame(games, username);
+        if (gameNumber != -1) {
+            TicTacToe game = games.get(gameNumber);
+            if (preSharedKey.equals(game.getPresharedKey())) {
+                players = game.getPlayers();
+                TicTacToe.Winner gameState = games.get(gameNumber).setField(pos);
+                checkGameEnd(gameNumber, players, gameState);
+                return gameState;
             }
-            return TicTacToe.Winner.NONE;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return TicTacToe.Winner.NONE;
+        }
+        logger.error(("SetField: Kein Spiel gefunden"));
+        return TicTacToe.Winner.NONE;
+    }
+
+    /**
+     * Die Methode ueberprueft ob das Spiel zu ende ist und verteilt die
+     * Wins und Loses an die jeweiligen Spieler
+     *
+     * @param gameId    Die ID des Spieles
+     * @param players   Die beiden Spieler
+     * @param gameState Der Zustand des Spieles
+     */
+    private void checkGameEnd(int gameId, String[] players, TicTacToe.Winner gameState) {
+        if (!gameState.equals(TicTacToe.Winner.NONE)) {
+            if (!gameState.equals(TicTacToe.Winner.FIELDSET)) {
+                games.get(gameId).switchActivePlayer();
+                finishedGames.add(games.get(gameId));
+                games.remove(gameId);
+            }
+            if (gameState.equals(TicTacToe.Winner.Player1)) {
+                databaseService.addLose(players[1]);
+                databaseService.addWin(players[0]);
+            } else if (gameState.equals(TicTacToe.Winner.Player2)) {
+                databaseService.addLose(players[0]);
+                databaseService.addWin(players[1]);
+            }
+        } else {
+            games.get(gameId).switchActivePlayer();
         }
     }
 
-    private int playerInWhichGame(String username) {
-        try {
-            String[] playerNames;
-            for (int i = 0; i < games.size(); i++) {
-                playerNames = games.get(i).getPlayers();
-                if (playerNames[0].equals(username) || playerNames[1].equals(username)) {
-                    return i;
-                }
+    /**
+     * Schaut nach an in welchem Spiel der gesuchte Benutzer sich befindet
+     * und gibt den dazugehoerigen index zurueck
+     *
+     * @param list     Die zu durchsuchende Liste
+     * @param username Der zu suchende Benutzer
+     * @return Der Index an dem sich der Benutzer befindet oder -1 wenn der Nutzer nicht gefunden wurde
+     */
+    private int playerInWhichGame(ArrayList<TicTacToe> list, String username) {
+        String[] playerNames;
+        for (int i = 0; i < list.size(); i++) {
+            playerNames = list.get(i).getPlayers();
+            if (playerNames[0].equals(username) || playerNames[1].equals(username)) {
+                return i;
             }
-            return -1;
-        } catch (Exception e) {
-            logger.error("Server exception: " + e.toString());
-            return -1;
         }
+        return -1;
     }
 
+    /**
+     * Eine Methode um herauszufinden wer aktuell der Aktive Spieler im Spiel ist
+     *
+     * @param username Der Benutzer desen Spiel ueberprueft werden soll
+     * @return Der aktive Spieler als String
+     */
     public String getActivePlayer(String username) {
-        int gameID = playerInWhichGame(username);
-        return games.get(gameID).getActivePlayer();
+        int gameID = playerInWhichGame(games, username);
+        if (gameID >= 0) {
+            return games.get(gameID).getActivePlayer();
+        } else {
+            gameID = playerInWhichGame(finishedGames, username);
+            return finishedGames.get(gameID).getActivePlayer();
+        }
     }
+
+    /**
+     * Eine Methode die den aktuellen Status des Spieles zurueck gibt
+     *
+     * @param username Der Benutzer desen Spiel ueberprueft werden soll
+     * @return Das Enum Winner mit dem aktuellen Status des Spieles
+     */
+    public TicTacToe.Winner getGameStatus(String username) {
+        int gameID = playerInWhichGame(games, username);
+        TicTacToe.Winner status;
+        if (gameID >= 0) {
+            status = games.get(gameID).getGameStatus();
+        } else {
+            gameID = playerInWhichGame(finishedGames, username);
+            status = finishedGames.get(gameID).getGameStatus();
+        }
+        return status;
+    }
+
 }
 

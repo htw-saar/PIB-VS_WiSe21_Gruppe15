@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>C:/Users/AhmadAnwar/Documents/GitHub/PIB-VS_WiSe21_Gruppe15/TicTacToe/client</OriginalElement>
+  <nodes>
+    <node x="9.75" y="0.0">com.htwsaar.client.RMI.Client_RMI</node>
+    <node x="64.25" y="811.0">com.htwsaar.client.UserInterface.Menu.Menu</node>
+    <node x="0.0" y="504.0">com.htwsaar.client.UserInterface.TicTacToe.GameLogic</node>
+    <node x="560.75" y="0.0">com.htwsaar.client.GameLogic.GameLogicTest</node>
+    <node x="366.75" y="0.0">com.htwsaar.client.Client</node>
+    <node x="811.75" y="0.0">com.htwsaar.client.ClientTest</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.htwsaar.client.UserInterface.Menu.Menu" target="com.htwsaar.client.UserInterface.TicTacToe.GameLogic" relationship="TO_ONE">
+      <point x="-50.75" y="-205.0" />
+      <point x="115.0" y="785.0" />
+      <point x="107.0" y="785.0" />
+      <point x="0.0" y="127.5" />
+    </edge>
+    <edge source="com.htwsaar.client.UserInterface.TicTacToe.GameLogic" target="com.htwsaar.client.RMI.Client_RMI" relationship="TO_ONE">
+      <point x="0.0" y="-127.5" />
+      <point x="107.0" y="479.0" />
+      <point x="165.75" y="479.0" />
+      <point x="0.0" y="227.0" />
+    </edge>
+    <edge source="com.htwsaar.client.UserInterface.Menu.Menu" target="com.htwsaar.client.RMI.Client_RMI" relationship="TO_ONE">
+      <point x="50.75" y="-205.0" />
+      <point x="216.5" y="785.0" />
+      <point x="224.5" y="785.0" />
+      <point x="224.5" y="479.0" />
+      <point x="165.75" y="479.0" />
+      <point x="0.0" y="227.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic" zoom="1.0" showDependencies="true" x="142.0" y="417.0" />
+  <SelectedNodes>
+    <node>com.htwsaar.client.Client</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Constructors</Category>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
