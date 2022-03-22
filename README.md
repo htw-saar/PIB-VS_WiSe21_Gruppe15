@@ -69,7 +69,7 @@ Java RMI erlaubt den Aufruf von Methoden von Objekten, die sich auf einem andere
 Vorteil dabei ist die einfache Integration und Benutzung von Java RMI. Ein weiterer Vorteil ist es, dass man sonst diese
 Aufgabe in mehreren Technologien auslagern müsste, so hat man nur eine Technologie. Daher kann man sich auf eine
 Technologie fokussieren und minimiert so mögliche Fehlerquellen, die bei der Kommunikation verschiedener Technologien
-auftreten können. Dadurch, dass Java RMI aber nicht optimal für dieses Szenario geeignet, muss ein Kompromiss
+auftreten können. Dadurch, dass Java RMI aber nicht optimal für dieses Szenario geeignet ist, muss ein Kompromiss
 eingegangen werden, nämlich dass der Server nun viele Anfragen erhält und ein Timer den Nutzer beschränkt. Dieser
 Nachteil wird aber durch die Minimierung an Fehlerquellen ausgeglichen und es verhindert des Weiteren nicht in der
 Zukunft eine andere bessere Methode einzubinden. Falls man merken sollte, dass ein Server nicht mit den Anfragen
