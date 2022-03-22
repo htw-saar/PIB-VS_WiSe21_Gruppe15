@@ -1,12 +1,11 @@
 # PIB-VS_WiSe21_Gruppe15
 
-
 # Tic-Tac-Toe Server
 
-Dies ist ein Gruppenprojekt im fünften Semester der HTW-Saar im Fach Verteilte Systeme. Ziel ist es ein Tic-Tac-Toe Spiel
-so zu implementieren, dass es über einen Server läuft und beliebig viele Spiele online parallel erstellt werden können.
-Aufgabe ist es, die Technologien aus der Vorlesung wie Java RMI, MQTT usw. zu verwenden, um das Projekt zu realisieren.
-Die Spieler spielen klassisch 1v1.
+Dies ist ein Gruppenprojekt im fünften Semester der HTW-Saar im Fach Verteilte Systeme. Ziel ist es ein Tic-Tac-Toe
+Spiel so zu implementieren, dass es über einen Server läuft und beliebig viele Spiele online parallel erstellt werden
+können. Aufgabe ist es, die Technologien aus der Vorlesung wie Java RMI, MQTT usw. zu verwenden, um das Projekt zu
+realisieren. Die Spieler spielen klassisch 1v1.
 
 ## Architektur
 
@@ -66,9 +65,24 @@ Wir haben uns für ein Command Line Interface entschieden, da dieses schnell und
 Terminal-Lösung ist auch deutlich stabiler und produziert weniger Fehler.
 
 _Middleware:_ <br>
-Als Middleware benutzen wir Java-RMI....
+Java RMI erlaubt den Aufruf von Methoden von Objekten, die sich auf einem anderen Rechnersystem befinden. Ein großer
+Vorteil dabei ist die einfache Integration und Benutzung von Java RMI. Ein weiterer Vorteil ist es, dass man sonst diese
+Aufgabe in mehreren Technologien auslagern müsste, so hat man nur eine Technologie. Daher kann man sich auf eine
+Technologie fokussieren und minimiert so mögliche Fehlerquellen, die bei der Kommunikation verschiedener Technologien
+auftreten können. Dadurch, dass Java RMI aber nicht optimal für dieses Szenario geeignet, muss ein Kompromiss
+eingegangen werden, nämlich dass der Server nun viele Anfragen erhält und ein Timer den Nutzer beschränkt. Dieser
+Nachteil wird aber durch die Minimierung an Fehlerquellen ausgeglichen und es verhindert des Weiteren nicht in der
+Zukunft eine andere bessere Methode einzubinden. Falls man merken sollte, dass ein Server nicht mit den Anfragen
+zurechtkommt oder man ein besseres Benutzererlebnis erreichen möchte.
 
-# !!!!!! Hier Middleware Infos rein
+
+Implementierung  im Projekt:
+1. Der Server erstellt ein Remote Object mit eindeutigem RMI-Registry Namen.
+2. Der Client sucht im RMI-Registry diesen Namen.
+3. Der Client ruft eine Methode auf der Objektreferenz auf.
+   Da Server und Client sich ein Interface teilen, ist es sichergestellt, dass diese Funktionen bei beiden Seiten vorhanden ist.
+4. Der Server führt die Methode auf dem Remote Object aus.
+
 
 _Datenbank:_ <br>
 Als Datenbank haben wir uns MySQL ausgesucht. Durch das Hibernate Framework konnten wir eine solche Datenbank schnell
@@ -83,8 +97,8 @@ einfügen/löschen.
 
 Es gibt Server und Client. Der User gibt Daten, wie z. B. den Spielernamen an den Client weiter. Der Client steht über
 eine Java RMI Schnittstelle mit dem Server in Verbindung. Über Java RMI erhält der Client Daten über die Spielhistorie
-durch die Datenbank. Des Weiteren stellt Java RMI die Schnittstelle über den Austausch von Spieldaten dar. Es werden neue
-Daten vom Server an den jeweils anderen Client geschickt und analog Eingaben der jeweiligen Clients an den Server
+durch die Datenbank. Des Weiteren stellt Java RMI die Schnittstelle über den Austausch von Spieldaten dar. Es werden
+neue Daten vom Server an den jeweils anderen Client geschickt und analog Eingaben der jeweiligen Clients an den Server
 übermittelt.
 
 ###### Verteilungsdiagramm
@@ -136,10 +150,10 @@ steht. Dieses Ergebnis wird an die Datenbank weitergegeben, um das Scoreboard zu
 
 Der Spieler startet die Anwendung und hat dann die Möglichkeit, sich einzuloggen. Dies geschieht durch eine Anfrage an
 den Server, welcher dann über die Datenbank überprüft, ob der User existiert. Nach erfolgreichem einloggen hat der
-Spieler die Möglichkeit, ein Spiel zu erstellen, woraufhin eine eindeutige Game-ID erzeugt wird. Möchte der Spieler einem
-Spiel beitreten, so geschieht dies über joinGame über die eindeutige Game-ID. Die Spieler spielen, solange gegeneinander
-bis es zu einem Ergebnis kommt. Sobald dieses vorhanden ist, wird das Ergebnis als Spielhistorie in die Datenbank
-geschrieben.
+Spieler die Möglichkeit, ein Spiel zu erstellen, woraufhin eine eindeutige Game-ID erzeugt wird. Möchte der Spieler
+einem Spiel beitreten, so geschieht dies über joinGame über die eindeutige Game-ID. Die Spieler spielen, solange
+gegeneinander bis es zu einem Ergebnis kommt. Sobald dieses vorhanden ist, wird das Ergebnis als Spielhistorie in die
+Datenbank geschrieben.
 
 ## Getting Started
 
