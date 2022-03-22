@@ -248,6 +248,7 @@ public class Client_RMI {
             Registry registry = LocateRegistry.getRegistry(HOST_IP, PORT);
             ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) registry.lookup(REGISTRY);
             System.out.println("Server Verbindung besteht!\n");
+            System.out.println(stub);
             return stub;
         } catch (NotBoundException | RemoteException e) {
             logger.error("Client exception: " + e);
