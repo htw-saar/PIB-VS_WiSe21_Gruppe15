@@ -69,20 +69,19 @@ Java RMI erlaubt den Aufruf von Methoden von Objekten, die sich auf einem andere
 Vorteil dabei ist die einfache Integration und Benutzung von Java RMI. Ein weiterer Vorteil ist es, dass man sonst diese
 Aufgabe in mehreren Technologien auslagern müsste, so hat man nur eine Technologie. Daher kann man sich auf eine
 Technologie fokussieren und minimiert so mögliche Fehlerquellen, die bei der Kommunikation verschiedener Technologien
-auftreten können. Dadurch, dass Java RMI aber nicht optimal für dieses Szenario geeignet, muss ein Kompromiss
+auftreten können. Dadurch, dass Java RMI aber nicht optimal für dieses Szenario geeignet ist, muss ein Kompromiss
 eingegangen werden, nämlich dass der Server nun viele Anfragen erhält und ein Timer den Nutzer beschränkt. Dieser
 Nachteil wird aber durch die Minimierung an Fehlerquellen ausgeglichen und es verhindert des Weiteren nicht in der
 Zukunft eine andere bessere Methode einzubinden. Falls man merken sollte, dass ein Server nicht mit den Anfragen
 zurechtkommt oder man ein besseres Benutzererlebnis erreichen möchte.
 
+Implementierung im Projekt:
 
-Implementierung  im Projekt:
 1. Der Server erstellt ein Remote Object mit eindeutigem RMI-Registry Namen.
 2. Der Client sucht im RMI-Registry diesen Namen.
-3. Der Client ruft eine Methode auf der Objektreferenz auf.
-   Da Server und Client sich ein Interface teilen, ist es sichergestellt, dass diese Funktionen bei beiden Seiten vorhanden ist.
+3. Der Client ruft eine Methode auf der Objektreferenz auf. Da Server und Client sich ein Interface teilen, ist es
+   sichergestellt, dass diese Funktionen bei beiden Seiten vorhanden ist.
 4. Der Server führt die Methode auf dem Remote Object aus.
-
 
 _Datenbank:_ <br>
 Als Datenbank haben wir uns MySQL ausgesucht. Durch das Hibernate Framework konnten wir eine solche Datenbank schnell
@@ -118,8 +117,6 @@ Das Paketdiagramm zeigt unsere Ordnerstruktur und wie die Kommunikation intern a
 beschreibt die Startfiles. Von diesen Java-Dateien wird alles Weitere initialisiert.
 
 ###### Klassendiagramme
-
-### vorläufig, Tests noch nicht fertig
 
 [![client.png](https://i.postimg.cc/Hs0Qq7Ry/client.png)](https://postimg.cc/hfjzxhSD)
 
@@ -158,13 +155,15 @@ Datenbank geschrieben.
 ## Getting Started
 
 Um unser Projekt zu bauen wird Maven benötigt und mindestens Java 15. Um den Client zu starten brauchen beide Spieler
-eine identische Client-Konfiguration und die gleiche Server-IP. Ein Client wird über **
-src/main/java/com/htwsaar/client/Client.java** gestartet. Alternativ kann man die jeweiligen Clients über die
+eine identische Client-Konfiguration und die gleiche Server-IP. Ein Client wird über **src/main/java/com/htwsaar/client/Client.java** gestartet. Alternativ kann man die jeweiligen Clients über die
 bereitgestellten Jar Dateien starten.
 
 Der Server wird einmalig über **src/main/java/com/htwsaar/server/Server.java** gestartet. Die IP des Servers muss über
 die jeweiligen Clients eingetragen werden.
 
+In **src/main/java/com/htwsaar/server/Server.java** und **src/main/java/com/htwsaar/server/Hibernate/utils/HibernateUtils.java**
+auswählen, ob man lokal oder extern Testen möchte. Für einen Lokalen Test wird eine Datenbank benötigt siehe
+[Datenbank](https://github.com/htw-saar/PIB-VS_WiSe21_Gruppe15/wiki/Datenbank).
 #### Vorraussetzungen
 
 _Client_:

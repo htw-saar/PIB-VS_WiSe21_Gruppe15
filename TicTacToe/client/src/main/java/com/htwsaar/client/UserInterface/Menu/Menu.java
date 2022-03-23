@@ -148,7 +148,9 @@ public class Menu {
      */
     private void createGame() {
         rematchOption = false;
-        gameLogic = new GameLogic(client_rmi, username);
+        if (gameLogic == null){
+            gameLogic = new GameLogic(client_rmi, username);
+        }
         System.out.println("Spiel erstellt ... \n ... Join Code: " + client_rmi.getUserId(username));
         gameLogic.createGame();
         rematchOption = true;
@@ -159,7 +161,9 @@ public class Menu {
      */
     private void joinGame() {
         rematchOption = false;
-        gameLogic = new GameLogic(client_rmi, username);
+        if (gameLogic == null){
+            gameLogic = new GameLogic(client_rmi, username);
+        }
         System.out.println("Join Code eingeben:");
         int joinCodeEntry = input.nextInt();
         gameLogic.joinGame(joinCodeEntry);
@@ -178,7 +182,7 @@ public class Menu {
      * Startet ein Rueckmatch des letzten Spiels
      */
     private void rematchGame() {
-        gameLogic = new GameLogic(client_rmi, username);
+//        gameLogic = new GameLogic(client_rmi, username);
         System.out.println("Letztes Spiel wird erneut gespielt ...");
         gameLogic.rematchGame();
     }

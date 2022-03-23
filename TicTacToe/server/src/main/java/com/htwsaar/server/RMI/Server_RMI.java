@@ -92,7 +92,7 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     public void start_Server_RMI() {
         try {
             Server_RMI obj = new Server_RMI(databaseService);
-            ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(obj, 0);
+            ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(obj, PORT);
             LocateRegistry.createRegistry(PORT);
             Registry registry = LocateRegistry.getRegistry(PORT);
             registry.rebind(REGISTRY, stub);
@@ -216,13 +216,15 @@ public class Server_RMI implements ServerClient_Connect_Interface {
      * @return true wenn der Spieler dem Spiel hinzugefuegt wurde
      */
     public String joinGame(String username, int joinCode) {
+        String sharedKey;
         for (int i = 0; i < waitingGames.size(); i++) {
             if (waitingGames.get(i).compareJoinCode(joinCode) == 1) {
                 waitingGames.get(i).setO(username);
                 deleteOldGames(username);
                 games.add(waitingGames.get(i));
+                sharedKey = waitingGames.get(i).getPresharedKey();
                 waitingGames.remove(i);
-                return games.get(i).getPresharedKey();
+                return sharedKey;
             }
         }
         return null;
@@ -318,12 +320,14 @@ public class Server_RMI implements ServerClient_Connect_Interface {
      */
     public String getActivePlayer(String username) {
         int gameID = playerInWhichGame(games, username);
+        String activePlayer;
         if (gameID >= 0) {
-            return games.get(gameID).getActivePlayer();
+            activePlayer = games.get(gameID).getActivePlayer();
         } else {
             gameID = playerInWhichGame(finishedGames, username);
-            return finishedGames.get(gameID).getActivePlayer();
+            activePlayer = finishedGames.get(gameID).getActivePlayer();
         }
+        return activePlayer;
     }
 
     /**

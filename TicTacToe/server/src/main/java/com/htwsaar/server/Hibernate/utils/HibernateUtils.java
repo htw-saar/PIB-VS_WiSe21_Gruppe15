@@ -34,8 +34,8 @@ public class HibernateUtils {
 //                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/gameserver");
 //                settings.put(Environment.USER, "testuser");
 //                settings.put(Environment.PASS, "test");
-//                Server
-                settings.put(Environment.URL, "jdbc:mysql://simon.selfhost.co/gameserver");
+                //Server
+                settings.put(Environment.URL, "jdbc:mysql://192.168.178.21/gameserver");
                 settings.put(Environment.USER, "remote");
                 settings.put(Environment.PASS, "secretpassword");
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");

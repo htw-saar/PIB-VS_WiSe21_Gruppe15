@@ -29,19 +29,18 @@ public class TicTacToe {
         }
     }
 
-    private DatabaseService databaseService;
+    private final DatabaseService databaseService;
+    private final String[] gameboard = new String[9];
+    private final String[] players = new String[2];
+    private final int[][] winConditions;
+    private final int presharedKeyRange = 10000;
+    private String activePlayer;
     private String x;
+    private String presharedKey;
     private Boolean xRematch = false;
     private Boolean oRematch = false;
-    private int readyPlayers = 0;
-    private final String[] gameboard = new String[9];
-    private final int[][] winConditions;
-    private final String[] players = new String[2];
-    private int joinCode;
-    private String activePlayer;
     private Winner gameStatus;
-    private String presharedKey;
-    private int presharedKeyRange = 10000;
+    private int joinCode;
 
     /**
      * Konstruktor von TicTacToe
@@ -161,7 +160,6 @@ public class TicTacToe {
         if (gameboard[pos].equals(Winner.Player1.label) || gameboard[pos].equals(Winner.Player2.label)) {
             return Winner.FIELDSET;
         }
-
         Winner player = getPlayerSymbol();
         gameboard[pos] = player.label;
         Winner winner = checkWinCondition(player);
@@ -207,7 +205,7 @@ public class TicTacToe {
 
     /**
      * Die Methode checkGameboardFull ueberprueft alle Felder die im Gameboard-Array beinhaltet sind
-     * und  schaut nach ob sich noch eine Zahl von 1-9 darin befindet.
+     * und schaut nach ob sich noch eine Zahl von 1-9 darin befindet.
      * Sollte dies der Fall sein wird "none" als Winner zurueckgegeben andernfalls ist das Gameboard
      * voll und somit wird als Rueckgabewert "unsetteld" ausgegeben.
      *
