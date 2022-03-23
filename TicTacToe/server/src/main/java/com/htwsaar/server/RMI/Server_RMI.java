@@ -92,11 +92,10 @@ public class Server_RMI implements ServerClient_Connect_Interface {
     public void start_Server_RMI() {
         try {
             Server_RMI obj = new Server_RMI(databaseService);
-            ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(obj, 0);
+            ServerClient_Connect_Interface stub = (ServerClient_Connect_Interface) UnicastRemoteObject.exportObject(obj, PORT);
             LocateRegistry.createRegistry(PORT);
             Registry registry = LocateRegistry.getRegistry(PORT);
             registry.rebind(REGISTRY, stub);
-            logger.error(registry);
             System.err.println("Server ready");
         } catch (Exception e) {
             logger.error("Server exception: " + e);
