@@ -155,13 +155,15 @@ Datenbank geschrieben.
 ## Getting Started
 
 Um unser Projekt zu bauen wird Maven benötigt und mindestens Java 15. Um den Client zu starten brauchen beide Spieler
-eine identische Client-Konfiguration und die gleiche Server-IP. Ein Client wird über **
-src/main/java/com/htwsaar/client/Client.java** gestartet. Alternativ kann man die jeweiligen Clients über die
+eine identische Client-Konfiguration und die gleiche Server-IP. Ein Client wird über **src/main/java/com/htwsaar/client/Client.java** gestartet. Alternativ kann man die jeweiligen Clients über die
 bereitgestellten Jar Dateien starten.
 
 Der Server wird einmalig über **src/main/java/com/htwsaar/server/Server.java** gestartet. Die IP des Servers muss über
 die jeweiligen Clients eingetragen werden.
 
+In **src/main/java/com/htwsaar/server/Server.java** und **src/main/java/com/htwsaar/server/Hibernate/utils/HibernateUtils.java**
+auswählen, ob man lokal oder extern Testen möchte. Für einen Lokalen Test wird eine Datenbank benötigt siehe
+[Datenbank](https://github.com/htw-saar/PIB-VS_WiSe21_Gruppe15/wiki/Datenbank).
 #### Vorraussetzungen
 
 _Client_:

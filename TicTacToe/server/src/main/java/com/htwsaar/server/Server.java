@@ -10,6 +10,8 @@ public class Server {
 
   
     private void start(String[] args) {
+        //Lokal oder Extern verwenden
+//        System.setProperty("java.rmi.server.hostname", "127.0.0.1");
         System.setProperty("java.rmi.server.hostname", "simon.selfhost.co");
         DatabaseService databaseService = new DatabaseService();
         Server_RMI server_rmi = new Server_RMI(databaseService);
