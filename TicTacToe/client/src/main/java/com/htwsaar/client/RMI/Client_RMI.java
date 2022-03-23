@@ -15,7 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Client_RMI {
     private static final Logger logger = LogManager.getLogger(Client_RMI.class);
-    private static final String HOST_IP = "simon.selfhost.co";
+//    private static final String HOST_IP = "simon.selfhost.co";
+    private static final String HOST_IP = "localhost";
     private static final int PORT = 42424;
     private static final String REGISTRY = "GAME";
 

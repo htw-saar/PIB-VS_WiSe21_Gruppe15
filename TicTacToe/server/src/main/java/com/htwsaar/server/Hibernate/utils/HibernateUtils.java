@@ -31,13 +31,13 @@ public class HibernateUtils {
                 Properties settings = new Properties();
                 settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
                 //Testen für Lokal (Setup Gameserver DB mit Wiki Tutorial)
-//                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/gameserver");
-//                settings.put(Environment.USER, "testuser");
-//                settings.put(Environment.PASS, "test");
+                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/gameserver");
+                settings.put(Environment.USER, "testuser");
+                settings.put(Environment.PASS, "test");
                 //Server
-                settings.put(Environment.URL, "jdbc:mysql://192.168.178.21/gameserver");
-                settings.put(Environment.USER, "remote");
-                settings.put(Environment.PASS, "secretpassword");
+//                settings.put(Environment.URL, "jdbc:mysql://simon.selfhost.co/gameserver");
+//                settings.put(Environment.USER, "remote");
+//                settings.put(Environment.PASS, "secretpassword");
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
                 settings.put(Environment.SHOW_SQL, "true");
                 settings.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
